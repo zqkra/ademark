@@ -65,9 +65,10 @@ Results are published whatever they show, including results that contradict the 
 
 ### L2. "You said 16 ADEs."
 - **Verdict:** Valid.
-- **What the site says:** "17 ADEs and a Bare CLI control. Our first post said 16. Since then we removed Herdr,
-  a terminal multiplexer and not a desktop app, and added the desktop apps of Anthropic and OpenAI.
-  Cursor was named in the first post and is out of v1 scope."
+- **What we say:** The first post said 16. The field then became 17: we removed Herdr, a terminal multiplexer and
+  not a desktop app, and added the desktop apps of Anthropic and OpenAI. Cursor was named in the first post and is
+  out of v1 scope. v1 publishes 15: the Codex app waits for the GPT pass, and Conductor left the field because new
+  users can no longer download it.
 - **Verify:** METHODOLOGY.md §2.
 
 ### L3. "'The first real ADE benchmark' insults earlier work."

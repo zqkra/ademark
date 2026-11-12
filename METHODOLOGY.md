@@ -30,7 +30,7 @@ Each one has its own track:
 
 ## 2. The field
 
-17 ADEs and one control. Versions are frozen when a run starts and published with every result. The first results cover 16 of them: the Codex app was not measured in v1.
+17 ADEs and one control. Versions are frozen when a run starts and published with every result. The first results cover 15 of them. The Codex app was not measured in v1, and Conductor left the field on 12 November 2026: since 4 November new users can no longer download it, so it fails the inclusion rule.
 
 | ADE | Family | Claude runs via | Codex runs via |
 |---|---|---|---|
@@ -290,7 +290,7 @@ ADEMark is built like Terminal-Bench: an open harness that anyone can run, with 
 
 ## Changelog
 
-- 2026-11-12: v1.0 published with the first results: 16 ADEs and the Bare CLI, Track A, Track B and C1. C2 to C6 and the Codex app are not in v1.
+- 2026-11-12: v1.0 published with the first results: 15 ADEs and the Bare CLI, Track A, Track B and C1. C2 to C6 and the Codex app are not in v1.
 - 2026-10-19: v1.0-draft.
 - 2026-11-12: a night measures Track A in its measure and top-ups; Track B and C1 run in their own tokens and
   orchestration steps after them, and a failure there never changes a Track A result (§6).

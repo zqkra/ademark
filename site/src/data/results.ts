@@ -22,28 +22,30 @@ export interface App {
   name: string;
   mark: string | null;
   family: Family;
+  /** What the app is built with (ADES.md): Rust (GPUI), Tauri, Electron, or the terminal for the control. */
+  stack: string;
   version: string;
 }
 
 export const BARE = "bare-cli";
 
 export const APPS: App[] = [
-  { id: "bare-cli", name: "Bare CLI", mark: null, family: "control", version: "Claude Code 2.1.303 in Ghostty 1.4.0" },
-  { id: "bb", name: "bb", mark: "/marks/bb.svg", family: "sdk", version: "0.49.0" },
-  { id: "capy", name: "Capy", mark: "/marks/capy.svg", family: "own", version: "0.8.0" },
-  { id: "claude-desktop", name: "Claude desktop", mark: "/marks/claude.svg", family: "first", version: "4.23118.0" },
-  { id: "cloudroom", name: "Cloudroom", mark: "/marks/cloudroom.png", family: "sdk", version: "129.0.0 for tokens, 150.0.0 for C1" },
-  { id: "diri", name: "Diri", mark: "/marks/diri.png", family: "native", version: "0.11.2" },
-  { id: "emdash", name: "Emdash", mark: "/marks/emdash.svg", family: "pty", version: "1.2.10" },
-  { id: "monocode", name: "MonoCode", mark: "/marks/monocode.png", family: "native", version: "0.16.0" },
-  { id: "orca", name: "Orca", mark: "/marks/orca.svg", family: "pty", version: "1.4.249" },
-  { id: "paseo", name: "Paseo", mark: "/marks/paseo.svg", family: "sdk", version: "0.15.0" },
-  { id: "super-engineering", name: "super.engineering", mark: "/marks/super-engineering.png", family: "native", version: "build 15aae8f8" },
-  { id: "superset", name: "Superset", mark: "/marks/superset.png", family: "pty", version: "2.0.8, now named Paradev" },
-  { id: "synara", name: "Synara", mark: "/marks/synara.svg", family: "sdk", version: "1.1.0" },
-  { id: "t3code", name: "T3 Code", mark: "/marks/t3code.svg", family: "sdk", version: "0.1.8 beta" },
-  { id: "traycer", name: "Traycer", mark: "/marks/traycer.svg", family: "sdk", version: "1.5.3" },
-  { id: "zeron", name: "Zeron", mark: "/marks/zeron.png", family: "native", version: "0.2.136" },
+  { id: "bare-cli", name: "Bare CLI", mark: null, family: "control", stack: "Terminal", version: "Claude Code 2.1.303 in Ghostty 1.4.0" },
+  { id: "bb", name: "bb", mark: "/marks/bb.svg", family: "sdk", stack: "Electron", version: "0.49.0" },
+  { id: "capy", name: "Capy", mark: "/marks/capy.svg", family: "own", stack: "Electron", version: "0.8.0" },
+  { id: "claude-desktop", name: "Claude desktop", mark: "/marks/claude.svg", family: "first", stack: "Electron", version: "4.23118.0" },
+  { id: "cloudroom", name: "Cloudroom", mark: "/marks/cloudroom.png", family: "sdk", stack: "Electron", version: "129.0.0 for tokens, 150.0.0 for C1" },
+  { id: "diri", name: "Diri", mark: "/marks/diri.png", family: "native", stack: "Rust", version: "0.11.2" },
+  { id: "emdash", name: "Emdash", mark: "/marks/emdash.svg", family: "pty", stack: "Electron", version: "1.2.10" },
+  { id: "monocode", name: "MonoCode", mark: "/marks/monocode.png", family: "native", stack: "Tauri", version: "0.16.0" },
+  { id: "orca", name: "Orca", mark: "/marks/orca.svg", family: "pty", stack: "Electron", version: "1.4.249" },
+  { id: "paseo", name: "Paseo", mark: "/marks/paseo.svg", family: "sdk", stack: "Electron", version: "0.15.0" },
+  { id: "super-engineering", name: "super.engineering", mark: "/marks/super-engineering.png", family: "native", stack: "Rust", version: "build 15aae8f8" },
+  { id: "superset", name: "Superset", mark: "/marks/superset.png", family: "pty", stack: "Electron", version: "2.0.8, now named Paradev" },
+  { id: "synara", name: "Synara", mark: "/marks/synara.svg", family: "sdk", stack: "Electron", version: "1.1.0" },
+  { id: "t3code", name: "T3 Code", mark: "/marks/t3code.svg", family: "sdk", stack: "Electron", version: "0.1.8 beta" },
+  { id: "traycer", name: "Traycer", mark: "/marks/traycer.svg", family: "sdk", stack: "Electron", version: "1.5.3" },
+  { id: "zeron", name: "Zeron", mark: "/marks/zeron.png", family: "native", stack: "Rust", version: "0.2.136" },
 ];
 
 export const ADES = APPS.filter((a) => a.id !== BARE);

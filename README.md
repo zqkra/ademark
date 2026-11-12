@@ -19,13 +19,13 @@
 
 # ADEMark
 
-ADEMark is an open benchmark of agentic development environments (ADEs), the desktop apps that run coding agents such as Claude Code. v1 measures 16 of them side by side on one Mac: how fast they start and answer, how much memory and CPU they use, how many tokens they send, and how well they run several agents on one job. Every app is compared with a control, Claude Code alone in a terminal.
+ADEMark is an open benchmark of agentic development environments (ADEs), the desktop apps that run coding agents such as Claude Code. v1 measures 15 of them side by side on one Mac: how fast they start and answer, how much memory and CPU they use, how many tokens they send, and how well they run several agents on one job. Every app is compared with a control, Claude Code alone in a terminal.
 
 ## Results at a glance
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/readme/overview-dark.png">
-  <img alt="Every test of v1 for 16 ADEs and the Bare CLI. Pink marks first place in a test." src=".github/readme/overview-light.png">
+  <img alt="Every test of v1 for 15 ADEs and the Bare CLI, with what each app is built with. Pink marks first place in a test." src=".github/readme/overview-light.png">
 </picture>
 
 Each test is ranked on its own, so there is no overall winner.
@@ -72,7 +72,7 @@ Every chart, the Compare view and the full report are on [ademark.dev](https://a
 
 Run `control-2026-11-10T08-31-19Z`, the last complete run, which ended on 12 November 2026. Work began on 18 October.
 
-- 16 ADEs and one control, the Bare CLI (Claude Code alone in Ghostty). The control runs every test and is never ranked.
+- 15 ADEs and one control, the Bare CLI (Claude Code alone in Ghostty). The control runs every test and is never ranked.
 - One Mac mini M4 with 16 GB on macOS 27, in a macOS user made for the benchmark. Every ADE runs in local mode.
 - Claude Opus 5.5 at high effort in every app.
 - Track A, speed and weight: launch, new thread, first word, typing lag, long thread, memory, idle CPU and power. A replay server answers in place of the model.
@@ -81,7 +81,7 @@ Run `control-2026-11-10T08-31-19Z`, the last complete run, which ended on 12 Nov
 
 Tested as shipped: we added no skills, plugins, MCP servers or instructions. We did set the model, the effort, full access inside the app's worktree and no automatic model routing. Orca, super.engineering and Capy had experimental orchestration switched on for C1 only. Cloud modes were not tested.
 
-The field planned 17 ADEs. The Codex app is not in v1, because the GPT pass has not run.
+The field planned 17 ADEs. The Codex app is not in v1, because the GPT pass has not run. Conductor was measured, but it left the field before publication: its maker was bought, and since 4 November 2026 new users can no longer download the app, so it fails the inclusion rule. Its rows stay in `data/`.
 
 There is no overall winner. Each test is ranked on its own. Tie intervals are not in v1, so two ADEs with close medians may swap places. Gaps are labeled "did not finish" (the app could not complete the test) or "not measured" (our harness could not measure it).
 

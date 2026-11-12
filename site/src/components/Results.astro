@@ -130,14 +130,14 @@ const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].ca
               {APPS.filter((a) => a.id === BARE).map((a) => (
                 <tr class="ref" data-family="control">
                   <td class="pos"></td>
-                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span class="nm">{a.name}</span><span class="stack">{a.stack}</span></span></th>
                   {METRICS.map((m) => <td class:list={["ref", { gs: groupStart.has(m.key) }]}>{cell(a.id, m.key, m.test).text}</td>)}
                 </tr>
               ))}
               {ordered.map(({ a }, i) => (
                 <tr data-family={a.family} data-name={a.name.toLowerCase()} data-order={i} data-pos={position[i]}>
                   <td class="pos">{position[i]}</td>
-                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span class="nm">{a.name}</span><span class="stack">{a.stack}</span></span></th>
                   {METRICS.map((m) => {
                     const c = cell(a.id, m.key, m.test);
                     return <td class:list={[c.tier, { gs: groupStart.has(m.key) }]} data-key={m.key} data-v={c.v}>{c.text}</td>;
@@ -153,7 +153,7 @@ const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].ca
               {partial.map((a, i) => (
                 <tr data-family={a.family} data-name={a.name.toLowerCase()} data-order={i}>
                   <td class="pos"></td>
-                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span class="nm">{a.name}</span><span class="stack">{a.stack}</span></span></th>
                   {METRICS.map((m) => {
                     const c = cell(a.id, m.key, m.test);
                     return <td class:list={[c.tier, { gs: groupStart.has(m.key) }]} data-key={m.key} data-v={c.v}>{c.text}</td>;
@@ -541,6 +541,12 @@ const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].ca
     align-items: center;
     gap: 10px;
   }
+  .grid .stack {
+    margin-left: auto;
+    padding-left: 14px;
+    font: 500 12px/16px var(--font-sans);
+    color: var(--color-text-muted);
+  }
   .grid tbody tr + tr > * {
     border-top: 1px solid var(--color-bar);
   }
@@ -628,6 +634,9 @@ const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].ca
     }
     .grid .pos {
       width: 24px;
+    }
+    .grid .stack {
+      display: none;
     }
     .row {
       grid-template-columns: 1fr;
