@@ -1,0 +1,13 @@
+{
+  "ade": "claude-desktop",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T16:24:11.961Z",
+  "harnessCommit": "229c9a9e65ea2e7e0f3329e96d6399e604fc5375",
+  "version": "4.23118.0",
+  "bundleSha256": "2f65868848f15b8ff0747f5db32e2d8ced33a5692f81b263130c268c9ae7cbdd",
+  "failures": [
+    "claude-desktop A block: seed thread 1/2 did not finish: timeout",
+    "claude-desktop A3 default-mode: old-thread draft not read in the composer: [\"PINE\"]"
+  ]
+}

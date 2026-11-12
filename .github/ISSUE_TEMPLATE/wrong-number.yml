@@ -1,0 +1,42 @@
+name: Report a wrong number
+description: A number on ademark.dev or in data/ looks wrong
+title: "Wrong number: "
+labels: ["wrong-number"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Method errors are fixed in a public corrections log with the old and new value. A result is never changed because an ADE scored badly.
+  - type: input
+    id: test
+    attributes:
+      label: Test ID
+      placeholder: A5, B1, C1
+    validations:
+      required: true
+  - type: input
+    id: ade
+    attributes:
+      label: ADE
+    validations:
+      required: true
+  - type: input
+    id: number
+    attributes:
+      label: The number you think is wrong
+      placeholder: "A5 Weigh-in, 412 MB"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why you think it is wrong
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Your own measurement with machine and version, a screenshot, or a row in data/.
+    validations:
+      required: true

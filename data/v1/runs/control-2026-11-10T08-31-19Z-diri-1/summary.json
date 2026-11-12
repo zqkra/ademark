@@ -1,0 +1,311 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-diri-1",
+  "rows": 74,
+  "invalid_rows": 22,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "diri": {
+      "family": "NATIVE",
+      "tests": {
+        "A5/app": {
+          "n": 2,
+          "median": 108.94865417480469,
+          "p25": 108.94474792480469,
+          "p75": 108.95256042480469,
+          "min": 108.94084167480469,
+          "max": 108.95646667480469,
+          "against_bare_cli": null
+        },
+        "A5/main": {
+          "n": 2,
+          "median": 75.91504669189453,
+          "p25": 75.91114044189453,
+          "p75": 75.91895294189453,
+          "min": 75.90723419189453,
+          "max": 75.92285919189453,
+          "against_bare_cli": null
+        },
+        "A5/dedup": {
+          "n": 2,
+          "median": 111.29240417480469,
+          "p25": 110.28849792480469,
+          "p75": 112.29631042480469,
+          "min": 109.28459167480469,
+          "max": 113.30021667480469,
+          "against_bare_cli": null
+        },
+        "A5/windowserver-delta": {
+          "n": 2,
+          "median": 0.9140625,
+          "p25": 0.21484375,
+          "p75": 1.61328125,
+          "min": -0.484375,
+          "max": 2.3125,
+          "against_bare_cli": null
+        },
+        "A5/agents": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A5/agent-count": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A5/total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A6/front": {
+          "n": 1,
+          "median": 0.5522758412697939,
+          "p25": 0.5522758412697939,
+          "p75": 0.5522758412697939,
+          "min": 0.5522758412697939,
+          "max": 0.5522758412697939,
+          "against_bare_cli": null
+        },
+        "A6/covered": {
+          "n": 1,
+          "median": 0.2348634549638579,
+          "p25": 0.2348634549638579,
+          "p75": 0.2348634549638579,
+          "min": 0.2348634549638579,
+          "max": 0.2348634549638579,
+          "against_bare_cli": null
+        },
+        "A6/front-wakeups": {
+          "n": 1,
+          "median": 131.12640581751867,
+          "p25": 131.12640581751867,
+          "p75": 131.12640581751867,
+          "min": 131.12640581751867,
+          "max": 131.12640581751867,
+          "against_bare_cli": null
+        },
+        "A6/covered-wakeups": {
+          "n": 1,
+          "median": 34.658432459405866,
+          "p25": 34.658432459405866,
+          "p75": 34.658432459405866,
+          "min": 34.658432459405866,
+          "max": 34.658432459405866,
+          "against_bare_cli": null
+        },
+        "A6/front-energy": {
+          "n": 1,
+          "median": 0.384619571880418,
+          "p25": 0.384619571880418,
+          "p75": 0.384619571880418,
+          "min": 0.384619571880418,
+          "max": 0.384619571880418,
+          "against_bare_cli": null
+        },
+        "A6/covered-energy": {
+          "n": 1,
+          "median": 0.22577799875817292,
+          "p25": 0.22577799875817292,
+          "p75": 0.22577799875817292,
+          "min": 0.22577799875817292,
+          "max": 0.22577799875817292,
+          "against_bare_cli": null
+        },
+        "A7/excluded": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A8/p50": {
+          "n": 1,
+          "median": 44.67,
+          "p25": 44.67,
+          "p75": 44.67,
+          "min": 44.67,
+          "max": 44.67,
+          "against_bare_cli": null
+        },
+        "A8/p95": {
+          "n": 1,
+          "median": 72.308,
+          "p25": 72.308,
+          "p75": 72.308,
+          "min": 72.308,
+          "max": 72.308,
+          "against_bare_cli": null
+        },
+        "A8/max": {
+          "n": 1,
+          "median": 132.856,
+          "p25": 132.856,
+          "p75": 132.856,
+          "min": 132.856,
+          "max": 132.856,
+          "against_bare_cli": null
+        },
+        "A8/missed": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A10/rest-20": {
+          "n": 1,
+          "median": 212.26990509033203,
+          "p25": 212.26990509033203,
+          "p75": 212.26990509033203,
+          "min": 212.26990509033203,
+          "max": 212.26990509033203,
+          "against_bare_cli": null
+        },
+        "A10/mb-per-thread": {
+          "n": 1,
+          "median": 6.888604227701823,
+          "p25": 6.888604227701823,
+          "p75": 6.888604227701823,
+          "min": 6.888604227701823,
+          "max": 6.888604227701823,
+          "against_bare_cli": null
+        },
+        "A10/lag-p95-20": {
+          "n": 1,
+          "median": 67.192,
+          "p25": 67.192,
+          "p75": 67.192,
+          "min": 67.192,
+          "max": 67.192,
+          "against_bare_cli": null
+        },
+        "A11/open": {
+          "n": 5,
+          "median": 88.06,
+          "p25": 74.481,
+          "p75": 88.935,
+          "min": 67.664,
+          "max": 105.798,
+          "against_bare_cli": null
+        },
+        "A11/scroll-gaps": {
+          "n": 5,
+          "median": 4,
+          "p25": 4,
+          "p75": 4,
+          "min": 3,
+          "max": 4,
+          "against_bare_cli": null
+        },
+        "A11/scroll-max-gap": {
+          "n": 5,
+          "median": 83.402,
+          "p25": 83.402,
+          "p75": 83.402,
+          "min": 66.722,
+          "max": 100.082,
+          "against_bare_cli": null
+        },
+        "A11/switch": {
+          "n": 5,
+          "median": 76.337,
+          "p25": 75.711,
+          "p75": 76.422,
+          "min": 67.566,
+          "max": 84.321,
+          "against_bare_cli": null
+        },
+        "A3/default-mode": {
+          "n": 1,
+          "median": 719.56,
+          "p25": 719.56,
+          "p75": 719.56,
+          "min": 719.56,
+          "max": 719.56,
+          "against_bare_cli": null
+        },
+        "A4/total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A4/before-request": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A4/on-screen": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A9/no-sessions": {
+          "n": 3,
+          "median": 56.21263122558594,
+          "p25": 55.79466247558594,
+          "p75": 56.21263122558594,
+          "min": 55.37669372558594,
+          "max": 56.21263122558594,
+          "against_bare_cli": null
+        },
+        "A9/sessions-kept": {
+          "n": 1,
+          "median": 56.13450622558594,
+          "p25": 56.13450622558594,
+          "p75": 56.13450622558594,
+          "min": 56.13450622558594,
+          "max": 56.13450622558594,
+          "against_bare_cli": null
+        },
+        "A2/relaunch": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A1/cold": {
+          "n": 6,
+          "median": 2.257033,
+          "p25": 2.24462325,
+          "p75": 2.27964425,
+          "min": 2.212969,
+          "max": 2.287077,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

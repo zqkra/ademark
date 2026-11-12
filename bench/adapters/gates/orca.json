@@ -1,0 +1,21 @@
+{
+  "ade": "orca",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T14:54:29.914Z",
+  "harnessCommit": "f50e0ffbcc3d2e9648b24fbe8414c7edbd84777d",
+  "version": "1.4.249",
+  "bundleSha256": "5ac3fffc33e580c0f7ad0c8573a49bbc64aee5fe3151732af4da47d986afa249",
+  "failures": [
+    "orca A block: seed thread 1/2 did not finish: timeout",
+    "orca A11 open: timed_out",
+    "orca A11 scroll-gaps: the long thread did not open",
+    "orca A11 scroll-max-gap: the long thread did not open",
+    "orca A11 switch: the long thread did not open",
+    "orca A3 default-mode: new thread did not appear in 30 s",
+    "orca A4 total: timed_out",
+    "orca A4 before-request: timed_out",
+    "orca A4 on-screen: timed_out",
+    "orca A2 relaunch: gate failure"
+  ]
+}

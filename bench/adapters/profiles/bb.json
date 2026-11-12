@@ -1,0 +1,422 @@
+{
+  "schema": 1,
+  "ade": "bb",
+  "app": {
+    "path": "/Applications/bb.app",
+    "version": "0.46.1",
+    "bundleSha256": "12f7029cd02be269ef1854c4ceedcd5ba4d260b1c4c2e86c8f7933c107d4426b",
+    "processNames": [
+      "bb",
+      "bb Helper",
+      "bb Helper (GPU)",
+      "bb Helper (Renderer)",
+      "bb Helper (Plugin)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "bb",
+    "bundleId": "dev.bb.desktop",
+    "composerRect": {
+      "x": 600,
+      "y": 105,
+      "w": 710,
+      "h": 34
+    },
+    "activeComposerRect": {
+      "x": 600,
+      "y": 808,
+      "w": 710,
+      "h": 34
+    },
+    "launchComposerRect": null,
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 590,
+      "y": 95,
+      "w": 740,
+      "h": 690
+    },
+    "focusClick": {
+      "x": 955,
+      "y": 150
+    },
+    "probe": "xkvw",
+    "masks": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 1000
+      },
+      {
+        "x": 1275,
+        "y": 940,
+        "w": 40,
+        "h": 40
+      }
+    ],
+    "drive": "cdp",
+    "dataDirs": [
+      "~/.bb"
+    ],
+    "launchAgents": [
+      "dev.bb.desktop.ShipIt"
+    ]
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 10000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+          "settings",
+          "general",
+          "onboardingCompletedAt",
+          "2026-01-01T00:00:00.000Z"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+          "project",
+          "create",
+          "--name",
+          "arena",
+          "--root",
+          "${worktree}"
+        ],
+        "timeoutMs": 120000
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 657,
+          "y": 245
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 659,
+          "y": 310
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1200
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+m"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 756,
+          "y": 597
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 600
+      },
+      {
+        "kind": "type",
+        "text": "Opus 5.5"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "down"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 600
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "general",
+            "telemetryEnabled",
+            "false"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "ui",
+            "set",
+            "sidebar.chronologicalSort",
+            "created"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "general",
+            "defaultProviderId",
+            "claude-code"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "wait",
+          "ms": 1500
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1240,
+            "y": 245
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 900
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1063,
+            "y": 463
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        }
+      ],
+      "codex": [
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "general",
+            "telemetryEnabled",
+            "false"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "ui",
+            "set",
+            "sidebar.chronologicalSort",
+            "created"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/opt/homebrew/bin/node",
+            "/Applications/bb.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/bb",
+            "settings",
+            "general",
+            "defaultProviderId",
+            "codex"
+          ],
+          "timeoutMs": 60000
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "dev.bb.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+k"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "LONGTHREAD-END"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+k"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "replay:seed"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.bb"
+    ],
+    "launchAgentLabels": [
+      "dev.bb.desktop.ShipIt"
+    ],
+    "teamId": "9QCU24SXK5",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "/bb-cli",
+  "orchestration": {
+    "workers": "sessions"
+  },
+  "notes": [
+    "Verified in app.asar: thread.new is mod+n on desktop (services/system/app-keybindings.ts) and the File > New Thread menu accelerator is CommandOrControl+N (src/desktop-menu-shortcuts.ts).",
+    "Verified: Enter submits the composer; steerActiveThreadOnEnter defaults true, so Enter steers a running thread instead of queueing.",
+    "Verified: sidebar.organizationMode defaults to chronological and sidebar.chronologicalSort to updated, which reorders threads on open or answer; configure sets it to created so A11's Cmd+1/Cmd+2 keep pointing at the same threads.",
+    "UNRESOLVED: model, effort and permission defaults for new threads live in bb.db (projectExecutionDefaults: providerId, model, reasoningLevel, permissionMode, serviceTier) and are only written when a thread is created from the app (origin app). BB 0.46.1 has no CLI or JSON file for them. Until the GUI session sets them once (model picker Cmd+Shift+M, reasoning Alt+T, permission picker) or a seeded ~/.bb/bb.db is restored, new threads run medium effort with permission auto and the provider's default model.",
+    "Provider ids are claude-code, codex and pi (builtin plugin manifests). defaultProviderId only picks the provider, not the model.",
+    "Permission modes: accept-edits, auto (factory default for new threads) and full. The local host's ceiling defaults to full.",
+    "Telemetry: PostHog to us.i.posthog.com, gated by BB_TELEMETRY at server start and by the telemetryEnabled app setting; configure sets the setting with bb settings general.",
+    "Auto-update: macOS always enables electron-updater (dist/desktop-update-provider.ts) with autoDownload false and autoInstallOnAppQuit true, so a downloaded update installs on the next quit and changes the version under the gate. No setting disables it; block github.com for the bb block or accept the version drift.",
+    "Onboarding: the setup guide shows while generalSettings.onboardingCompletedAt is null, which is the case after every reset. afterLaunch sets it through bb settings general; if the overlay stays open, dismiss it with a key or click found in the GUI session.",
+    "No prompt-rewriting feature exists in 0.46.1 (no enhance-rewrite control in app.asar or the server bundle), so there is nothing to turn off.",
+    "BB_CLAUDE_CODE_EXECUTABLE unset means the provider spawns claude from PATH (provider-claude-code), i.e. the system Claude Code; Codex runs through codex app-server.",
+    "Title side call: a prompt of five words or more gets a model-generated title (services/threads/title-generation.ts, generateThreadMetadata), so B1 counts it; short prompts such as hi do not.",
+    "C1: agents spawn child threads with bb thread spawn --parent-self (bb-cli skill). orchestrationTrigger /bb-cli is an ESTIMATE: the builtin skill is exposed as a slash command, and the C1 prompt needs it to know the spawn command. Verify in the GUI.",
+    "openProject runs bb project create --name arena --root ${worktree} with the bundled host-daemon CLI run by /opt/homebrew/bin/node, because the launcher at ~/.bb/bin/bb lives inside the data folder that reset moves aside. A second create in the same data folder makes a second project named arena.",
+    "Data: ~/.bb (~1.5 GB, bb.db 713 MB plus worktrees and logs) and ~/Library/Application Support/bb (window-state.json, cookies). Only ~/.bb is in dataDirs because moveAside names the aside folder after the basename and both would become bb.",
+    "processNames cover the app binary and its four helpers; the managed server and host daemon run from the same Electron binary with ELECTRON_RUN_AS_NODE.",
+    "GUI session 2026-10-24 on 0.46.1. The new-thread composer sits at the TOP of the main pane (text line y 121, 609-1300; probe-region 609,113 316x16), not at the bottom as the bundle estimate said; in a thread it docks at the bottom (y 820). Sidebar is 320 pt wide. The composer is focused after cmd+n; focusClick stays null because a fixed click would land in the message column inside a thread.",
+    "Defaults after a fresh ~/.bb: Opus 5.5 Medium and permission 'Approve for me'; neither is a bb settings key (settings general has no model, effort or permission field; defaultMachineAccess is remote-machine access, not the permission mode). configure.claude therefore clicks: model button (710,200) > Reasoning High (845,500), Escape; permission button (1240,245) > Full Access (1063,463). cmd+n keeps model, effort, permission and project (checked).",
+    "openProject (checked): bb project create --name arena --root <path> registers the folder but the composer stays on 'No project'; the project picker (657,245) > 'arena' (659,310) selects it ('Project checkout', 'Current (main)'). A thread then runs in the arena folder itself: ~/.claude/projects/-Users-ademark-arena-bb/<id>.jsonl, cwd /Users/ademark/arena/bb, so waitDone cwd is worktree.",
+    "Replay (checked): bb runs the system claude (/Users/ademark/.local/bin/claude, stream-json) with launchd's ANTHROPIC_BASE_URL; with no server on 8787 the thread showed 'Claude Code API retry n/10'. The bottom bar shows a 'bb' update badge: bb can update on quit (check the version before and after each gate).",
+    "A11 (gate 2026-10-24 run 1): open passed but setup/switch never reached the seed: the sidebar mixes the A7/A10 stream threads and the block seeds between the long thread and A11's seed, so cmd+2 (thread.jump.2) lands on another thread. A11 now uses thread.search (cmd+k): 'long-2000' + Enter opens the long thread (unique title), 'replay:seed' + Enter opens a seed thread (every seed thread shows the same 'Seeded...' reply, so any of them is a valid short thread). The two 400 ms waits and the search UI are part of the timed open/switch.",
+    "Model (2026-11-07): the click on the model list landed on Opus 5, because the list order changed, so every thread ran claude-opus-5. The composer keeps its own choice and overwrites project_execution_defaults, so the database alone does not help. Cmd+Shift+M, type Opus 5.5, down, Return, Escape picks it. Checked with a real turn: the session log shows claude-opus-5-5.",
+    "Effort (2026-11-07): the picker search does not filter the reasoning row, so High is a click at (756,597) with the picker open, at 1600x1000. The old model click at (845,500) was the Opus 5 row (y 492). `wrong effort` in Track B catches a miss.",
+    "A11 (night of 2026-11-10, 0.49.0): the search palette opens a thread at the matched message (searchMessageSeq), and the server returns the matching message with the lowest sequence. 'long-2000' matched the first user message, so every open showed 'Step 1 of 1000' and timed out (control-2026-11-10T08-31-19Z-bb-1/bb/A11/rep-01/frames-open.json). longThread now types 'LONGTHREAD-END', which only the last turn holds, so bb opens the thread at its end. NOT YET SEEN ON SCREEN: the next real pass must show the marker in frames-open.json. 'replay:seed' still lands on the seed's one message, which is the whole short thread.",
+    "focusClick (955,150), set 2026-11-10 for ADEMARK-55 review R2; it replaces the note of 2026-10-24 that kept it null. After a launch bb does not focus its composer: control-2026-11-10T08-31-19Z-bb-1/bb/A1/rep-01/video.mov at 2.0 s shows the home view with the composer box at x 592 to 1318, y 100 to 227, the placeholder line at y 124 and no caret, and A1 and A2 reached Ready on the placeholder ('folders' holds the probe pair 'de'), not on typed keys. The point is in the box's empty part, below the placeholder line and above the model row (y 203). After cmd+n the new thread's composer is the same box in the same place (A3/rep-02/video.mov at 0.3 s, caret at y 124), so the point is inside it too. The echo clicks right after the triggers, and bb draws the new view about 100 ms after cmd+n, so in A3 the click can land on the old thread first: there (A3/rep-02 at 0 s) the point is blank transcript space between the NEW divider (y 133) and the seed reply (y 163), not a control. A3 was focused by cmd+n on 10 Nov; a rehearsal must show the click keeps it so.",
+    "2026-11-11, C1: bb's orchestration is child threads (bb thread spawn --parent-self), each a client session of its own. C1 counts only with two sessions at work (orchestration.workers); subagents inside the lead's session are Claude Code's, not bb's.",
+    "2026-11-11: calibration.probe xkvw. The composer's placeholder ('Ask anything. @ to mention files, folders, or sections') holds pairs of the default probe ademarkqz ('de' in folder, and for Traycer 'ma' in commands), and the native rule takes any new probe pair in the region as Ready. On 10 and 11 Nov every A1 and A2 repetition reached Ready on the placeholder (frames.json: the Ready frame reads the placeholder, the caret blinks over its first letter, and no typed letter ever shows, because the typing stops at Ready). No ordinary word has xk, kv, vw or wx, so Ready can only be typed text. The rows of those nights were invalid ('Ready came from text that is not the probe'), never a false time."
+  ],
+  "agentGuide": "A new thread starts with Cmd+N (File > New Thread). Enter sends the message."
+}

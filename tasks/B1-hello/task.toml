@@ -1,0 +1,10 @@
+id = "B1-hello"
+version = "1.0.0"
+track = "B"
+model = "both"
+mode = "local"
+thread = "new"
+prompt = "prompt.md"
+time_cap_s = 120
+repeats = 3
+grade_groups = []

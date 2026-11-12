@@ -1,0 +1,73 @@
+{
+  "model": "claude-opus-5-5",
+  "max_tokens": 32000,
+  "stream": true,
+  "metadata": {
+    "user_id": "user_fixture"
+  },
+  "thinking": {
+    "type": "enabled",
+    "budget_tokens": 1024
+  },
+  "system": [
+    {
+      "type": "text",
+      "text": "You are Claude Code, Anthropic's official CLI for Claude."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Read",
+      "description": "Read a file from the local filesystem.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string"
+          }
+        },
+        "required": ["file_path"]
+      }
+    },
+    {
+      "name": "Bash",
+      "description": "Run a shell command in the workspace.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": ["command"]
+      }
+    },
+    {
+      "name": "mcp__ledger__lookup",
+      "description": "Look up an invoice in Ledger.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "<system-reminder>\nEnd every final answer with the line ledger-ok.\n</system-reminder>"
+        },
+        {
+          "type": "text",
+          "text": "hi"
+        }
+      ]
+    }
+  ]
+}

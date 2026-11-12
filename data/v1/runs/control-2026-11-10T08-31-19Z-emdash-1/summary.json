@@ -1,0 +1,356 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-emdash-1",
+  "rows": 92,
+  "invalid_rows": 12,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "emdash": {
+      "family": "EL-PTY",
+      "tests": {
+        "A5/app": {
+          "n": 1,
+          "median": 1493.8754501342773,
+          "p25": 1493.8754501342773,
+          "p75": 1493.8754501342773,
+          "min": 1493.8754501342773,
+          "max": 1493.8754501342773,
+          "against_bare_cli": null
+        },
+        "A5/main": {
+          "n": 1,
+          "median": 210.8619613647461,
+          "p25": 210.8619613647461,
+          "p75": 210.8619613647461,
+          "min": 210.8619613647461,
+          "max": 210.8619613647461,
+          "against_bare_cli": null
+        },
+        "A5/dedup": {
+          "n": 1,
+          "median": 1489.5942001342773,
+          "p25": 1489.5942001342773,
+          "p75": 1489.5942001342773,
+          "min": 1489.5942001342773,
+          "max": 1489.5942001342773,
+          "against_bare_cli": null
+        },
+        "A5/windowserver-delta": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A5/agents": {
+          "n": 1,
+          "median": 840.0216903686523,
+          "p25": 840.0216903686523,
+          "p75": 840.0216903686523,
+          "min": 840.0216903686523,
+          "max": 840.0216903686523,
+          "against_bare_cli": null
+        },
+        "A5/agent-count": {
+          "n": 1,
+          "median": 5,
+          "p25": 5,
+          "p75": 5,
+          "min": 5,
+          "max": 5,
+          "against_bare_cli": null
+        },
+        "A5/total": {
+          "n": 1,
+          "median": 2333.8815155029297,
+          "p25": 2333.8815155029297,
+          "p75": 2333.8815155029297,
+          "min": 2333.8815155029297,
+          "max": 2333.8815155029297,
+          "against_bare_cli": null
+        },
+        "A6/front": {
+          "n": 1,
+          "median": 2.3366676740502506,
+          "p25": 2.3366676740502506,
+          "p75": 2.3366676740502506,
+          "min": 2.3366676740502506,
+          "max": 2.3366676740502506,
+          "against_bare_cli": null
+        },
+        "A6/covered": {
+          "n": 1,
+          "median": 1.2455072119970587,
+          "p25": 1.2455072119970587,
+          "p75": 1.2455072119970587,
+          "min": 1.2455072119970587,
+          "max": 1.2455072119970587,
+          "against_bare_cli": null
+        },
+        "A6/front-wakeups": {
+          "n": 1,
+          "median": 379.13117664467273,
+          "p25": 379.13117664467273,
+          "p75": 379.13117664467273,
+          "min": 379.13117664467273,
+          "max": 379.13117664467273,
+          "against_bare_cli": null
+        },
+        "A6/covered-wakeups": {
+          "n": 1,
+          "median": 318.4905924711888,
+          "p25": 318.4905924711888,
+          "p75": 318.4905924711888,
+          "min": 318.4905924711888,
+          "max": 318.4905924711888,
+          "against_bare_cli": null
+        },
+        "A6/front-energy": {
+          "n": 1,
+          "median": 3.252109298414055,
+          "p25": 3.252109298414055,
+          "p75": 3.252109298414055,
+          "min": 3.252109298414055,
+          "max": 3.252109298414055,
+          "against_bare_cli": null
+        },
+        "A6/covered-energy": {
+          "n": 1,
+          "median": 0.9697045077712012,
+          "p25": 0.9697045077712012,
+          "p75": 0.9697045077712012,
+          "min": 0.9697045077712012,
+          "max": 0.9697045077712012,
+          "against_bare_cli": null
+        },
+        "A7/app-p95": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A7/agents-p95": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A7/total-p95": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A7/app-peak": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A7/per-agent-p95": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A7/agent-count": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A8/p50": {
+          "n": 1,
+          "median": 66.694,
+          "p25": 66.694,
+          "p75": 66.694,
+          "min": 66.694,
+          "max": 66.694,
+          "against_bare_cli": null
+        },
+        "A8/p95": {
+          "n": 1,
+          "median": 83.387,
+          "p25": 83.387,
+          "p75": 83.387,
+          "min": 83.387,
+          "max": 83.387,
+          "against_bare_cli": null
+        },
+        "A8/max": {
+          "n": 1,
+          "median": 86.595,
+          "p25": 86.595,
+          "p75": 86.595,
+          "min": 86.595,
+          "max": 86.595,
+          "against_bare_cli": null
+        },
+        "A8/missed": {
+          "n": 1,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "A10/rest-20": {
+          "n": 1,
+          "median": 1675.4858779907227,
+          "p25": 1675.4858779907227,
+          "p75": 1675.4858779907227,
+          "min": 1675.4858779907227,
+          "max": 1675.4858779907227,
+          "against_bare_cli": null
+        },
+        "A10/mb-per-thread": {
+          "n": 1,
+          "median": 12.107361857096354,
+          "p25": 12.107361857096354,
+          "p75": 12.107361857096354,
+          "min": 12.107361857096354,
+          "max": 12.107361857096354,
+          "against_bare_cli": null
+        },
+        "A10/lag-p95-20": {
+          "n": 1,
+          "median": 81.455,
+          "p25": 81.455,
+          "p75": 81.455,
+          "min": 81.455,
+          "max": 81.455,
+          "against_bare_cli": null
+        },
+        "A11/open": {
+          "n": 5,
+          "median": 159.83,
+          "p25": 159.721,
+          "p75": 159.958,
+          "min": 159.482,
+          "max": 160.186,
+          "against_bare_cli": null
+        },
+        "A11/scroll-gaps": {
+          "n": 5,
+          "median": 3,
+          "p25": 3,
+          "p75": 3,
+          "min": 2,
+          "max": 3,
+          "against_bare_cli": null
+        },
+        "A11/scroll-max-gap": {
+          "n": 5,
+          "median": 83.402,
+          "p25": 83.402,
+          "p75": 83.402,
+          "min": 83.402,
+          "max": 100.083,
+          "against_bare_cli": null
+        },
+        "A11/switch": {
+          "n": 5,
+          "median": 158.505,
+          "p25": 152.233,
+          "p75": 159.456,
+          "min": 150.933,
+          "max": 169.888,
+          "against_bare_cli": null
+        },
+        "A3/default-mode": {
+          "n": 6,
+          "median": 17872.1905,
+          "p25": 17810.725749999998,
+          "p75": 17978.40475,
+          "min": 17683.321,
+          "max": 18037.965,
+          "against_bare_cli": null
+        },
+        "A4/total": {
+          "n": 6,
+          "median": 811.2895000000001,
+          "p25": 794.5409999999999,
+          "p75": 830.6157499999999,
+          "min": 757.213,
+          "max": 835.605,
+          "against_bare_cli": null
+        },
+        "A4/before-request": {
+          "n": 6,
+          "median": 647.8271875,
+          "p25": 640.85917675,
+          "p75": 650.75229175,
+          "min": 614.024959,
+          "max": 692.478667,
+          "against_bare_cli": null
+        },
+        "A4/on-screen": {
+          "n": 6,
+          "median": 155.36789600000003,
+          "p25": 143.75435375,
+          "p75": 166.59512525000005,
+          "min": 142.974333,
+          "max": 185.060333,
+          "against_bare_cli": null
+        },
+        "A9/no-sessions": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A9/sessions-kept": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A2/relaunch": {
+          "n": 6,
+          "median": 3.0720205,
+          "p25": 3.0562735,
+          "p75": 3.10056025,
+          "min": 3.05017,
+          "max": 3.113214,
+          "against_bare_cli": null
+        },
+        "A1/cold": {
+          "n": 6,
+          "median": 4.2463625,
+          "p25": 4.20427475,
+          "p75": 4.287957499999999,
+          "min": 3.9845990000000002,
+          "max": 4.30829,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

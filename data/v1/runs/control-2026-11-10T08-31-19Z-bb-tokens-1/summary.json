@@ -1,0 +1,203 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-bb-tokens-1",
+  "rows": 39,
+  "invalid_rows": 6,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "bb": {
+      "family": "EL-SDK",
+      "tests": {
+        "B1/fresh-input": {
+          "n": 3,
+          "median": 2,
+          "p25": 2,
+          "p75": 2,
+          "min": 2,
+          "max": 2,
+          "against_bare_cli": null
+        },
+        "B1/cache-write": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 4378.5,
+          "min": 0,
+          "max": 8757,
+          "against_bare_cli": null
+        },
+        "B1/cache-read": {
+          "n": 3,
+          "median": 24469,
+          "p25": 20090.5,
+          "p75": 24469,
+          "min": 15712,
+          "max": 24469,
+          "against_bare_cli": null
+        },
+        "B1/output": {
+          "n": 3,
+          "median": 74,
+          "p25": 73.5,
+          "p75": 74,
+          "min": 73,
+          "max": 74,
+          "against_bare_cli": null
+        },
+        "B1/side-tokens": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "B1/usd": {
+          "n": 3,
+          "median": 0.0063818,
+          "p25": 0.0063718,
+          "p75": 0.040534099999999997,
+          "min": 0.0063618,
+          "max": 0.0746864,
+          "against_bare_cli": null
+        },
+        "B3/fresh-input": {
+          "n": 1,
+          "median": 6,
+          "p25": 6,
+          "p75": 6,
+          "min": 6,
+          "max": 6,
+          "against_bare_cli": null
+        },
+        "B3/cache-write": {
+          "n": 1,
+          "median": 12478,
+          "p25": 12478,
+          "p75": 12478,
+          "min": 12478,
+          "max": 12478,
+          "against_bare_cli": null
+        },
+        "B3/cache-read": {
+          "n": 1,
+          "median": 65411,
+          "p25": 65411,
+          "p75": 65411,
+          "min": 65411,
+          "max": 65411,
+          "against_bare_cli": null
+        },
+        "B3/output": {
+          "n": 1,
+          "median": 2663,
+          "p25": 2663,
+          "p75": 2663,
+          "min": 2663,
+          "max": 2663,
+          "against_bare_cli": null
+        },
+        "B3/side-tokens": {
+          "n": 1,
+          "median": 1232,
+          "p25": 1232,
+          "p75": 1232,
+          "min": 1232,
+          "max": 1232,
+          "against_bare_cli": null
+        },
+        "B3/usd": {
+          "n": 1,
+          "median": 0.1663226,
+          "p25": 0.1663226,
+          "p75": 0.1663226,
+          "min": 0.1663226,
+          "max": 0.1663226,
+          "against_bare_cli": null
+        },
+        "B3/requests": {
+          "n": 1,
+          "median": 3,
+          "p25": 3,
+          "p75": 3,
+          "min": 3,
+          "max": 3,
+          "against_bare_cli": null
+        },
+        "B3/tool-calls": {
+          "n": 1,
+          "median": 2,
+          "p25": 2,
+          "p75": 2,
+          "min": 2,
+          "max": 2,
+          "against_bare_cli": null
+        },
+        "B2/system": {
+          "n": 1,
+          "median": 2578,
+          "p25": 2578,
+          "p75": 2578,
+          "min": 2578,
+          "max": 2578,
+          "against_bare_cli": null
+        },
+        "B2/tools": {
+          "n": 1,
+          "median": 7976,
+          "p25": 7976,
+          "p75": 7976,
+          "min": 7976,
+          "max": 7976,
+          "against_bare_cli": null
+        },
+        "B2/mcp-tools": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "B2/injected": {
+          "n": 1,
+          "median": 543,
+          "p25": 543,
+          "p75": 543,
+          "min": 543,
+          "max": 543,
+          "against_bare_cli": null
+        },
+        "B2/params": {
+          "n": 1,
+          "median": 131,
+          "p25": 131,
+          "p75": 131,
+          "min": 131,
+          "max": 131,
+          "against_bare_cli": null
+        },
+        "B4/in-request": {
+          "n": 1,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "B4/obeyed": {
+          "n": 1,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

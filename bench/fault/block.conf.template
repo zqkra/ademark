@@ -1,0 +1,9 @@
+# pf anchor rules that block the model API hosts for C5 (TESTS.md 1.6).
+# Rendered by bench/fault/cut-network.ts: each IP becomes one pass/block pair, v4 and v6.
+# Load with: sudo pfctl -a com.apple/ademark -f <this file> ; sudo pfctl -E
+# Flush with: sudo pfctl -a com.apple/ademark -F all
+table <ademark_v4> persist { {{V4_ADDRESSES}} }
+table <ademark_v6> persist { {{V6_ADDRESSES}} }
+
+block drop quick from any to <ademark_v4>
+block drop quick from any to <ademark_v6>

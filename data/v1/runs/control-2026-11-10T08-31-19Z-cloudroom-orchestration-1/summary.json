@@ -1,0 +1,86 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-cloudroom-orchestration-1",
+  "rows": 16,
+  "invalid_rows": 8,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "cloudroom": {
+      "family": "EL-SDK",
+      "tests": {
+        "C1/shipped": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/time-to-green": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-max": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-total": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/handoff": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/codes-placed": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/tokens-total": {
+          "n": 1,
+          "median": 2663304,
+          "p25": 2663304,
+          "p75": 2663304,
+          "min": 2663304,
+          "max": 2663304,
+          "against_bare_cli": null
+        },
+        "C1/usd-total": {
+          "n": 1,
+          "median": 2.5677030499999995,
+          "p25": 2.5677030499999995,
+          "p75": 2.5677030499999995,
+          "min": 2.5677030499999995,
+          "max": 2.5677030499999995,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

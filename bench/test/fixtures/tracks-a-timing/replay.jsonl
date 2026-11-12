@@ -1,0 +1,4 @@
+{"t_ns":1000000,"api":"anthropic","path":"/v1/messages","bytes":64,"body_sha256":"aa11","session":"seed","user_agent":"claude-cli/2.1.303"}
+{"t_ns":2000000,"api":"anthropic","path":"/v1/messages","bytes":128,"body_sha256":"bb22","session":"hi","user_agent":"claude-cli/2.1.303"}
+{"t_ns":3000000,"api":"anthropic","path":"/v1/messages","bytes":256,"body_sha256":"cc33","session":"hi","user_agent":"claude-cli/2.1.303"}
+{"t_ns":4000000,"api":"openai","path":"/v1/responses","bytes":512,"body_sha256":"dd44","session":null,"user_agent":"codex-cli/0.163.0"}

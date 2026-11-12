@@ -1,0 +1,15 @@
+{
+  "task": "C1-orchestrated-build",
+  "groups": [
+    { "id": "W1-limiter", "passed": 12, "total": 12, "failed": [] },
+    { "id": "W1-api", "passed": 9, "total": 9, "failed": [] },
+    { "id": "W2-dates", "passed": 5, "total": 5, "failed": [] },
+    { "id": "W3-cursor", "passed": 3, "total": 4, "failed": ["walking nextCursor returns every invoice once"] },
+    { "id": "W4-create", "passed": 7, "total": 7, "failed": [] },
+    { "id": "W4-idempotency", "passed": 6, "total": 6, "failed": [] },
+    { "id": "Integration", "passed": 2, "total": 2, "failed": [] },
+    { "id": "C1-handoff", "passed": 0, "total": 1, "failed": [] }
+  ],
+  "valid": true,
+  "reasons": []
+}

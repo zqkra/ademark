@@ -1,0 +1,29 @@
+{
+ "run_id": "control-2026-11-10T08-31-19Z-bare-cli-orchestration-1",
+ "apps": {
+  "bare-cli": {
+   "version": "claude 2.1.303, codex 0.163.0, ghostty 1.4.0"
+  }
+ },
+ "agent_versions": {
+  "claude": "2.1.303 (Claude Code)",
+  "codex": "codex-cli 0.163.0"
+ },
+ "model": [
+  "claude-opus-5-5"
+ ],
+ "effort": [
+  "high"
+ ],
+ "started_at": "2026-11-11T13:09:18.383Z",
+ "ended_at": "2026-11-11T13:29:16.990Z",
+ "test_ids": [
+  "C1"
+ ],
+ "machine": {
+  "model": "Mac16,10",
+  "chip": "Apple M4",
+  "ram_gb": 16
+ },
+ "macos_build": "26A434"
+}

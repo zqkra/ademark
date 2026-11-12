@@ -1,0 +1,55 @@
+---
+import Logo from "./Logo.astro";
+import { REPO_URL } from "../data/links";
+
+const links = ["Results", "Compare", "Report", "Method", "Fairness", "Data"];
+---
+<header class="nav">
+  <div class="wrap inner">
+    <div class="left">
+      <Logo />
+      <nav aria-label="Sections">
+        {links.map((link) => <a href={`#${link.toLowerCase()}`}>{link}</a>)}
+      </nav>
+    </div>
+    <a class="btn btn--primary run" href={REPO_URL}>Run it yourself</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    border-bottom: 1px solid var(--color-hairline);
+    background: var(--color-ground);
+    position: relative;
+    z-index: 2;
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  nav {
+    display: flex;
+    gap: 24px;
+  }
+  nav a {
+    font: 500 16px/20px var(--font-sans);
+  }
+  nav a:hover {
+    color: var(--color-text-muted);
+  }
+  .run {
+    height: 40px;
+  }
+  @media (max-width: 860px) {
+    nav {
+      display: none;
+    }
+  }
+</style>

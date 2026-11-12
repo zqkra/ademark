@@ -1,0 +1,12 @@
+{
+  "ade": "monocode",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T15:37:07.913Z",
+  "harnessCommit": "e6589a5232c570e7eabaef215f5d47cf9e3cee8e",
+  "version": "0.16.0",
+  "bundleSha256": "2f4822c076187095ae524c10ca4025311e7681128f194b59e49a3be7e0451af2",
+  "failures": [
+    "monocode A3 default-mode: old-thread draft not read in the composer: []"
+  ]
+}

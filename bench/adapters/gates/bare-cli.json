@@ -1,0 +1,10 @@
+{
+  "ade": "bare-cli",
+  "runs": 1,
+  "passed": 1,
+  "at": "2026-11-07T08:26:42.370Z",
+  "harnessCommit": "8034c4d6aff31c546a93872097bd8436fd598597",
+  "version": "claude 2.1.303, codex 0.163.0, ghostty 1.4.0",
+  "bundleSha256": "d2da3b003dc08b88b7230469014fe3e1dc6fe94bc8f648e89b34175d30269370",
+  "failures": []
+}

@@ -1,0 +1,113 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-bare-cli-orchestration-1",
+  "rows": 11,
+  "invalid_rows": 8,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "bare-cli-claude": {
+      "family": "control",
+      "tests": {
+        "C1/shipped": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/time-to-green": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-max": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/handoff": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/codes-placed": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/tokens-total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/usd-total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/solo-shipped": {
+          "n": 1,
+          "median": 5,
+          "p25": 5,
+          "p75": 5,
+          "min": 5,
+          "max": 5,
+          "against_bare_cli": null
+        },
+        "C1/solo-tokens-total": {
+          "n": 1,
+          "median": 1652066,
+          "p25": 1652066,
+          "p75": 1652066,
+          "min": 1652066,
+          "max": 1652066,
+          "against_bare_cli": null
+        },
+        "C1/solo-usd-total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

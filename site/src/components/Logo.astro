@@ -1,0 +1,52 @@
+---
+// Orb with the bench mark, and the Geist wordmark.
+interface Props {
+  size?: number;
+}
+const { size = 40 } = Astro.props;
+---
+<a href="/" class="logo" aria-label="ADEMark home">
+  <span class="orb" style={`--size:${size}px`}>
+    <picture>
+      <source srcset="/orb-dark.svg" media="(prefers-color-scheme: dark)" />
+      <img src="/orb.svg" alt="" width={size} height={size} />
+    </picture>
+    <svg viewBox="0 0 92 86" aria-hidden="true">
+      <rect x="0" y="0" width="92" height="12" fill="var(--color-signal)" />
+      <polygon points="46,20 88,86 74,86 46,42 18,86 4,86" fill="var(--color-text)" />
+      <rect x="40" y="32" width="12" height="54" fill="var(--color-text)" />
+    </svg>
+  </span>
+  <span class="word">ADEMark</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .orb {
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    flex-shrink: 0;
+  }
+  .orb img {
+    position: absolute;
+    inset: -12%;
+    width: 124%;
+    height: 124%;
+  }
+  .orb svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 45%;
+    transform: translate(-50%, -50%);
+  }
+  .word {
+    font: 700 22px/28px var(--font-wordmark);
+    letter-spacing: -0.05em;
+  }
+</style>

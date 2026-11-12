@@ -1,0 +1,378 @@
+{
+  "schema": 1,
+  "ade": "traycer",
+  "app": {
+    "path": "/Applications/Traycer.app",
+    "version": "1.5.3",
+    "bundleSha256": "6029d5ff0a91088132d1b07f543e8205b9565fec54165202781c65be9ce1bce3",
+    "processNames": [
+      "Traycer",
+      "Traycer Helper",
+      "Traycer Helper (GPU)",
+      "Traycer Helper (Plugin)",
+      "Traycer Helper (Renderer)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Traycer",
+    "bundleId": "ai.traycer.desktop",
+    "composerRect": {
+      "x": 388,
+      "y": 568,
+      "w": 820,
+      "h": 36
+    },
+    "threadRect": {
+      "x": 410,
+      "y": 140,
+      "w": 1180,
+      "h": 640
+    },
+    "focusClick": null,
+    "probe": "xkvw",
+    "masks": [
+      {
+        "x": 1420,
+        "y": 972,
+        "w": 180,
+        "h": 28
+      },
+      {
+        "x": 10,
+        "y": 972,
+        "w": 110,
+        "h": 28
+      },
+      {
+        "x": 1490,
+        "y": 58,
+        "w": 30,
+        "h": 28
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.traycer",
+      "~/Library/Application Support/Traycer"
+    ],
+    "launchAgents": [
+      "ai.traycer.host.agent",
+      "ai.traycer.host"
+    ],
+    "activeComposerRect": {
+      "x": 560,
+      "y": 808,
+      "w": 880,
+      "h": 32
+    },
+    "launchComposerRect": {
+      "x": 560,
+      "y": 804,
+      "w": 880,
+      "h": 40
+    }
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/.traycer/cli/credentials",
+      "~/.traycer/host/identity"
+    ],
+    "signIn": "Sign in to Traycer once in the ademark account: click Sign in on the Welcome screen and approve it in the browser. Stay signed in; reset() keeps ~/.traycer/cli/credentials and the Host's enrollment in ~/.traycer/host/identity."
+  },
+  "reset": {
+    "seeds": [
+      ".traycer/host-id",
+      ".traycer/machine-id",
+      "Library/Application Support/Traycer/Local Storage"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 1400,
+          "y": 972,
+          "w": 200,
+          "h": 28
+        },
+        "text": "cpu",
+        "timeoutMs": 120000
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 598,
+          "y": 703
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+a"
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 943,
+          "y": 755
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 917,
+          "y": 797
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 800,
+          "y": 300
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "expectText",
+          "region": {
+            "x": 380,
+            "y": 512,
+            "w": 200,
+            "h": 32
+          },
+          "text": "Switch to Terminal",
+          "timeoutMs": 120000
+        },
+        {
+          "kind": "wait",
+          "ms": 5000
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1034,
+            "y": 785
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 594,
+            "y": 460
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        },
+        {
+          "kind": "keys",
+          "combo": "escape"
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1030,
+            "y": 642
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 594,
+            "y": 801
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 670,
+            "y": 827
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 875,
+            "y": 963
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 800,
+            "y": 300
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "expectText",
+          "region": {
+            "x": 950,
+            "y": 625,
+            "w": 190,
+            "h": 36
+          },
+          "text": "Opus 5.5",
+          "timeoutMs": 5000
+        }
+      ],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "ai.traycer.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 1180,
+          "y": 23
+        }
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 965,
+          "y": 23
+        }
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.traycer"
+    ],
+    "launchAgentLabels": [
+      "ai.traycer.host.agent",
+      "ai.traycer.host"
+    ],
+    "teamId": "7YVZ56DZ74",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": {
+    "notCalibrated": "ADES.md 3.5: child agents with agent-to-agent messages; artifact skills start one child agent per ticket. No trigger line is proven."
+  },
+  "notes": [
+    "PLACEHOLDER: orchestrationTrigger null means UNKNOWN here, not 'no orchestration'. ADES 3.5 says child agents exist, and C1 reports null as 'not supported'. Do not run C1 until the trigger line is decided.",
+    "Sign-in: the owner signs in to Traycer (login.kind app; the sign-in file is ~/.traycer/cli/credentials). Claude Code and Codex are set up in Traycer Settings > Providers (control names unverified). Installed here: claude 2.1.310 at ~/.local/bin/claude and codex 0.163.0 at ~/.local/bin/codex; the bench expects claude 2.1.303, which is not installed. If managed agent credentials live under ~/.traycer (location unverified), reset wipes them unless they are listed in login.files.",
+    "Telemetry: no in-app switch found in the bundle. PostHog key is hard-coded in the renderer (analytics chunk) and Sentry DSN in the main process; the Electron crash reporter has uploadToServer false once in the main bundle, not tied to Traycer's own init. Confirm in Settings in the GUI session; if no switch exists, ADES rule 1 telemetry-off is not achievable from config.",
+    "Auto-update: the app checks in the background and does not download on its own (autoUpdater.autoDownload is false in the main process). No settings key was found.",
+    "The Traycer host (ai.traycer.host.agent, KeepAlive) is a LaunchAgent inside the app bundle. It is attributed by bundle path, so waitForPid by bundle path can attach to the host instead of the app when a host is already running. Reset kills and boots it out first.",
+    "New-thread shortcut is cmd+n (epic.new, 'New task'), which opens the start page for a Task, not a chat thread. Its composer focus after the shortcut is unverified; focusClick is null until a GUI check.",
+    "Versions: Desktop 1.5.1, Electron 42.11.12, bundle SHA-256 computed with shasum on the main executable (matches pins/versions.json binary_sha256 and team_id). The bundle holds two CLI builds, Resources/cli/darwin-arm64/traycer and the host copy in Library/LaunchAgents/Traycer Host.app; their SHA-256 differ. The host version is set up at first launch (docs first-run) and is not pinned by this profile.",
+    "GUI session 2026-10-24 on 1.5.1 (signed in as the owner's Traycer account). Start Page composer (probe-region 396,576 348x21) with 'Full access' preselected and GPT-6.1-Sol High as the factory model; a Task view docks the composer at the bottom (text line y 823, 569-1440) with the message column above.",
+    "openProject (checked): 'Add folder' (598,703) opens Traycer's own path field prefilled with /Users/ademark/; cmd+a, the absolute path, cmd+enter adds it and opens a popover with the run location 'New worktree'; its dropdown (943,755) > Local (917,797), then a click on the empty page closes the popover. Local runs in the folder itself.",
+    "configure.claude (checked): model button (1030,642) > Claude tab (594,801; Claude Max Subscription, authenticated as the ademark claude login) > 'Opus 5.5' (670,827) > effort slider third stop (875,963) = High (OCR 'Opus 5.5 High'). Picking a model resets the effort to Low, so the slider click comes after it. A click on the empty page closes the picker.",
+    "Replay (checked): after `launchctl kickstart -k gui/502/ai.traycer.host.agent` the host had launchd's ANTHROPIC_BASE_URL, and the agent it spawned (~/.traycer/host/providers/claude/darwin-arm64/2.1.293/claude, Traycer's own Claude Code build, not the system 2.1.303) had it too: with no server on 8787 the thread showed 'Claude Code is retrying the API request ... connection error'. So Traycer reaches the replay server, provided the host starts after the harness sets the variables.",
+    "waitDone: the session log is ~/.claude/projects/-Users-ademark-arena-traycer/<id>.jsonl with cwd exactly the arena, entrypoint traycer-agents, version 2.1.293.",
+    "Tasks: cmd+n opens a new Start Page tab (keeps folder, model and effort); sending turns that tab into the Task. A11 clicks the tab strip, which stays anchored at the right edge once the tabs overflow (the block always has more than five): the last tab (1180,23) is the long Task and the one before it (965,23) the seed, both built last by A11. Checked on 1.5.3; the close x sits at x 1253 and 1028, so these points miss it.",
+    "Masks: the status bar's cpu/procs readout (bottom right), the usage readout (bottom left) and the orange activity dot in the Task header change with nothing typed.",
+    "Seed (2026-10-24): gate run 1 showed that after reset Traycer starts with a new host-id, and its composer settings are kept per host id in Local Storage (globalLastRunSettingsByHostId / byHost: harness claude, model opus, permissionMode full_access, reasoningEffort high), so the run fell back to Codex ('Codex is signed out'). seeds/traycer/home holds the calibrated host-id, machine-id and Local Storage from the calibration session, so every block starts on the same host id with Claude Code Opus 5.5 High and Full access. The 1 GB host runtime (~/.traycer/host) is not seeded; the host reinstalls it after a reset.",
+    "History on 1.5.3 (checked 2026-11-05): A11 no longer uses it. A row click after cmd+y marked the row and entered select mode instead of opening the Task: the key poster leaves the Command flag set in the HID state until the next key without a modifier (CGEventSource.flagsState showed it), so the click was a cmd+click, and 1.5.3 reads that as multi-select. The order also moved during a block, because finished Tasks keep getting activity. Any click right after a cmd combo here is a cmd+click.",
+    "A4 (checked 2026-11-05): the Start Page composer takes keys about 300 ms after cmd+n (A3 reads 284 to 398 ms), and A4 types right after newThread(), so the first letters were lost: 'lay:hi' or 'y:hi' matched no replay session and the answer was 'ok'. traycer.ts waits 800 ms inside newThread(); timed.newThread stays cmd+n alone, so A3 still times the real delay and A4 starts its clock at Enter.",
+    "Repair 2026-11-07 on 1.5.3 (checked on screen): after reset the composer started on Codex GPT-6.1-Sol with a red 'Sign in to Codex to run it' banner, which pushes the Start Page composer down about 142 pt (model button 1034,785; Add folder 601,846). The seeded Local Storage no longer preselects Claude. configure.claude now opens that picker (1034,785) and picks its Claude Code tab (594,460), which switches to Opus 5.5 and moves the composer back up, then Escape. In the Claude layout those two points are empty page, so the same steps work from either state. The checked clicks follow (picker 1030,642 opens downward: Claude tab 594,801, Opus 5.5 670,827, High 875,963), and expectText 'Opus 5.5' at the model button proves it.",
+    "Host key pin (2026-11-07): the app pins each account host's Noise static key from the cloud listing on first sight (Library/Application Support/Traycer/host-key-pins.json). Reset moved ~/.traycer/host/identity aside, so the reinstalled Host came back under the seeded host-id c2e4a82b with a new key, and the app refused it ('its host key changed', providers.list 'Remote host is detached from the relay' for about 20 s). login.files now keeps ~/.traycer/host/identity, so the Host keeps its enrollment and key across resets. After a fresh pin file, the cloud listed the current key and the Host was accepted.",
+    "A11 open (repair 2026-11-07 attempt 2, checked live on 1.5.3 with the replay server): the cause was neither the tab click nor waitDone. long-2000 writes its 2,000 items at once; the Task view stops following the end near step 60 to 140 and shows a 'New Reply' button (988,746, above the composer), and the tab keeps that position, so A11 open saw 'Step 61 of 1000' for 30 s although all 1,001 requests had ended 4 s before (gate 2026-11-05T18-11-01Z). A click on New Reply jumps to LONGTHREAD-END, and the tab then reopens there: a watch for THREAD-END in threadRect with a tab-click trigger saw it in 134 ms. traycer.ts now looks for 'New Reply' (OCR, 880,720 240x52, 3 s) after every finished waitDone and clicks it only when it is on screen (a blind click would take the focus from the composer send() pastes into). This is untimed setup; timed.longThread stays the bare tab click. Rechecked the same session: configure.claude from the Codex-banner state (1034,785 > 594,460 > Escape, then 1030,642 > 594,801 > 670,827 > 875,963) ends on 'Opus 5.5 High', and openProject (Add folder 598,703, Local 917,797) lands as written; Task composer text line y 823 (inside activeComposerRect).",
+    "afterLaunch and configure (repair 2026-11-07 attempt 2): the diagnostic gate (ADEMARK_BASELINE unset, gate-traycer-2026-11-07T13-53-48Z-1) stopped at A9 rep 1: after the quit, A9 relaunches through launch(), and afterLaunch waited 120 s for 'Switch to Terminal', but a relaunched Traycer reopens the last Task tab, where that Start Page text does not exist. The Start Page wait ('Switch to Terminal' at 380,512, then 5 s for the provider list, needed on the first launch after a reset, which shows 'Setting up Traycer Host...' for about 10 s) is now the start of configure.claude, which runs only after a reset. afterLaunch now waits for the status bar's 'cpu' (1400,972 200x28), shown in the Start Page and Task views alike (watch OCR read 'cpu 3.9% . procs I I'; 'procs' itself reads as 'proc,,'). Same run, first try: both seeds ran Opus 5.5 High in ~/arena/traycer, A5, A6, A7, A8, A10 receipts written, and A11 passed (open 140 ms, switch 127 ms, scroll 1 gap over 33 ms).",
+    "A1 launchComposerRect (ADEMARK-55), measured 2026-11-10 on 1.5.3 with control-2026-11-10T08-31-19Z-traycer-2/traycer/A1/rep-01/video.mov. At 0.3 s the window shows 'Setting up Traycer Host...' with Show details and Open settings, which composerRect read. At 3 s it shows the restored layout as grey placeholders, and composerRect read nothing. At 9 s the last task is restored with an empty transcript and its composer docked at the bottom (box x 551 to 1449, y 791 to 904, text line at y 823) already holding 'arkqzadema'. At 9.25 s, the end of the video, the transcript is drawn and composerRect (y 568 to 604) reads its line '...on the parsed date...'; the pair 'ar' of 'parsed' is a probe pair, and that frame was Ready. So the night's 11.8 s was the time until the restored transcript was drawn, the same in every repetition, and a region fault: the app took keys before it. A1 and A2 now read the docked composer, y 804 to 844, which holds its first line with margin and ends above the Full access row at y 873.",
+    "2026-11-11: calibration.probe xkvw. The composer's placeholder ('Ask anything, @tag files/folder, or use / to show available commands') holds pairs of the default probe ademarkqz ('de' in folder, and for Traycer 'ma' in commands), and the native rule takes any new probe pair in the region as Ready. On 10 and 11 Nov every A1 and A2 repetition reached Ready on the placeholder (frames.json: the Ready frame reads the placeholder, the caret blinks over its first letter, and no typed letter ever shows, because the typing stops at Ready). No ordinary word has xk, kv, vw or wx, so Ready can only be typed text. The rows of those nights were invalid ('Ready came from text that is not the probe'), never a false time."
+  ],
+  "agentGuide": "The agent works in tasks; Cmd+N starts a new one. Never change the providers in Settings."
+}

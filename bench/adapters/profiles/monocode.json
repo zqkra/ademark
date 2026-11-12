@@ -1,0 +1,342 @@
+{
+  "schema": 1,
+  "ade": "monocode",
+  "app": {
+    "path": "/Applications/MonoCode.app",
+    "version": "0.16.0",
+    "bundleSha256": "2f4822c076187095ae524c10ca4025311e7681128f194b59e49a3be7e0451af2",
+    "processNames": [
+      "monocode"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "MonoCode",
+    "bundleId": "com.monocode.desktop",
+    "composerRect": {
+      "x": 595,
+      "y": 506,
+      "w": 870,
+      "h": 30
+    },
+    "activeComposerRect": {
+      "x": 595,
+      "y": 888,
+      "w": 870,
+      "h": 28
+    },
+    "launchComposerRect": {
+      "x": 595,
+      "y": 888,
+      "w": 870,
+      "h": 28
+    },
+    "threadRect": {
+      "x": 470,
+      "y": 45,
+      "w": 1120,
+      "h": 300
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 460,
+        "y": 40,
+        "w": 1140,
+        "h": 440
+      },
+      {
+        "x": 460,
+        "y": 580,
+        "w": 1140,
+        "h": 420
+      },
+      {
+        "x": 460,
+        "y": 480,
+        "w": 140,
+        "h": 100
+      },
+      {
+        "x": 1460,
+        "y": 480,
+        "w": 140,
+        "h": 100
+      }
+    ],
+    "drive": "keys",
+    "dataDirs": [
+      "~/Library/Application Support/com.monocode.desktop",
+      "~/Library/WebKit/com.monocode.desktop",
+      "~/Library/HTTPStorages/com.monocode.desktop",
+      "~/Library/Preferences/com.monocode.desktop.plist",
+      "~/Library/Saved Application State/com.monocode.desktop.savedState",
+      "~/Library/Caches/com.monocode.desktop",
+      "~/.monocode-migrations",
+      "~/.monocode-agent-state"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      "Library/WebKit/com.monocode.desktop"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 1562,
+          "y": 33
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "keys",
+        "combo": "cmd+o"
+      },
+      {
+        "kind": "wait",
+        "ms": 700
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+g"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "click",
+          "point": {
+            "x": 557,
+            "y": 571
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 900
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 620,
+            "y": 529
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 900
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 761,
+            "y": 569
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 900
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 824,
+            "y": 572
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 676,
+            "y": 571
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 900
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 695,
+            "y": 479
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        }
+      ],
+      "codex": [
+        {
+          "kind": "keys",
+          "combo": "cmd+o"
+        },
+        {
+          "kind": "wait",
+          "ms": 700
+        },
+        {
+          "kind": "keys",
+          "combo": "cmd+shift+g"
+        },
+        {
+          "kind": "wait",
+          "ms": 400
+        },
+        {
+          "kind": "type",
+          "text": "${worktree}"
+        },
+        {
+          "kind": "wait",
+          "ms": 300
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.monocode.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+t"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+9"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+9"
+      },
+      {
+        "kind": "keys",
+        "combo": "ctrl+shift+tab"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [],
+    "launchAgentLabels": [],
+    "teamId": "JY692ZSF7B",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.12: /orchestrator, a lead with workers. It shows an Orchestration proposal card that starts only on its Confirm & start button, so C1 needs a calibrated confirm step." },
+  "notes": [
+    "First version researched from the 0.16.0 bundle and the v0.16.0 source on 2026-10-24, with no app launch in the owner account. Rects, click points and masks are inferred and must be measured in the ademark GUI session before the gate.",
+    "Window 1600x1000: project rail 200 pt (appearance.ts PROJECT_RAIL_WIDTH_DEFAULT), session sidebar 260 pt (Sidebar.tsx DEFAULT_WIDTH), title bar 40 pt (TitleBar h-10). The message column and the composer are max-w-4xl (896 pt) centred in the 1140 pt main pane, so the composer box is 588..1472.",
+    "An empty session (the block-start session and a fresh A3 thread) centres its composer; composerRect points at that text line. A thread with messages docks the composer at the bottom, 6 pt above the pane edge (Composer.tsx p-1.5 pt-0); activeComposerRect points there. A1 and A2 run last in TRACK_ORDER (A5..A9 come first), and MonoCode restores the last active session at launch, so both see a thread with messages and use launchComposerRect, the docked rect.",
+    "MonoCode draws an animated canvas arcade behind an empty session (GridArcade in EmptySession, gridArcadeEnabled default true). The four masks cover the pane around the centred composer; without them the echo can never settle on an empty session, which is A3's new thread. Add masks for anything else the GUI's dirty rects show.",
+    "profile.ts runs configure steps before openProject and after afterLaunch, and the model and access pills exist only in a session composer, so configure opens ${worktree} itself (Open Project dialog: Cmd+O, Cmd+Shift+G, the path, Return, Return). openProject then activates the same project, which is idempotent.",
+    "The key-combo parser in bench/native accepts only letters, digits and enter/tab/escape/delete/space/arrows. Cmd+. (App: Switch Model), Cmd+, (Settings) and Cmd+Shift+[ (Tab: Previous) cannot be posted, so the model and access pickers are reached by clicks and Tab: Cycle Previous is used for A11.",
+    "configure.claude assumes the factory Model controls setting (menu): click the model pill, Return opens the Model row's flyout, typing opus 5.5 filters to Claude Opus 5.5 (the search matches display names), Return picks it and closes the picker. Opus 5.5 carries EFFORT_WITH_XHIGH whose default is high, so effort needs no step.",
+    "Runtime mode is per session (session.ts newSession, default supervised). Clicking the access pill opens a four-row list in the order supervised, auto-accept-edits, auto, full-access, starting on the current value; three ArrowDown keys and Return pick full-access. New threads copy the active session's runtime mode (App.tsx onNew passes sessionDefaults.runtimeMode), so full-access carries into A3, A4 and Track C.",
+    "The model of a new thread comes from localStorage monocode.defaultModels (defaultSessionChoice in models.ts), not from the session configured here; after a reset every new thread starts on the factory claude:sonnet-5. A3 and A4 replay their answers so their timings do not depend on the model, but Track C and any real-model test would. The GUI session must set Settings > Providers > Claude model to Opus 5.5 once and save a seed of Library/WebKit/com.monocode.desktop (localStorage) for reset.seeds; reset.seeds stays empty until that seed exists because restoreSeed refuses a missing seed.",
+    "Codex's model catalog is discovered at runtime from codex app-server (codexCatalog.ts codex:${nativeId}), so the display name of the pinned gpt-6.1-sol is unknown from source. configure.codex only opens the project; the Codex model and access steps are a GUI item.",
+    "A11: longThread is Cmd+9 (Tab: Activate Last). A11 creates the short thread then the long one in the same project, each new tab inserted beside the active one, so the long thread's tab is last and the short thread's tab is the one before it. shortThread is Cmd+9 then Ctrl+Shift+Tab (Tab: Cycle Previous): the pair is idempotent and ends on the short thread whatever tab a rep starts on, so the untimed setup watch and the final switch both find it. If a tab is added after A11's long thread, Cmd+9 opens the wrong tab and the pair fails.",
+    "/orchestrator renders an Orchestration proposal card and only its Confirm & start button (OrchestrationPreview.tsx:561) starts the run; no auto-start setting exists. C1 sends the trigger and waits, with no way to click the card, so orchestrationTrigger stays null and C1 reports not supported until the GUI proves a keyboard confirm.",
+    "No telemetry, analytics, PostHog, Sentry or Amplitude code or strings in the source or the bundle. The updater is the Tauri updater plugin against https://dl.usemono.dev/latest.json, probed automatically from the sidebar (SidebarUpdate.tsx) with no switch to turn it off; an available version plays a cue and shows a static rail card.",
+    "dataDirs: app_data_dir follows the Tauri identifier, so the app data is ~/Library/Application Support/com.monocode.desktop and monocode.db, the monos notes, chat backgrounds and screenshots live there (src-tauri session_store.rs, mono.rs). The WebKit data, HTTP storages, preferences, saved state and caches are the macOS WKWebView defaults for the same bundle id; the app never ran in this account, so these paths are inferred and the GUI session confirms them. monocode.db comes from the source, no such folder exists here yet.",
+    "Login is the account's own claude and codex (Claude is spawned with stream-json in/out, --include-partial-messages, --permission-prompt-tool stdio, --setting-sources=user,project,local, --model and --effort; Codex runs codex app-server). There is no in-app sign-in file to keep, so login is agent-cli.",
+    "Drive is keys and clicks: MonoCode has no external control CLI. The binary's app and control subcommands read MONOCODE_CONTROL_ENDPOINT and MONOCODE_CONTROL_TOKEN, which only an /operator thread receives (control_cli.rs), and ADES.md 3.12 lists the control CLI for orchestration leads only.",
+    "Factory defaults read from source, to confirm in the GUI: runtime mode supervised, claude default model claude:sonnet-5, right panel closed (288 pt), project rail 200 pt, sidebar 260 pt, paced reveal on (ADES.md 3.12 trap), no MCP servers or skills added, nothing written outside the app's own data and the agent CLIs' own files.",
+    "waitDone reads the Claude session log under the arena worktree: MonoCode starts a local session in the project folder (workspaceMode current), so cwd is worktree with no prefix.",
+    "GUI session 2026-10-24 on 0.16.0 (the bundle-only layout was off): before a project the window has only a 200 pt rail; the empty session composer is centred (x 460-1340, text y 525) with pills 'Composer 2.5' (Cursor, the factory model) at 557,571 and 'Supervised' at 676,571. Toasts on first launch: 'Harness updates available' (Claude Code 2.1.303->2.1.310, Codex, Pi: never press Update; X at 1562,33) and 'Try the new layout' (Not now). configure.claude (checked): model pill > 'Model' row (620,529) > Claude tab (761,569) > 'Opus 5.5' (824,572) gives 'Opus 5.5 High'; access pill > 'Full access' (695,479). Both persist into the project and its sessions, so configure runs before openProject (cmd+o, macOS panel, cmd+shift+g path Enter Enter: 'What should we work on in <name>?', composer probe-region 601,516 298x17). In a thread the composer docks at the bottom (text y 902, x 600-1470) next to a 260 pt sessions list.",
+    "Replay (checked): the agent is the system claude (/Users/ademark/.local/bin/claude, stream-json) with --model opus --effort high --permission-mode bypassPermissions and launchd's ANTHROPIC_BASE_URL. A second claude with --no-session-persistence runs beside it (side calls).",
+    "Repair 2026-11-07 (model): prove-1 Track B rows were 'wrong model: claude-sonnet-5'. New threads (cmd+t) take monocode.defaultModels from localStorage, which a reset removes. Set in the GUI: Settings > Providers > Agent CLIs > Claude Code model Opus 5.5 and Use by default (localStorage monocode.defaultModels {\"claude\":\"claude:opus\"}, lastModel claude:opus). The WKWebView data lives in ~/Library/WebKit/com.monocode.desktop/WebsiteData (Default/<hash>/<hash>/LocalStorage/localstorage.sqlite3), not under Application Support; it is saved as the seed (save-seed.sh monocode Library/WebKit/com.monocode.desktop) and listed in reset.seeds. Checked: after the seed a fresh session and a cmd+t thread show 'Opus 5.5 High'; configure.claude's clicks still land (the picker now shows Fast, Effort High, Model rows; Model stays at 620,529).",
+    "Repair 2026-11-07 (layout card): the seed also holds monocode.newLayoutPromptDismissed=1, so 'Try the new layout' no longer shows and afterLaunch's 'Not now' click (1483,135) was removed: after the update toast closes it would land on the GridArcade canvas. The 'Harness updates available' toast is not persisted and still shows at every launch; its X at 1562,33 stays (never press Update).",
+    "Repair 2026-11-07 (A11 switch): the switch did reach the short thread, but the live capture OCR (Vision fast) of the 1120x790 threadRect read 'unchanged' as 'uThchanged'/'uThthanged' at display scale 1, so every switch timed out. A screenshot of the same screen reads it right; the capture of a region up to about 320 pt tall reads it right too (checked with ademark-native watch at 470,45,1120,250/300 and 520,45,1000,320; 590,45,880,400 already misreads). threadRect is now 470,45,1120,300. MonoCode anchors the latest prompt to the top of the transcript (Settings > Chat > Anchor prompts to top, factory on), so the last turn of the seed thread, of the long thread (LONGTHREAD-END) and of an A4 thread is in that band. Checked: watch 'unchanged' with triggers cmd+9, ctrl+shift+tab from a new tab -> 118 ms.",
+    "Track B prove-2 2026-11-07 stopped at the contamination check (body_sha256 9f4eb621... != baseline 3039327d...). The same mismatch hit every ADE whose B block started after about 09:25Z that morning (bb, claude-desktop, cloudroom, emdash, orca, paseo, synara, t3code, traycer, zeron), and the check is the bare claude in arena/_contamination before the ADE launches, so it is not caused by MonoCode; reported to the orchestrator, nothing in this profile can change it.",
+    "Repair 2026-11-07 attempt 2 (prove-2 B, no rows): rechecked live on 0.16.0 with ademark-native replaying the profile's own input. The seed restores Opus 5.5 High; the update toast X (1562,33), model pill > Model row > Claude tab > Opus 5.5, access pill > Full access, cmd+o project open, composer text line at 601,516 (inside composerRect), cmd+t, ctrl+shift+tab and cmd+9 all land as written, so the profile needs no change. calibrate gate --runs 1 --scratch with ADEMARK_BASELINE set still stops both tries at the contamination check, before MonoCode is driven: the bare claude control body is 89540 bytes (9f4eb621...) against the run baseline's 89809 bytes (3039327d...), while ~/.claude plugins, skills and settings equal snapshots/clean. Only ~/.claude/cache/model-catalog/*-cc.json changed nearby (09:12Z), and the snapshot restore does not cover it. The orchestrator must find the drift or re-baseline the run; no MonoCode file can change it. Attempt 1's 1/1 pass (A11 switch 101/104 ms) was run with the baseline unset."
+  ],
+  "agentGuide": "Each conversation is a session. Cmd+T opens a new session; an empty session shows its message box in the middle."
+}

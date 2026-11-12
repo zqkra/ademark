@@ -1,0 +1,199 @@
+---
+// C1, minute by minute: one row per agent, one square per model request, rebuilt from the network capture
+// (scripts/orchestration.ts). The pink line is the moment the build passed the hidden tests.
+import Mark from "./Mark.astro";
+import runs from "../data/orchestration.json";
+import { app, stat } from "../data/results";
+
+const SPAN = 10;
+const TICKS = [0, 2, 4, 6, 8, 10];
+const order = ["synara", "super-engineering", "bare-cli", "cloudroom", "bb"];
+
+const list = order.map((id) => {
+  const run = runs.find((r) => r.app === id)!;
+  const shipped = id === "bare-cli" ? 5 : stat(id, "C1/shipped")!.m;
+  const green = id === "bare-cli" ? run.minutes : (stat(id, "C1/time-to-green")?.m ?? null);
+  const workers = run.lanes.length - 1;
+  const result =
+    shipped === 5
+      ? `5 of 5 in ${green!.toFixed(1)} min`
+      : run.end.startsWith("cap")
+        ? "0 of 5. Cut at 45 min"
+        : "0 of 5. Main unchanged";
+  return { run, a: app(id), shipped, green, workers, result };
+});
+---
+<article class="card chart swim">
+  <h3 class="chart-title">Every model request of the build, agent by agent</h3>
+
+  <div class="legend">
+    <span><i class="sq ink"></i>Lead</span>
+    <span><i class="sq ash"></i>Worker on Opus 5.5</span>
+    <span><i class="sq dim"></i>Worker on Sonnet 5.5</span>
+    <span><i class="sq signal"></i>Hidden tests pass</span>
+  </div>
+
+  <div class="runs">
+    {list.map(({ run, a, green, shipped, workers, result }) => (
+      <div class="run" data-family={a.family}>
+        <div class="who">
+          <span class="app"><Mark app={a} /><b>{a.name}</b></span>
+          <span class:list={["result", { pass: shipped === 5 }]}>{result}</span>
+          <span class="count">{workers === 0 ? "1 agent" : `Lead and ${workers} workers`}</span>
+        </div>
+        <div class="lanes">
+          {run.lanes.map((lane) => {
+            const first = lane.t[0];
+            const last = lane.t[lane.t.length - 1];
+            return (
+              <div
+                class:list={["lane", lane.role, { sonnet: lane.model === "Sonnet 5.5" }]}
+                style={`--a:${first / SPAN};--b:${Math.min(last, SPAN) / SPAN}`}
+              >
+                <span class="life"></span>
+                {lane.t.filter((t) => t <= SPAN).map((t) => <i style={`--x:${t / SPAN}`}></i>)}
+              </div>
+            );
+          })}
+          {shipped === 5 && green !== null && <span class="green" style={`--x:${green / SPAN}`}></span>}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="axis">
+    <span></span>
+    <div class="ticks small">
+      {TICKS.map((t) => <span style={`--x:${t / SPAN}`}>{t === SPAN ? `${t} min` : t}</span>)}
+    </div>
+  </div>
+</article>
+
+<style>
+  .swim {
+    --who: 220px;
+  }
+  .swim .legend {
+    margin-bottom: 28px;
+  }
+  .run,
+  .axis {
+    display: grid;
+    grid-template-columns: var(--who) minmax(0, 1fr);
+    column-gap: 24px;
+  }
+  .run {
+    padding: 18px 0;
+    border-top: 1px solid var(--color-bar);
+  }
+  .run:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .app {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 600 15px/20px var(--font-sans);
+  }
+  .result {
+    font: 500 14px/20px var(--font-sans);
+    font-feature-settings: "tnum";
+    color: var(--color-text-muted);
+  }
+  .result.pass {
+    color: var(--color-text);
+  }
+  .count {
+    font: 400 13px/16px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  .lanes {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 2px 0;
+  }
+  .lane {
+    position: relative;
+    height: 10px;
+    --tone: var(--color-ash);
+  }
+  .lane.lead {
+    --tone: var(--color-text);
+  }
+  .lane.sonnet {
+    --tone: var(--color-ramp-2);
+  }
+  .lane > * {
+    position: absolute;
+  }
+  .life {
+    top: 4px;
+    height: 2px;
+    left: calc(var(--a) * 100%);
+    width: calc((var(--b) - var(--a)) * 100%);
+    background: var(--tone);
+    opacity: 0.25;
+  }
+  .lane i {
+    top: 1px;
+    left: calc(var(--x) * 100% - 4px);
+    width: 8px;
+    height: 8px;
+    background: var(--tone);
+  }
+  .green {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    left: calc(var(--x) * 100% - 1px);
+    width: 2px;
+    background: var(--color-signal);
+  }
+  .axis {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .ticks {
+    position: relative;
+    height: 16px;
+  }
+  .ticks span {
+    position: absolute;
+    left: calc(var(--x) * 100%);
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-feature-settings: "tnum";
+  }
+  .ticks span:first-child {
+    transform: none;
+  }
+  .ticks span:last-child {
+    transform: translateX(-100%);
+  }
+  @media (max-width: 720px) {
+    .run,
+    .axis {
+      grid-template-columns: 1fr;
+      row-gap: 12px;
+    }
+    .axis > span:first-child {
+      display: none;
+    }
+    .lane i {
+      width: 6px;
+      height: 6px;
+      top: 2px;
+      left: calc(var(--x) * 100% - 3px);
+    }
+  }
+</style>

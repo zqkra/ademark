@@ -1,0 +1,10 @@
+id = "C1-orchestrated-build"
+version = "1.0.0"
+track = "C"
+model = "claude"
+mode = "local"
+thread = "new"
+prompt = "prompt.md"
+time_cap_s = 2700
+grade_groups = ["W1-limiter", "W1-api", "W2-dates", "W3-cursor", "W4-create", "W4-idempotency", "Integration", "C1-handoff"]
+chat_lock_probe = true

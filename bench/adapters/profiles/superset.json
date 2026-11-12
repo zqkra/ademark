@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "ade": "superset",
+  "app": {
+    "path": "/Applications/Superset.app",
+    "version": "1.39.0",
+    "bundleSha256": "1913dd0ec84890baf98464261cc3803ac2d132c8f90e941ca517836226d1cfdd",
+    "processNames": [
+      "Superset",
+      "Superset Helper",
+      "Superset Helper (GPU)",
+      "Superset Helper (Plugin)",
+      "Superset Helper (Renderer)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Superset",
+    "bundleId": "com.superset.desktop",
+    "composerRect": {
+      "x": 652,
+      "y": 842,
+      "w": 575,
+      "h": 32
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 288,
+      "y": 120,
+      "w": 964,
+      "h": 860
+    },
+    "focusClick": {
+      "x": 940,
+      "y": 860
+    },
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.superset",
+      "~/Library/Application Support/Superset"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/.superset/auth-token.enc"
+    ],
+    "signIn": "Sign in to Superset with GitHub or Google in the app window, then finish onboarding."
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "goal",
+        "maxActions": 12,
+        "goal": "Below the composer is a row of selectors. The project selector reads 'No project' or 'Select project' until a project is chosen. Make it read 'superset', the project of the folder ${worktree}. Steps: click the project selector and choose 'Open from folder' in its menu. If the menu closes and nothing else shows, click the folder icon with a plus at the right of the PROJECTS header in the sidebar instead. Either one opens a macOS file dialog (with Cancel and Open buttons): never click inside that dialog, use only keys there: press cmd+shift+g, type ${worktree}, press enter, wait one second, and press enter again; the dialog then closes and the selector reads the project name. Never type anything unless that file dialog is on the screen: without it the text goes into the composer. Never press enter in the composer, never send a message, and never choose 'Create new project' or 'Clone from URL'. If the file dialog has not opened after two tries, answer fail and say what the screen shows."
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "goal",
+        "maxActions": 1,
+        "goal": "Only look, click nothing. Below the composer, the project selector must read 'superset'. If it does, answer done. If it reads 'No project', 'Select project' or any other name, answer fail and say what it reads."
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "goal",
+          "maxActions": 10,
+          "goal": "The model selector inside the composer at the bottom of the window (left of the microphone; it reads 'Default model' until a model is chosen) shows the Claude agent with the model Opus 5.5 and effort High. Open that selector, choose Claude and the model Opus 5.5, set the effort to High, and close the selector. Change nothing else. Answer done only when the selector reads Opus 5.5."
+        },
+        {
+          "kind": "expectText",
+          "region": {
+            "x": 940,
+            "y": 894,
+            "w": 240,
+            "h": 30
+          },
+          "texts": [
+            "Opus 5.5",
+            "Opus 5,5"
+          ],
+          "timeoutMs": 8000
+        }
+      ],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.superset.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.superset",
+      "~/Library/Application Support/Superset"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "2HVBK29S3C",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": {
+    "notCalibrated": "ADES.md 3.7: the superset:orchestrate skill. The line that starts it needs a real C1 run."
+  },
+  "notes": [
+    "Static research 2026-10-24 from the installed bundle (1.39.0, Electron 41.10.7, Team 2HVBK29S3C). Nothing launched. The GUI session still has to verify every ESTIMATE below.",
+    "bundleSha256 is the main binary SHA-256 (Contents/MacOS/Superset), the value gates.ts compares with installed binarySha256.",
+    "login.kind is app, not agent-cli: the renderer redirects to /sign-in without a session (routes/_authenticated/layout), so the app has its own sign-in (GitHub or Google). auth-token.enc is TOKEN_FILE_NAME under SUPERSET_HOME_DIR (auth-functions.ts). The file is encrypted and was not read.",
+    "timed.newThread cmd+n is NEW_WORKSPACE (hotkeys/registry.ts), which creates a worktree and branch under ~/.superset/worktrees (ADES 3.7). timed.send enter is an assumption for the agent TUI prompt. OPEN_SETTINGS is meta+comma (registry.ts).",
+    "Global writes at launch: Claude hooks in ~/.claude/settings.json and Codex hooks in ~/.codex/hooks.json (agent-wrappers-claude-codex-opencode.ts), skills in ~/.claude/skills and ~/.agents/skills, commands in ~/.agents/commands (managed-skills.ts). The reset must restore ~/.claude, ~/.codex and ~/.agents.",
+    "Auto-update: auto-updater.ts sets autoDownload and autoInstallOnAppQuit to true. Checks are skipped when the DISABLE_UPDATE_CHECK env var is set (macOS). A profile step cannot set an env var, so the harness must set it before open.",
+    "Telemetry is on by default (renderer DEFAULT_TELEMETRY_ENABLED is true). The stored opt-out setting was not found by name. Opt-out is a GUI item.",
+    "orchestrationTrigger null means not decided, not no orchestration. ADES 3.7 names the superset:orchestrate skill (bundled Claude plugin superset v0.3.0). The trigger line needs a pilot run.",
+    "No LaunchAgent label appears in the bundle code, so launchAgents is empty. The helper executables match the bundle names (Contents/Frameworks). The pty-daemon and host-service run as Electron in node mode; their process name is not verified.",
+    "GUI session 2026-10-24 on 1.39.0 (re-pinned from pins/ after the app self-updated to 1.40.0 on the owner's first launch; DISABLE_UPDATE_CHECK=1 was in launchd for this launch). Signed in (zqkra's Team). After a force quit macOS asks 'reopen windows?' on the next launch (seen once; Don't Reopen).",
+    "openProject (checked): the composer row 'Select project' (789,957) > 'Open from folder' (833,922) opens the macOS open panel; cmd+shift+g, the path, Enter, Enter imports the folder ('Project imported and selected', project named after the folder, Worktree mode, branch main). ~/.superset is in dataDirs, so this runs every block.",
+    "configure.claude (checked): 'Default model' (836,908) > Opus (817,768; the Latest list is Fable, Opus, Sonnet, Haiku plus Pinned releases); then the effort button (900,908) > High (882,808; Low, Medium, High, xHigh, Max). The resulting command line is `claude --dangerously-skip-permissions --model opus --effort high <prompt>` (ps), so permissions are already bypassed by Superset's default Claude preset.",
+    "Composer: probe-region after a click on it returned 660,848 290x17; it is not focused on launch, so focusClick is set. Enter sends: Superset creates a new workspace (git worktree under ~/.superset/worktrees/<project>/<slug>), opens a terminal and runs the claude command with the prompt as an argument; a haiku side call names the workspace.",
+    "BLOCKER 1 (Track A replay): the agent's environment is built by Superset (HOME, PATH, SHELL, TERM, ZDOTDIR, SUPERSET_* and a few more; ps eww, names only); launchd's ANTHROPIC_BASE_URL is not passed to the agent claude, only to the haiku naming call spawned by host-service. So A4/A8/A10/A11 prompts reach the real API, not the replay server.",
+    "BLOCKER 2: every new workspace is a new folder, and Claude Code shows its 'Accessing workspace ... Yes, I trust this folder' prompt (default 'No, exit') in the terminal before it runs. ~/.superset/worktrees is not trusted in ~/.claude.json (only ~/arena is), so every timed prompt would stall on that question.",
+    "Process names: host-service.js and pty-daemon.js run as /Applications/Superset.app/Contents/MacOS/Superset (same executable name as the app), so a lookup by name alone can pick a windowless pid.",
+    "Quit: with a workspace terminal open, an AppleScript quit shows 'Are you sure you want to quit?' (Cancel / Quit, Quit is the default; settings.confirm_on_quit in ~/.superset/local.db, SQLite, so reset.jsonKeys cannot turn it off). Enter confirms. After a forced kill the next launch asks to reopen windows.",
+    "2026-11-11, from the pass of that night on 2.0.5 (the app is named Paradev now; this profile was written from the 1.39.0 bundle with nothing launched). Facts: the look after launch (control-2026-11-10T08-31-19Z-superset-2/agent/*/look-02.png, 1600x1000) shows the home composer with 'Default model Default' at x 1004 to 1130, y 908, and below it 'This device', 'Select project' (x 747 to 833, y 957), 'Worktree' and 'Select base branch'. The tokens capture of that night has no /v1/messages request at all, only chatgpt.com codex calls: the app ran its default agent, Codex, so every wait for a Claude session log timed out ('seed thread 1/5 did not finish', B 'the turn failed'). configure.claude clicked (836,908) and (817,768), which are not the selector on 2.0.5. Changes, none checked on the real screen yet: configure.claude is now a goal for the screen agent (choose Claude Opus 5.5 High) followed by a read of 'Opus 5.5' in the selector, so another model stops the block; openProject ends with a read of the project name where 'Select project' was; waitDone.cwd is any, because the composer's default mode is Worktree and the agent then runs outside the arena folder. A block that still fails keeps failure-<track>-<n>.png.",
+    "2026-11-11, afternoon, on 2.0.8 in the owner's account (same /Applications bundle as the bench account; 1600x1000): the home composer row now reads 'This device' and 'No project' (x 768 to 823, y 957), with no Worktree selector until a project is chosen. A click on it opens a menu: 'Search projects...', 'No project', 'Create new project', 'Clone from URL', 'Open from folder' (913,843). The old second click (833,922) is inside the composer on this build, so the steps after it (cmd+shift+g, the path, Enter, Enter) would have typed the path into the composer and sent it. A helper click on 'Open from folder' closed the menu and no file dialog showed within 2.5 s (two tries), and down arrows did not move the selection; File > 'Add Project from Folder...' exists in the menu bar with no shortcut. The owner took the screen back before the sidebar icon could be tried, so the way into the file dialog is NOT proven on 2.0.8. openProject is therefore a goal for the screen agent that types only when the file dialog is on the screen and fails otherwise, and a look that fails unless the selector reads 'superset'. The OCR read of the project name is gone: on this dark row the helper reads 'No proj8ct', 'Thi8 d8VIC' and 'Y Work' (real frames), so it would have failed a right project. Also open: the app keeps its data in ~/.paradev since the rename (legacy-home-move.json), and the bench account has both ~/.paradev (11 Nov 04:50) and a real ~/.superset; which one 2.0.8 reads there, and so whether a reset really clears it, must be checked at the next calibration."
+  ]
+}

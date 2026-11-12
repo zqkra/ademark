@@ -1,0 +1,51 @@
+---
+// B2: the first request of a "hi", split by part, every ADE ranked by its total.
+import Mark from "./Mark.astro";
+import Missing from "./Missing.astro";
+import { ADES, ANATOMY, BARE, anatomy } from "../data/results";
+import { fmt, nb } from "../data/format";
+
+const rows = ADES.flatMap((a) => {
+  const parts = anatomy(a.id);
+  return parts ? [{ app: a, ...parts }] : [];
+}).sort((x, y) => x.total - y.total);
+const ref = anatomy(BARE)!;
+const max = Math.max(ref.total, ...rows.map((r) => r.total));
+const base = ref.total / max;
+---
+<article class="card chart" data-test="B2">
+  <h3 class="chart-title">{nb(ANATOMY.title)}</h3>
+
+  <div class="tax" style={`--base:${base}`}>
+    <div class="tax-top">
+      <div class="legend">
+        {ANATOMY.parts.map((p) => <span><i class:list={["sq", p.tone]}></i>{p.label}</span>)}
+      </div>
+      <div class="plot-label">
+        <span class="bare-label small">Bare CLI {fmt(ref.total, "tokens")}</span>
+      </div>
+    </div>
+    {rows.map((row, i) => {
+      let left = 0;
+      return (
+        <div class="tax-row" data-family={row.app.family}>
+          <span class="rank">{i + 1}</span>
+          <div class="name">
+            <Mark app={row.app} />
+            <span>{row.app.name}</span>
+          </div>
+          <div class="plot" style={`--end:${row.total / max}`}>
+            {row.parts.map((v, p) => {
+              const seg = `--x:${left / max};--w:${v / max}`;
+              left += v;
+              return v > 0 ? <span class:list={["seg", ANATOMY.parts[p].tone]} style={seg}></span> : null;
+            })}
+            <span class="line"></span>
+            <span class="val"><b>{fmt(row.total, "tokens")}</b></span>
+          </div>
+        </div>
+      );
+    })}
+    <Missing test="B2" has={rows.map((r) => r.app.id)} />
+  </div>
+</article>

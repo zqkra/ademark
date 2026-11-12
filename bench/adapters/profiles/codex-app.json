@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "ade": "codex-app",
+  "app": {
+    "path": "/Applications/ChatGPT.app",
+    "version": "26.1013.40934",
+    "bundleSha256": "0e00971d153a24b34bcba44fce1253d1a68573e09441bb7717585094227966b4",
+    "processNames": [
+      "ChatGPT"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "ChatGPT",
+    "bundleId": "com.openai.codex",
+    "composerRect": {
+      "x": 540,
+      "y": 780,
+      "w": 800,
+      "h": 140
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 300,
+      "y": 64,
+      "w": 1000,
+      "h": 690
+    },
+    "focusClick": null,
+    "masks": [],
+    "drive": "keys",
+    "dataDirs": [
+      "~/Library/Application Support/Codex"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/Library/Application Support/Codex/Default/Cookies",
+      "~/Library/Application Support/Codex/Default/Local Storage",
+      "~/.codex/auth.json"
+    ],
+    "signIn": "Sign in to the ChatGPT desktop app (Codex) in the ademark account with the dedicated ChatGPT account, then open the Codex tab once so Open Folder and a local thread work without a prompt."
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "keys",
+        "combo": "cmd+o"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+g"
+      },
+      {
+        "kind": "wait",
+        "ms": 600
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 3000
+      }
+    ],
+    "configure": {
+      "codex": [
+        {
+          "kind": "keys",
+          "combo": "cmd+,"
+        },
+        {
+          "kind": "wait",
+          "ms": 1200
+        }
+      ]
+    },
+    "quit": [
+      {
+        "kind": "keys",
+        "combo": "cmd+q"
+      }
+    ]
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.openai.codex"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Codex",
+      "~/.codex"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "2DC432GLL2",
+    "agentExecutables": [
+      "codex"
+    ]
+  },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.17: multi-agent workflows, to verify on the current app. No trigger line is proven." },
+  "notes": [
+    "Bundle: ChatGPT.app 26.1013.40934 (build 20770), bundle id com.openai.codex, productName Codex, Team ID 2DC432GLL2, minimum macOS 13.0, URL schemes codex, http, https. Stack: Chromium renamed (Codex Framework 155.0.8059.80, app.asar 555 MB). Sources: calibrate probe --ade codex-app, codesign -dv /Applications/ChatGPT.app, Contents/Info.plist.",
+    "ADES.md 3.17 says 26.1007.30912; the installed app updated itself to 26.1013.40934 (pins/versions.json records the re-pin on 2026-10-21). ADES.md needs the new number.",
+    "The UI is a local webview bundle (app.asar/webview/assets, about 588 MB of minified JS), but no layout constants could be read out of it, so every rect here is an estimate for 1600x1000 points.",
+    "composerRect ESTIMATE from app.asar webview (thread sidebar about 280 pt, composer about 800 pt wide and 140 pt tall, docked at the bottom of the chat column) - verify with ademark-native probe-region and replace with the returned rect.",
+    "threadRect ESTIMATE from app.asar webview - verify with probe-region or ax-tree.",
+    "Masks: none verifiable without the GUI. Candidates found in the renderer strings: the RAM usage indicator in the sidebar footer (command toggle-ram-usage-indicator), per-thread activity spinners, the streaming cursor in the chat, and clocks in the environment status row. Prove them from the dirty_rects of one echo run.",
+    "openProject: command openFolder, menu title Open Folder…, default keybinding Cmd+O, command menu group workspace (app.asar webview/assets/app-initial-*.js), and the main process opens a native dialog (main-CLu1A25j.js showOpenDialog with a directory mode). steps.openProject presses Cmd+O, then Cmd+Shift+G in the native panel, types the path and presses Enter twice. Verify in the GUI that the panel is native and that the folder becomes the open workspace.",
+    "Deeplinks that exist: codex://threads/<threadId>, codex://review?pr=PR_URL&path=FILE_PATH&line=LINE&side=right, codex://settings/connections, codex://plugins, codex://space, codex://launch, codex://dots, codex://shared, codex://sites/edit (app.asar main and webview assets). None of them opens a folder as a project, so openProject uses keys.",
+    "newThread: Cmd+N, command id chatgpt.newChat with defaultKeybindings CmdOrCtrl+N and CmdOrCtrl+Shift+O (webview command registry); the menu title is New Chat / New Thread.",
+    "send: Enter submits and Shift+Enter adds a line. The renderer builds its composers with enterBehavior enter (app-primary-*.js), and Cmd+Enter is bound to composer.submitInBackground (command registry), so plain Enter is the right trigger.",
+    "configure.codex is not calibrated. The command registry has no shortcut for model, effort or approval mode, and the app keeps its settings in its own store inside the Chromium profile, not in a JSON file reset.jsonKeys can write. The one step opens Settings (Cmd+, is the settings command in the registry). The GUI session must record the real controls for GPT-6.1 Sol, high effort and full access and write them here. The bundled CLI does read ~/.codex/config.toml (model, model_reasoning_effort, approval_policy, sandbox_mode), but reset() restores that file from the clean snapshot last, so a profile cannot pin it either.",
+    "Agent binary: Contents/Resources/codex-cli/codex-package.json reports 0.163.0-alpha.10.2, aarch64-apple-darwin, entrypoint bin/codex, which execs CodexCLI.app/Contents/MacOS/codex; the app also provisions that CLI under ~/.codex/plugins/<host>/codex-cli (main bundle provisioning code). That is not the system Codex 0.163.0 of METHODOLOGY.md rule 8: record the User-Agent version per request.",
+    "waitDone.cwd is any because the app supports worktree execution environments (main bundle: executionEnvironment worktree, Worktree automations require a project with a folder), so a thread can run in a folder the app created rather than exactly at the arena path. The app writes Codex rollout logs (main bundle reads and writes session_meta, rollout_path and task_complete under the codex home) in ~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl. Verify in the GUI that one prompt adds a rollout file whose session_meta.cwd is inside the arena, then keep any or narrow it to worktree.",
+    "idleFallback is false because the app is expected to write rollouts. If the GUI run shows no new rollout file, set it to true and record that as a fact about the app.",
+    "reset moves ~/Library/Application Support/Codex aside, the Chromium profile that holds Cookies, Local Storage, Session Storage and the app's own state. ~/.codex is not moved: it holds the CLI auth, config and sessions, and the harness owns config.toml through the clean snapshot.",
+    "login.files: the app's web sign-in lives in the Chromium profile (Default/Cookies and Default/Local Storage under Application Support/Codex); ~/.codex/auth.json is the Codex CLI login the provisioned app-server reuses. It sits outside dataDirs so a reset keeps it anyway; it is listed to make the intent explicit.",
+    "Auto-update: Sparkle (Contents/Frameworks/Sparkle.framework) with its bootstrap at ~/Library/Application Support/com.openai.codex/production-appcast-bootstrap.json. No LaunchAgent is installed (~/Library/LaunchAgents has no OpenAI entry), so launchAgents is empty. There is no profile-level switch: Sparkle reads its defaults from the com.openai.codex domain (a defaults write the harness must not do), and the app's own toggle is a GUI item.",
+    "Telemetry: nothing readable in the bundle turns the app's analytics off; the Codex CLI has its own OTel exporter in ~/.codex/config.toml, which the clean snapshot owns. Record what Settings shows as a Track F fact.",
+    "Orchestration: ADES.md 3.17 reports worktrees, skills, automations and multi-agent workflows. The bundle confirms worktree execution environments and automations, but there is no command or slash command that starts orchestration, so orchestrationTrigger is null and C1 reports not supported. The orchestrator must decide whether to supply a trigger line or keep null.",
+    "processNames is only the main executable: ChatGPT.app has no helper app bundles (only Sparkle/Updater.app and the bundled CodexCLI.app), so renderers are forks of the same executable and match the bundle path.",
+    "Quit: Cmd+Q, with a native confirmation (Quit {appName}?) when local chats are active, scheduled tasks exist or worktree chats are still starting (main-CLu1A25j.js desktop.quitConfirmation.*). steps.quit presses Cmd+Q only: quit with nothing running, and if the GUI sees the dialog, record the confirming key there."
+  ]
+}

@@ -1,0 +1,46 @@
+---
+// C1 tokens: every token the build used, against the Bare CLI doing the same goal alone.
+import Mark from "./Mark.astro";
+import { BUILD, SOLO_TOKENS } from "../data/results";
+import { fmt, nb } from "../data/format";
+
+const max = Math.max(SOLO_TOKENS, ...BUILD.rows.map((r) => r.tokens));
+const base = SOLO_TOKENS / max;
+---
+<article class="card chart" data-test="C1">
+  <h3 class="chart-title">{nb(BUILD.title)}</h3>
+
+  <div class="tax build" style={`--base:${base}`}>
+    <div class="tax-top">
+      <div class="legend">
+        <span><i class="sq dim"></i>Up to the solo run</span>
+        <span><i class="sq pink"></i>Orchestration tax</span>
+      </div>
+      <div class="plot-label">
+        <span class="bare-label small">Bare CLI alone {fmt(SOLO_TOKENS, "tokens")}</span>
+      </div>
+    </div>
+    {BUILD.rows.map((row) => {
+      const low = Math.min(row.tokens, SOLO_TOKENS) / max;
+      const extra = Math.max(0, row.tokens - SOLO_TOKENS) / max;
+      return (
+        <div class="tax-row" data-family={row.app.family}>
+          <span class:list={["rank result", { green: row.shipped === 5 }]}>{row.shipped}/5</span>
+          <div class="name">
+            <Mark app={row.app} />
+            <span>{row.app.name}</span>
+          </div>
+          <div class="plot" style={`--low:${low};--extra:${extra};--end:${row.tokens / max}`}>
+            <span class:list={["base", { solo: extra === 0 }]}></span>
+            {extra > 0 && <span class="extra"></span>}
+            <span class="line"></span>
+            <span class="val">
+              <b>{fmt(row.tokens, "tokens")}</b>
+              <em>{(row.tokens / SOLO_TOKENS).toFixed(2)}x</em>
+            </span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</article>

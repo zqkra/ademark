@@ -1,0 +1,95 @@
+---
+import { REPO_URL, DATA_URL } from "../data/links";
+
+const rows = [
+  {
+    name: "This page",
+    text: "The medians, ranges and run counts on this page as JSON, with the cause of each gap",
+    href: "/results.json",
+    status: "Download",
+  },
+  {
+    name: "Raw rows",
+    text: "One row per run of each test, with the app version",
+    link: DATA_URL,
+    status: "GitHub",
+  },
+  {
+    name: "Harness",
+    code: "ademark run --ade <id> --tracks A,B,C",
+    text: "runs the same tests on your Mac",
+    link: REPO_URL,
+    status: "GitHub",
+  },
+];
+---
+<section id="data" class="section">
+  <div class="wrap">
+    <h2 class="section-title">Data</h2>
+    <div class="rows">
+      {rows.map((row) => (
+        <div class="row">
+          <b>{row.name}</b>
+          <span class="text">
+            {row.code && <span class="code">{row.code}</span>}
+            {row.text}
+          </span>
+          {row.href ? (
+            <a class="btn get" href={row.href} download="ademark-first-results.json">{row.status}</a>
+          ) : row.link ? (
+            <a class="btn get" href={row.link}>{row.status}</a>
+          ) : (
+            <span class="status">{row.status}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .rows {
+    border-top: 1px solid var(--color-hairline);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    min-height: 64px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  b {
+    font: 600 16px/24px var(--font-sans);
+  }
+  .text {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font: 400 16px/24px var(--font-sans);
+    color: var(--color-text-muted);
+    min-width: 0;
+  }
+  .status {
+    font: 400 14px/18px var(--font-sans);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .get {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  @media (max-width: 720px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      justify-items: start;
+    }
+  }
+</style>

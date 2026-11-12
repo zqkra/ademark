@@ -1,0 +1,88 @@
+---
+const objections = [
+  {
+    title: "Made-up numbers",
+    answer:
+      "Every number here was measured by our harness on the bench Mac and comes straight from its rows. Nothing is estimated. A missing number stays missing, and the Report gives its cause.",
+  },
+  {
+    title: "Cherry-picked runs",
+    answer:
+      "All runs of a test come from one attempt. A test runs again only when it is short of valid runs, and the new attempt then replaces it whatever it shows.",
+  },
+  {
+    title: "Compared to what",
+    answer: "The Bare CLI is Claude Code alone in Ghostty, and it runs every test. It is the gray line on every chart and is never ranked.",
+  },
+  {
+    title: "Settings were tweaked",
+    answer:
+      "Each app ran as its maker ships it. We set only what has to match across apps: Opus 5.5, high effort, full access in its worktree and no automatic model routing.",
+  },
+  {
+    title: "A newer version is out",
+    answer:
+      "Each result names the version it measured and never mixes two builds of one app. Results older than 60 days will be marked stale. Any maker can ask for a re-run on a new release.",
+  },
+  {
+    title: "Blamed for our bugs",
+    answer:
+      "When our harness fails, the app gets “not measured” and never a bad number. Cloudroom's speed tests and Capy's tokens are ours to fix.",
+  },
+  {
+    title: "Rules changed mid-run",
+    answer:
+      "Two changes landed during this pass. On 10 November, tests that were short of runs began to get re-runs. On 12 November, tokens moved to a step of their own. Both are dated in the method's changelog.",
+  },
+  {
+    title: "Only one Mac",
+    answer:
+      "These numbers hold for a Mac mini M4 with 16 GB. A faster Mac moves every app and can change the order, so the harness will be public for anyone to run on their own machine.",
+  },
+  {
+    title: "Why measure a \u201chi\u201d",
+    answer:
+      "Every new thread starts with the same fixed request, whatever you type. The “hi” isolates that cost. The real-question test shows what happens with actual work.",
+  },
+];
+---
+<section id="fairness" class="section">
+  <div class="wrap">
+    <h2 class="section-title">Fairness</h2>
+    <div class="grid">
+      {objections.map((item) => (
+        <div class="item">
+          <h3>{item.title}</h3>
+          <p>{item.answer}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 48px;
+  }
+  .item {
+    padding-top: 20px;
+    border-top: 1px solid var(--color-hairline);
+  }
+  h3 {
+    margin: 0 0 8px;
+    font: 600 18px/26px var(--font-sans);
+  }
+  p {
+    margin: 0;
+    font: 400 16px/24px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+</style>

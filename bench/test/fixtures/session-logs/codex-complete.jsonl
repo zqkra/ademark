@@ -1,0 +1,8 @@
+{"timestamp":"2026-10-19T10:20:00.000Z","type":"session_meta","payload":{"id":"codex-session-1","cwd":"/Users/ademark/arena/bare-cli","cli_version":"0.163.0"}}
+{"timestamp":"2026-10-19T10:20:01.000Z","type":"turn_context","payload":{"cwd":"/Users/ademark/arena/bare-cli","model":"gpt-6.1-sol","effort":"high"}}
+{"timestamp":"2026-10-19T10:20:02.000Z","type":"event_msg","payload":{"type":"task_started","turn_id":"turn-1"}}
+{"timestamp":"2026-10-19T10:20:03.000Z","type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"input_tokens":100,"cached_input_tokens":40,"cache_write_input_tokens":0,"output_tokens":9,"reasoning_output_tokens":0,"total_tokens":109}}}}
+{"timestamp":"2026-10-19T10:20:03.500Z","type":"response_item","payload":{"type":"function_call","name":"shell","arguments":"{\"command\":\"npm test\"}","call_id":"call-1"}}
+{"timestamp":"2026-10-19T10:20:03.600Z","type":"response_item","payload":{"type":"custom_tool_call","name":"apply_patch","input":"*** Begin Patch","call_id":"call-2"}}
+{"timestamp":"2026-10-19T10:20:03.700Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Done.\nledger-ok"}]}}
+{"timestamp":"2026-10-19T10:20:04.000Z","type":"event_msg","payload":{"type":"task_complete","turn_id":"turn-1"}}

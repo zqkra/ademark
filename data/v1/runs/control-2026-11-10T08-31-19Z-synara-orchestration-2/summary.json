@@ -1,0 +1,86 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-synara-orchestration-2",
+  "rows": 8,
+  "invalid_rows": 0,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "synara": {
+      "family": "EL-SDK",
+      "tests": {
+        "C1/shipped": {
+          "n": 1,
+          "median": 5,
+          "p25": 5,
+          "p75": 5,
+          "min": 5,
+          "max": 5,
+          "against_bare_cli": null
+        },
+        "C1/time-to-green": {
+          "n": 1,
+          "median": 5.183208929166667,
+          "p25": 5.183208929166667,
+          "p75": 5.183208929166667,
+          "min": 5.183208929166667,
+          "max": 5.183208929166667,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-max": {
+          "n": 1,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-total": {
+          "n": 1,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "C1/handoff": {
+          "n": 1,
+          "median": 4,
+          "p25": 4,
+          "p75": 4,
+          "min": 4,
+          "max": 4,
+          "against_bare_cli": null
+        },
+        "C1/codes-placed": {
+          "n": 1,
+          "median": 4,
+          "p25": 4,
+          "p75": 4,
+          "min": 4,
+          "max": 4,
+          "against_bare_cli": null
+        },
+        "C1/tokens-total": {
+          "n": 1,
+          "median": 2033337,
+          "p25": 2033337,
+          "p75": 2033337,
+          "min": 2033337,
+          "max": 2033337,
+          "against_bare_cli": null
+        },
+        "C1/usd-total": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

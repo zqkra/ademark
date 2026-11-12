@@ -1,0 +1,26 @@
+---
+// The ADEs a chart has no number for, as quiet rows after the ranking. The cause is in the Report.
+import Mark from "./Mark.astro";
+import { ADES, gap } from "../data/results";
+
+interface Props {
+  test: string;
+  has: string[];
+}
+const { test, has } = Astro.props;
+const rows = ADES.filter((a) => !has.includes(a.id)).map((a) => ({ app: a, kind: gap(a.id, test)?.kind ?? "nm" }));
+---
+{rows.length > 0 && (
+  <div class="tax-missing">
+    {rows.map(({ app, kind }) => (
+      <div class="tax-row missing" data-family={app.family}>
+        <span class="rank"></span>
+        <div class="name">
+          <Mark app={app} />
+          <span>{app.name}</span>
+        </div>
+        <span class="miss">{kind === "dnf" ? "did not finish" : "not measured"}</span>
+      </div>
+    ))}
+  </div>
+)}

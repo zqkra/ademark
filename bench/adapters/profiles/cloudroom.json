@@ -1,0 +1,454 @@
+{
+  "schema": 1,
+  "ade": "cloudroom",
+  "app": {
+    "path": "/Applications/Cloudroom.app",
+    "version": "150.0.0",
+    "bundleSha256": "c1ae119131b814c0d93cfdc879333093a876adae6905e8cb0f038a14e72e95ae",
+    "processNames": [
+      "Cloudroom",
+      "Cloudroom Helper",
+      "Cloudroom Helper (GPU)",
+      "Cloudroom Helper (Renderer)",
+      "Cloudroom Helper (Plugin)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Cloudroom",
+    "bundleId": "dev.cloudroom.gui",
+    "composerRect": {
+      "x": 612,
+      "y": 79,
+      "w": 704,
+      "h": 103
+    },
+    "activeComposerRect": {
+      "x": 612,
+      "y": 864,
+      "w": 680,
+      "h": 44
+    },
+    "launchComposerRect": {
+      "x": 612,
+      "y": 79,
+      "w": 704,
+      "h": 103
+    },
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 328,
+      "y": 96,
+      "w": 1264,
+      "h": 764
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 1000
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.gui-cloudroom"
+    ],
+    "launchAgents": [
+      "dev.cloudroom.preview.86e6d7d7b43e198e"
+    ]
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      ".gui-cloudroom"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 10000
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 1268,
+          "y": 364,
+          "w": 160,
+          "h": 26
+        },
+        "texts": [
+          "Get started",
+          "started"
+        ],
+        "point": {
+          "x": 1551,
+          "y": 597
+        },
+        "timeoutMs": 2000
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 340,
+          "y": 12,
+          "w": 860,
+          "h": 28
+        },
+        "texts": [
+          "version",
+          "Restart",
+          "update",
+          "password",
+          "ready",
+          "new version of Cloudroom",
+          "Cloudroom is ready"
+        ],
+        "point": {
+          "x": 1566,
+          "y": 26
+        },
+        "timeoutMs": 2000,
+        "confirmGone": true
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 1268,
+          "y": 312,
+          "w": 160,
+          "h": 26
+        },
+        "texts": [
+          "Get started",
+          "started"
+        ],
+        "point": {
+          "x": 1551,
+          "y": 545
+        },
+        "timeoutMs": 2000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
+          "settings",
+          "ui",
+          "set",
+          "sidebar.chronologicalSort",
+          "created"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
+          "settings",
+          "ui",
+          "set",
+          "defaults.startingMachine",
+          "last"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 860,
+          "y": 255,
+          "w": 120,
+          "h": 24
+        },
+        "text": "One-click",
+        "timeoutMs": 5000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 765,
+          "y": 210
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 830,
+          "y": 248
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 1210,
+          "y": 196,
+          "w": 120,
+          "h": 28
+        },
+        "text": "Full",
+        "timeoutMs": 5000
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
+          "project",
+          "create",
+          "--name",
+          "arena",
+          "--root",
+          "${worktree}"
+        ],
+        "timeoutMs": 120000
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 860,
+          "y": 255,
+          "w": 120,
+          "h": 24
+        },
+        "text": "One-click",
+        "timeoutMs": 5000
+      },
+      {
+        "kind": "goal",
+        "maxActions": 8,
+        "goal": "Below the composer are two selectors: the project (it reads a project name such as ADEMark or arena) and the environment next to it (it may read Cloud). Make the project selector read 'arena', and the environment a local one on this Mac, not Cloud. Click the project selector and choose the project named exactly 'arena' (not ADEMark or any other). If the environment selector reads Cloud, click it and choose the local option. Change nothing else, and never send a message. Done when the project reads arena and the environment is not Cloud."
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 766,
+          "y": 166
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 754,
+          "y": 281
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 1210,
+          "y": 196,
+          "w": 120,
+          "h": 28
+        },
+        "text": "Full",
+        "timeoutMs": 5000
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 610,
+          "y": 196,
+          "w": 80,
+          "h": 28
+        },
+        "text": "arena",
+        "timeoutMs": 5000
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 640,
+          "y": 150,
+          "w": 180,
+          "h": 32
+        },
+        "text": "High",
+        "timeoutMs": 5000
+      },
+      {
+        "kind": "goal",
+        "maxActions": 1,
+        "goal": "Only look, click nothing. Below the composer, the project selector must read 'arena' and the selector to its right must not read 'Cloud'. If both are true answer done. If the project is anything else, or the environment reads Cloud, answer fail and say what they read."
+      }
+    ],
+    "configure": {
+      "claude": [],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "dev.cloudroom.gui"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.gui-cloudroom"
+    ],
+    "launchAgentLabels": [
+      "dev.cloudroom.preview.86e6d7d7b43e198e"
+    ],
+    "teamId": "4AJ9HF33Z5",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "/cloudroom",
+  "orchestration": {
+    "workers": "sessions"
+  },
+  "notes": [
+    "ESTIMATE composerRect, activeComposerRect, launchComposerRect, threadRect, focusClick and masks: from the bundled bb-app 0.43.1 layout (--sidebar-width 256px, root compose column max-w-[760px] px-4, follow-up composer 3rem single line, px-4 pb-4 pt-2). launchComposerRect follows the route restore in window-state.json (/threads/<id>); verify with probe-region.",
+    "Verified route restore: window-state.json stores route /threads/<id> and desktop-window-factory.ts reopens it on the first page load after a restart, so A1 and A2 see the docked composer of the last thread.",
+    "Version: Cloudroom 110.0.0 is the installed build (codesign 2026-10-19, Team 4AJ9HF33Z5). ADES.md 3.6 still says v104 and the adapter comment says v109; the pins file already records v110.",
+    "Data folder is ~/.gui-cloudroom (gui-cloudroom in packages/config/src/runtime.ts holds bb.db, logs, skills, thread-storage), not the ~/.cloudroom that ADES.md 3.6 and bench/adapters/cloudroom.ts list. ~/.cloudroom does not exist on this Mac.",
+    "Second data folder: ~/Library/Application Support/Cloudroom (window state, cookies). It stays in place because moveAside names the aside folder after the basename and both would become the same name.",
+    "room-cli is a symlink at ~/.local/bin/room-cli to the bundled host-daemon CLI, created by the app at start (src/room-cli-shim.ts). It is not on the launchd PATH, so steps use the absolute path.",
+    "The LaunchAgent dev.cloudroom.preview.061684e561f5ba22 (KeepAlive, RunAtLoad, ThrottleInterval 5) runs the bundled python3 on ~/.gui-cloudroom/cloudroom-preview/client.py run. It stays alive after a quit and is attributed to Cloudroom.",
+    "Verified: thread.new is mod+n on desktop and the File > New Thread menu accelerator is CommandOrControl+N.",
+    "Verified: thread.jump.1..9 are Cmd+1..9; thread.previous/next are Cmd+Shift+[ / ]; thread.oldestInProject is Cmd+L. Cmd+W archives the current thread (menu accelerator archiveThread and binding thread.archive), so the quit step must not send it.",
+    "Verified: default permission mode for new threads is full (DEFAULT_PERMISSION_MODE in services/threads/thread-default-policy.ts), the factory default reasoning level is medium, and bb-app 0.43.1 has no settings general command, so model and effort can only be set from the composer pickers or in a seeded bb.db.",
+    "UNRESOLVED: model and effort defaults for new threads are stored in ~/.gui-cloudroom/bb.db (projectExecutionDefaults) and are only written by a thread created from the app. Set them once in the GUI (model picker Cmd+Shift+M, reasoning Alt+T) or restore a seeded bb.db before the night.",
+    "Telemetry: PostHog (BB_POSTHOG_API_KEY) plus Cloudroom's own setup snapshot (services/cloudroom/setup-telemetry.ts, five seconds after start). Both are gated by BB_TELEMETRY at server start and by the telemetryEnabled setting, and 0.43.1 exposes no CLI for either; turn it off in Settings > General or set BB_TELEMETRY=false in the app's launch environment.",
+    "Auto-update: electron-updater is enabled on macOS with autoDownload false and autoInstallOnAppQuit true unless the app bundle is not writable, so a downloaded update installs on quit and changes the version under the gate. No setting disables it.",
+    "Onboarding: the setup guide shows while onboardingCompletedAt is null, which is the case after every reset, and 0.43.1 has no replay-onboarding or settings general command to pre-set it. Dismiss it with the Skip setup button or a key found in the GUI session.",
+    "Claude runs through the bundled provider-claude-code of bb-app 0.43.1: BB_CLAUDE_CODE_EXECUTABLE if set, else claude from PATH (findCliExecutable), i.e. the system Claude Code 2.1.303. Cloudroom may offer to install Claude Code with Anthropic's installer if none is found; make sure claude is on the launchd PATH first. Codex runs through codex app-server.",
+    "Cloudroom's own agent plumbing: one system prompt for every thread (standardAgentAppendInstructions, toggle systemPromptEnabled) that tells agents to spawn subagents only through room-cli thread spawn --parent-self, and never through native Task or Codex subagents. C1 therefore needs no special mode; orchestrationTrigger /cloudroom is an ESTIMATE for the builtin CLI skill slash command.",
+    "steerActiveThreadOnEnter defaults false, so Enter on a running thread queues the message instead of steering it; C2 records that behavior, do not change it.",
+    "commandGuardEnabled defaults true, so the agent's shell commands may be checked before they run; watch C1 for a refused command.",
+    "New threads get a managed worktree under the project's environment folder in ~/.gui-cloudroom, so waitDone uses cwd any under ~.",
+    "The only URL scheme route is cloudroom://share/<id>, which copies a shared thread and needs the cloud account; it is not usable for openProject. Keep C1 off cloud machines: no --machine cloud, no Teleport.",
+    "2026-10-24 GUI check on 110.0.0: the first window is a 4-step setup (Sign in to Cloudroom with a cloudroom.dev account via browser, Connect an agent, Connect GitHub, Import your work) with no skip on step 1, so login.kind agent-cli no longer fits 110: the owner must sign in once, and the sign-in file must be found and listed in login.files. Not gated.",
+    "2026-11-05: 129.0.0 keeps the sign-in in ~/.gui-cloudroom/cloudroom.json, inside the folder reset moves aside, so the whole folder is the seed (signed in, no threads). login.files stays empty: restoreSeed refuses a target that restoreLoginFiles already created. The LaunchAgent label changed with 129. Not gated on 129.",
+    "2026-11-05 on 129: the preview LaunchAgent runs the app's own binary, so bench/adapters/cloudroom.ts boots it out before reset and tolerates it in quit. The harness picks it as the main process in quitAndWait; that is a harness defect to fix in pickMainProc.",
+    "2026-11-05 repair on 129: the old afterLaunch click (1521, 32) landed on Restart to update, which opened a SecurityAgent admin prompt and took the front. That was the not_frontmost of the night. Never click near the update banner: Restart to update wants the Mac password and an update breaks the pin. There is no banner step: the point of its X (1566, 26) opens the right panel when no banner shows. A dismissal lasts 8 hours (cloudroom.update-banner.dismissed-at in Local Storage, which reset keeps). When the banner returns it moves the composer, and the expectText guards stop the block.",
+    "2026-11-05 on 129: a new thread starts on Cloud unless the UI preference defaults.startingMachine is last (Y3 in the renderer returns cloud for any other value, whatever was picked). So steps.configure sets it, because reset drops it. Without it a thread goes Local, then the next Cmd+N shows Cloud, and Enter there starts a real cloud sandbox and copies the project from this Mac. That was the seed timeout of the night. Checked by hand: with it, Cmd+N after a sent thread and a relaunch both keep Local, arena and High. expectText stops the block at launch unless the Full Access chip shows, which only Local has, but timed.send has no guard, so this preference is what keeps Track A local.",
+    "2026-11-05 on 129: the one-click prompt chips under the composer run a Cloud agent on one click. Every click point in the steps stays off them (y 290 to 322, x from 662), and the One-click guard refuses the shifted layout of an open right panel.",
+    "2026-11-05 on 129: the display is scale 1 and OCR misreads this UI's small text: Build anything reads Bulld 8nythlng, and Local reads Lttal or Loeal. So expectText must not use those words. Checked with ademark-native watch: One-click at (860, 255) shows on the empty new thread and is refused with the right panel open; Full at (1210, 196) is the Full Access chip, there with Local and refused with Cloud, with and without arena. arena and High read well. High also matches Extra High, so the click on (754, 281) is what picks it.",
+    "2026-11-05 INCIDENT in repair attempt 2: a gate run before the defaults.startingMachine fix sent seed thread 2 to Cloud: thread thr_8rpubr9gci, session cr_8d6b72ee-2a44-4d9f-8d9e-c30c19ef2cb8. The sandbox started and Copying project from your Mac began; the app was killed about 3 s later, so what reached the cloud is unknown. Its bb.db is in ~/ademark-aside/cloudroom/2026-11-05T17-05-49-789Z. Do not open the app on that bb.db: the prompt command is still sending and the server would deliver it. The owner must check the sandbox and the cloud-agent counter on the cloudroom.dev account.",
+    "2026-11-08: the 'One-click' guard no longer matches (both afterLaunch and openProject), so the block stops before any thread exists. Kept on purpose: cmd+n defaults to Cloud until configure sets the starting machine, and the guards are what keep a run off the cloud. Needs a person at the screen to recalibrate.",
+    "2026-11-09 (ADEMARK-43): the two room-cli settings ui set commands (sidebar.chronologicalSort created, defaults.startingMachine last) moved from configure to afterLaunch, after the 10 s wait and before the first cmd+n. launch() runs afterLaunch before configure, so the first new thread after a reset was opened before defaults.startingMachine was set, and was a Cloud thread. The Full guard is unchanged. Not yet checked on the real screen: that the first cmd+n now opens a Local thread and the One-click check sees its text.",
+    "Update banner and Get started card (2026-11-10, ADEMARK-52): control-2026-11-10T08-31-19Z-cloudroom-1 failed at afterLaunch[13] ('Full' did not show) and -cloudroom-2 twice at afterLaunch[6] ('One-click' did not show). The screenshots (cloudroom-1/waits/*-Full.png, cloudroom-2/waits/*-One-click.png) show the banner 'A new version of Cloudroom is ready. Restart to update' across the top (text at y 26, Restart to update button x 1412 to 1536, close X at 1566, 26). It moves the main pane down about 52 points: 'One-click prompts' at y 319 and 'Full Access' at y 263, against the calibrated regions at y 255 and 196, so OCR read nothing in every frame. A 'Get started' card (title at 1277, 376, Hide at 1551, 597) was open at the right; in attempt 1 the effort menu stayed open, because the clicks before it landed in the moved layout. afterLaunch now starts, after the 10 s wait, with three clickIfText steps: hide the card while the banner is there (positions measured on the screenshots), close the banner by its X (only when its own text is read, because the X point opens the right panel when no banner shows), and hide the card in the layout without the banner. The last step's points are the measured ones moved up 52 points, not measured: a dismissed banner stays away 8 hours, so later blocks see the card without it. Restart to update is never clicked. The One-click and Full guards are unchanged. Not yet checked on the real screen: that the X closes the banner and the layout returns to the calibrated one, where the card sits without the banner, and whether a banner that shows after these steps still breaks the block.",
+    "Banner check (2026-11-10, review R1 of ADEMARK-52): no frame records how OCR reads the banner, and this screen misreads words (Conductor's 'Open project' read as 'Open rxoiect' in every frame). So the banner step reads the whole text line (340, 12, 860, 28, to x 1200, left of the Restart to update button at x 1412) and clicks on any one of seven exact texts: version, Restart, update, password, ready, 'new version of Cloudroom', 'Cloudroom is ready'. These words belong to the banner; without it that strip shows no text. A false click would land near the right-panel icon (about 1570, 77 with the banner, about 52 points higher without), which is why each text stays exact. confirmGone reads the strip again 1 s after the click and logs whether the banner closed; it never clicks twice and never fails: the One-click and Full guards decide. The card steps also accept 'started'. Not yet checked on the real screen: that the strip is empty without the banner.",
+    "2026-11-11, C1: Cloudroom's orchestration is child threads (room-cli thread spawn --parent-self), each a client session of its own, and its system prompt forbids native subagents. C1 counts only with two sessions at work (orchestration.workers).",
+    "2026-11-11: openProject picks the project with the screen agent, not with a fixed click. In control-2026-11-10T08-31-19Z-cloudroom-4 the click on the first row of the project list (630,308) picked 'ADEMark', a project that appeared in the account that day, in the Cloud environment, and the step that reads 'Full' stopped the block twice (waits/*-Full.png: project ADEMark, environment Cloud, sidebar with arena and ADEMark). The reads of 'Full', 'arena' and 'High' after it are unchanged, so another project or the cloud still stops the block.",
+    "2026-11-11: the app updated itself from 129.0.0 to 150.0.0 between two runs of the same day (manifest ade_versions of control-2026-11-10T08-31-19Z-cloudroom-3 and -cloudroom-4), and that is why -cloudroom-4 failed after -cloudroom-3 measured 86 valid rows. On 150 (waits/2026-11-11T16-19-32-547Z-Full.png, 1600x1000): the composer is unchanged (text box y 65 to 190, 'Opus 5.5 | High' at y 166, project and environment selectors at y 210, 'One-click prompts' at y 265), a project 'ADEMark' exists beside 'arena' and is the selected one, the environment selector reads 'Cloud', and the access indicator 'Full' moved from (1210,196) to the sidebar footer at about (290,977). So the read of 'Full' now looks there, and since it no longer tells a local environment from the cloud, a last look of the screen agent fails the block unless the project is arena and the environment is not Cloud. app.version is 150.0.0; bundleSha256 is still the one of 129 and must be read again at the next calibration. In the owner's account the app cannot be opened beside another app that runs a local server: it takes that app's server for a running Cloudroom.",
+    "2026-11-11, third pass (control-2026-11-10T08-31-19Z-cloudroom-5): the screen agent put the new thread on arena and Local in both blocks, and the block still stopped at openProject[13]: 'Full' did not show. The note above was wrong: 'Full Access' did not move, it shows at (1253,211) only for a local environment, and the frame of 16:19 was on Cloud. The sidebar footer 'Full' at (290,977) is 11 px text that OCR never reads (0 of 36 frames, and ademark-native ocr on the saved screenshot reads nothing there). So openProject reads 'Full' in the afterLaunch region again (1210,196,120,28: OCR reads 'Full Acces5 V'), which also tells Local from Cloud. The 'High' region (716,152,100,28) cut the model name in half and read 'g' on the same frame; it is now (640,150,180,32), which reads '* Opus 5.5 | High'. Both regions were read with the real helper on the four screenshots of that run before the change, and bench/test/adapters-profiles.test.ts reads every expectText of openProject on one of them (bench/test/fixtures/cloudroom-150-new-thread.png). Rule: a new or moved OCR region is read with ademark-native ocr on a real screenshot before it ships."
+  ],
+  "agentGuide": "Threads are listed in the sidebar. Cmd+N starts a new thread; its message box sits at the bottom of the thread. An update banner may show across the top: never press its Restart to update button (it asks for the Mac password and changes the measured version); its X at the far right closes it."
+}

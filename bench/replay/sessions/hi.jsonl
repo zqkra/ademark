@@ -1,0 +1,2 @@
+{"type":"session","name":"hi","api":"anthropic","match":"replay:hi","root":"/private/tmp/ademark-recording/arena"}
+{"type":"turn","index":0,"blocks":[{"type":"text","text":"LEDGERMARK. Hi! How can I help you with Ledger?"}],"stop_reason":"end_turn","usage":{"input_tokens":12,"output_tokens":14}}

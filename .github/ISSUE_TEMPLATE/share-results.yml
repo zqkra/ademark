@@ -1,0 +1,85 @@
+name: Share results
+description: Results of an ADEMark run on your own Mac
+title: "Results: "
+labels: ["results"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One ADE per issue. GUIDE.md says how to run ADEMark and what to share. Results from your Mac are shown with your hardware and macOS version, and are never labeled verified (METHODOLOGY.md section 8).
+
+        Attach only `rows.jsonl`, `summary.json` and `manifest.json` from `results/<run-id>/`. Never attach the raw run folder: its network captures hold your account email, and its recordings and screenshots show your screen (GUIDE.md section 8).
+  - type: input
+    id: ade
+    attributes:
+      label: ADE id
+      description: The id you passed to `--ade`, from `bun bench/cli.ts adapter list`.
+      placeholder: super-engineering
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ADE version
+      description: From `bun bench/cli.ts adapter install-check <id>`, or `ade_versions` in manifest.json.
+      placeholder: 15aae8f8
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model, chip and memory
+      placeholder: Mac mini M4, 16 GB
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: macOS 27.0.1
+    validations:
+      required: true
+  - type: input
+    id: run
+    attributes:
+      label: Run ids and harness commit
+      description: "`run_id` and `harness_commit` from each manifest.json. One run per track is fine."
+      placeholder: 2026-11-12T21-14Z-bf08167, bf08167
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Every `bun bench/cli.ts run` command you used, exactly as typed.
+      render: shell
+      placeholder: bun bench/cli.ts run --ade super-engineering --tracks A --agent claude
+    validations:
+      required: true
+  - type: checkboxes
+    id: tracks
+    attributes:
+      label: Tracks run
+      options:
+        - label: Track A, speed and weight
+        - label: Track B, tokens
+        - label: Track C, test C1
+  - type: textarea
+    id: results
+    attributes:
+      label: Results
+      description: Drag `rows.jsonl`, `summary.json` and `manifest.json` of each run here, or paste `summary.json`.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed my email and personal data from what I attach.
+          required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything unusual during the run, invalid rows you could not explain, settings you changed. Optional.

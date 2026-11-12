@@ -1,0 +1,30 @@
+{
+ "run_id": "control-2026-11-10T08-31-19Z-capy-5",
+ "apps": {
+  "capy": {
+   "version": "0.8.0"
+  }
+ },
+ "agent_versions": {
+  "claude": "2.1.303 (Claude Code)",
+  "codex": "codex-cli 0.163.0"
+ },
+ "model": [],
+ "effort": [],
+ "started_at": "2026-11-12T11:29:00.254Z",
+ "ended_at": "2026-11-12T11:45:46.449Z",
+ "test_ids": [
+  "A5",
+  "A6",
+  "A3",
+  "A9",
+  "A2",
+  "A1"
+ ],
+ "machine": {
+  "model": "Mac16,10",
+  "chip": "Apple M4",
+  "ram_gb": 16
+ },
+ "macos_build": "26A434"
+}

@@ -1,0 +1,2 @@
+{"type":"session","name":"seed","api":"anthropic","match":"replay:seed","root":"/private/tmp/ademark-recording/arena"}
+{"type":"turn","index":0,"blocks":[{"type":"text","text":"Seeded. This thread is open and the repository is unchanged."}],"stop_reason":"end_turn","usage":{"input_tokens":11,"output_tokens":13}}

@@ -1,0 +1,15 @@
+{
+  "ade": "super-engineering",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T10:38:51.858Z",
+  "harnessCommit": "8011eb5004722e523f106bd255478f2e3fbdd420",
+  "version": "15aae8f8",
+  "bundleSha256": "efef5274024b69e8ca7993ef348e064521347f8fd300a9860e7d488f867e9df8",
+  "failures": [
+    "super-engineering A11 open: timed_out",
+    "super-engineering A11 scroll-gaps: the long thread did not open",
+    "super-engineering A11 scroll-max-gap: the long thread did not open",
+    "super-engineering A11 switch: the long thread did not open"
+  ]
+}

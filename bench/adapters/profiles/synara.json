@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "ade": "synara",
+  "app": {
+    "path": "/Applications/Synara.app",
+    "version": "1.0.7",
+    "bundleSha256": "c72cbb5618d675708f64bc705e5727f7a9831e9d3ef48cf81612cabd9fc3b367",
+    "processNames": [
+      "Synara",
+      "Synara Helper",
+      "Synara Helper (Renderer)",
+      "Synara Helper (GPU)",
+      "Synara Helper (Plugin)",
+      "synara-appsnap-helper"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Synara",
+    "bundleId": "com.emanueledipietro.synara",
+    "composerRect": {
+      "x": 590,
+      "y": 890,
+      "w": 720,
+      "h": 32
+    },
+    "activeComposerRect": {
+      "x": 622,
+      "y": 922,
+      "w": 650,
+      "h": 28
+    },
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 570,
+      "y": 50,
+      "w": 750,
+      "h": 850
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 5,
+        "y": 825,
+        "w": 45,
+        "h": 45
+      }
+    ],
+    "drive": "api",
+    "dataDirs": [
+      "~/.synara",
+      "~/Library/Application Support/synara"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      ".synara/userdata/settings.json",
+      "Library/Application Support/synara/Local Storage"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 6000
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+o"
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "paste",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "expectText",
+          "region": {
+            "x": 1100,
+            "y": 940,
+            "w": 220,
+            "h": 40
+          },
+          "texts": [
+            "Opus 5.5",
+            "Opus 5,5"
+          ],
+          "timeoutMs": 8000
+        }
+      ],
+      "codex": [
+        {
+          "kind": "keys",
+          "combo": "cmd+shift+m"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "type",
+          "text": "${model}"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 300
+        },
+        {
+          "kind": "keys",
+          "combo": "shift+tab"
+        },
+        {
+          "kind": "wait",
+          "ms": 300
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.emanueledipietro.synara"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.synara"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "HR24WHR326",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "Use your Synara worker subagents to run the four work items in parallel, one worker per item.",
+  "notes": [
+    "masks: none recorded. Candidate animated elements found in source: the ASCII field behind the empty landing (AsciiWaveBackground.tsx redraws at 15 fps forever, PATTERN_DURATION 20 s), the sidebar working/unread status glyphs, the context/usage ring in the composer status row, the one-time What's-new popout (bottom-left, dismissed only by its X). Until the ASCII field is off or masked, A1 will hit the 5 s settle cap on an empty thread.",
+    "Popup and focus click unknown: Synara focuses the composer itself after a new thread (ChatView requestComposerFocus), so focusClick is null; the GUI must confirm the probe types without a click.",
+    "App auto-update: package.json uses electron-updater with app-update.yml owner Emanuele-web04/repo synara; main.js configureAutoUpdater() is called unconditionally and no settings key turns it off. reset cannot stop it; note it for Track F.",
+    "No app sign-in. Providers run the account's own claude/codex logins: providers.claudeAgent.homePath and providers.codex.homePath default to empty, which means ~/.claude and ~/.codex; reset.jsonKeys sets binaryPath to the system claude and codex (the app otherwise runs its bundled claude-agent-sdk 0.3.296 binary from app.asar.unpacked).",
+    "Synara stores state in ~/.synara (SYNARA_HOME overrides): userdata/state.sqlite, userdata/settings.json, userdata/keybindings.json, userdata/secrets, worktrees under ~/.synara/worktrees. The Electron userData is overridden to ~/Library/Application Support/synara (lowercase). reset moves both.",
+    "defaultThreadEnvMode is local in ServerSettings (packages/contracts/src/settings.ts and apps/web/src/appSettings.ts), so a thread runs in the project folder itself and waitDone cwd=worktree is right unless the GUI shows a worktree per thread.",
+    "Runtime mode factory default is full-access (apps/web/src/types.ts DEFAULT_RUNTIME_MODE) and interaction mode default (plan off), matching ADES.md 3.4; no permission step in configure.",
+    "Effort: Claude Opus 5.5's capability ladder marks high as the default (packages/contracts/src/model.ts CLAUDE_OPUS_5_CAPABILITIES), so configure.claude only picks the model. GPT-6 capabilities default to medium, so configure.codex presses model.effort.next once (Shift+Tab, keybindings.ts) to reach high; the GUI must confirm the footer reads High, and drop the step if the codex runtime catalog already defaults to high.",
+    "configure runs before openProject (profile.ts launch order), so the model picker is driven on the launch/home composer; a new draft is seeded from the sticky last-used selection (composerDraftModels.ts resolvePreferredComposerModelSelection), which is why this works.",
+    "openProject: sidebar.addProject is cmd+shift+o (apps/web/src/keybindings.ts) and opens Synara's own Create project dialog with a path field; the paste step assumes that field has focus.",
+    "timed.newThread is cmd+n (chat.new, keybindings.ts). longThread/shortThread are cmd+1/cmd+2 (thread.jump.N): the sidebar sorts by the latest user message (Sidebar.logic.ts getThreadSortTimestamp), descending, and created_at sort ignores attention-first, so the long thread built last is row 1 and a seed is row 2 as long as no later user message arrives in another thread.",
+    "Orchestration is built in: ClaudeAdapter.ts appends a Synara harness policy and four worker-<tier> subagent types (worker-low/medium/high/xhigh), and the gateway exposes synara_create_threads. No vendor command turns it on; the orchestrationTrigger line is an instruction, not a slash command, and the GUI should confirm subagents are available in a thread.",
+    "processNames: helper executables inside the bundle are Synara Helper, Synara Helper (Renderer), Synara Helper (GPU), Synara Helper (Plugin) and Contents/Helpers/synara-appsnap-helper.",
+    "GUI session 2026-10-24 on 1.0.7. ~/.synara/userdata/settings.json is {revision, migrationVersion, settings:{...}}, so the old reset.jsonKeys (top-level enableProviderUpdateChecks, onboardingCompletedAt, ...) never reached the app; onboardingCompletedAt and showAsciiBackground are client settings in Electron Local Storage, which jsonKeys cannot write. A fresh data folder shows, in order: the Welcome tour, 'Bring your Safari logins along?', 'Synara AppSnaps are live!' (each closes with Escape) and a '2 provider updates available' toast; the default provider is Codex and the composer starts on Fable 5.1 Low.",
+    "Seed (2026-10-24): seeds/synara/home holds settings.json (enableProviderUpdateChecks false, defaultThreadEnvMode local, keepAwakeMode off) and the Local Storage from the calibration session (onboarding completed, ASCII background off, default provider Claude, last model Opus 5.5 High, Safari and AppSnap prompts dismissed). reset.jsonKeys is now empty. afterLaunch still presses Escape twice in case a prompt shows.",
+    "configure.claude (checked): cmd+shift+m opens the model picker on the Claude tab; Opus 5.5 (1177,713, also cmd+3 in the list) then the effort slider third stop (1256,891) = High (OCR 'Opus 5.5 High'); Escape closes it. openProject (checked): cmd+shift+o, paste the path, Enter opens the folder as a project in Local mode (composer focused, 'What should we do in <name>?').",
+    "Replay (checked): Synara runs the system claude (/Users/ademark/.local/bin/claude 2.1.303 --model=claude-opus-5-5 ...) with launchd's ANTHROPIC_BASE_URL; with no server on 8787 the thread showed 'Request retry n/10 ... (connection error)'. The session log is ~/.claude/projects/-Users-ademark-arena-synara/<id>.jsonl with cwd exactly the arena, so waitDone cwd worktree holds.",
+    "Title generation uses textGenerationModelSelection = codex gpt-6-luna (Codex is not signed in here); left as the app's default and recorded.",
+    "Threads (gate 2026-10-24 run 1): with Thread order 'Recently active' + 'Working and unread on top', threads from earlier tests that were still streaming or unread sat above the A11 pair, so cmd+2 stayed in the long thread and A11 timed out. The seed now has Thread order 'Newest first' (keybindings: mod+1..9 = thread.jump.1..9), so cmd+1 = long, cmd+2 = seed.",
+    "Gatekeeper: a launch at 09:33 showed '\"Synara\" is an app downloaded from the Internet. Are you sure you want to open it?' (CoreServicesUIAgent in front); approved with Open. Likely behind gate run 1's A1 window_not_found. Process names: the server runs as /Applications/Synara.app/Contents/MacOS/Synara ... server/dist/index.mjs, same executable as the app (pid lookup can pick it).",
+    "A7 (gate run 1): 7 claude processes were attributed to the app group because their resolved path is ~/.local/share/claude/versions/2.1.303 (basename 2.1.303); agentExecutables now includes that folder.",
+    "BLOCKER (gate 2026-10-24 runs 2-3: only A1 first-launch and A2 relaunch fail): every quit shows Synara's in-app modal 'Quit Synara? Are you sure you want to quit?' (runningChatsQuitGuard: shown on before-quit and window-close even with no chat running; SIGINT/SIGTERM go through app.quit and the same modal; no setting found). The harness's AppleScript quit then times out (-1712), the app and its server stay alive past the 10 s wait, and the next launch reaches the dying instance: 'window_not_found: pid ... showed no on-screen window', a Gatekeeper sheet ('\"Synara\" is an app downloaded from the Internet') appeared while that instance was still alive, and the quiet-CPU gate before A2 failed. steps.quit with keys (cmd+q, Enter) cannot run in A1/A2, where the harness has no app pid ('--pid must be a positive pid', seen with Claude desktop), and pkill -9 would make A9 meaningless. Needs a harness change: resolve the pid for steps.quit, or confirm the modal after quitApp. Every other Track A test was valid in gate runs 2 and 3 (A3-A11, A4 through the replay server).",
+    "afterLaunch (2026-11-06): 1.5 s was too short after a reset: cmd+shift+o was lost, no project was made, and every prompt landed in an old chat. With the app ready, the same steps made the project and answered on claude-opus-5-5.",
+    "2026-11-10 (ADEMARK-53): A2 failed 6 of 6 and the top-up 3 of 3 with 'quit failed: the app is still running', and A9 no-sessions reps 2 and 3 found main Synara (ppid 1), its Synara server child, the renderer and a helper alive 60 s after the quit, so those two A9 rows weighed an app that never quit. The quit event still opens the in-app modal and the profile quit's Enter does not confirm it. Synara 1.1.0 (installed; app.version here still says 1.0.7) handles SIGTERM after startup with requestGracefulAppQuit, without the modal (src/shutdownSignals.ts in app.asar), so synara.ts now sends TERM to the main process before the profile quit. Not yet seen on the real screen.",
+    "2026-11-11: configure.claude no longer clicks. Synara 1.1.0 added Fable 5 to the model picker, so the fixed point (1177,713) that was Opus 5.5 on 1.0.7 picked Fable 5: the tokens step and C1 of that night ran on claude-fable-5 (33 B rows 'wrong model: claude-fable-5'; C1 screenshot-start reads 'Fable 5 High'). The seed already restores Opus 5.5 High as the last model (the look after launch, before configure, reads 'Opus 5.5 High' at x 1145 to 1250, y 960, on the home composer and on a project composer alike). configure.claude now only reads that text there and stops the block when it is not Opus 5.5, so a changed picker can never measure another model."
+  ],
+  "agentGuide": "Cmd+N starts a new thread in the current project. A What's new popout at the bottom left closes only with its X."
+}

@@ -1,0 +1,14 @@
+{
+  "ade": "synara",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T15:06:53.987Z",
+  "harnessCommit": "1e4da30d68c1037e7b263933a4f281dac571b1bb",
+  "version": "1.1.0",
+  "bundleSha256": "ca77a419437de8d7ccc5dd48237a9c9fd8a049267b768725a0fa448203a2184f",
+  "failures": [
+    "synara A block: seed thread 1/2 did not finish: timeout",
+    "synara A3 default-mode: old-thread draft not read in the composer: []",
+    "synara A2 relaunch: quit failed: the app is still running"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "ade": "zeron",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T14:31:40.244Z",
+  "harnessCommit": "df2460decf91eb0cbc85d1778184bf72a301378b",
+  "version": "0.2.136",
+  "bundleSha256": "6371dafb29f940a333e2f8f4c01a52631a3b006538d1655cb0f0e5468d0babd8",
+  "failures": [
+    "zeron A block: A1 rep 1: kill -9 31394 failed (exit 1): kill: 31394: No such process",
+    "zeron A block: A1 rep 1: kill -9 42301 failed (exit 1): kill: 42301: No such process",
+    "zeron A3 default-mode: old-thread draft not read in the composer: []",
+    "zeron A2 relaunch: quit failed: the app is still running"
+  ]
+}

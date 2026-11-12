@@ -1,0 +1,13 @@
+{
+  "ade": "cloudroom",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T14:33:08.868Z",
+  "harnessCommit": "173f7cc5dc51c6d1e70c5a8a1fc7b51cf68ec890",
+  "version": "129.0.0",
+  "bundleSha256": "c1ae119131b814c0d93cfdc879333093a876adae6905e8cb0f038a14e72e95ae",
+  "failures": [
+    "cloudroom A block: step steps.afterLaunch[3] (expectText): \"One-click\" did not show within 5 s",
+    "cloudroom A block: ademark-native keys failed (exit 4): not_frontmost: pid 43970 is not the frontmost application; nothing was posted"
+  ]
+}

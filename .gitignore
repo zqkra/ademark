@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+bench/native/.build/
+bench/native/bin/
+results/
+*.mov
+*.mp4
+__pycache__/
+.wrangler/
+snapshots/
+bench/fault/block.conf

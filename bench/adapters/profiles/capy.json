@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "ade": "capy",
+  "app": {
+    "path": "/Applications/Capy.app",
+    "version": "0.5.0",
+    "bundleSha256": "89d19588b1c06fd268a778b9bfd97b64bbc5d2f82028a3dc91ae099a08755740",
+    "processNames": [
+      "Capy",
+      "Capy Helper",
+      "Capy Helper (GPU)",
+      "Capy Helper (Renderer)",
+      "Capy Helper (Plugin)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Capy",
+    "bundleId": "ai.capy.desktop",
+    "composerRect": {
+      "x": 568,
+      "y": 432,
+      "w": 690,
+      "h": 32
+    },
+    "activeComposerRect": {
+      "x": 476,
+      "y": 892,
+      "w": 880,
+      "h": 26
+    },
+    "launchComposerRect": null,
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 470,
+      "y": 90,
+      "w": 880,
+      "h": 770
+    },
+    "focusClick": {
+      "x": 900,
+      "y": 470
+    },
+    "masks": [
+      {
+        "x": 1100,
+        "y": 48,
+        "w": 440,
+        "h": 40
+      },
+      {
+        "x": 552,
+        "y": 978,
+        "w": 736,
+        "h": 22
+      }
+    ],
+    "drive": "api",
+    "dataDirs": [
+      "~/.capy/worktrees"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/Library/Application Support/Capy/session-credential.json",
+      "~/Library/Application Support/Capy/device-credentials.json"
+    ],
+    "signIn": "Sign in to Capy in the app with the capy.ai account of the ademark user (Google, GitHub or email); the Mac pairs as a device on first sign-in."
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "goal",
+        "maxActions": 16,
+        "goal": "Above the composer are two selectors: the project (left; it reads a project name such as ClickVids) and where the thread runs (right; it reads 'Cloud' or the name of this Mac). Make the project selector read 'capy' and the run selector read this Mac, with the project's folder on this Mac being ${worktree}. Steps: click the project selector, type capy in 'Search projects', and click a project named capy in the list (Enter does not pick it). Then click the run selector and choose the row that says 'This Mac'. If a box 'Set up capy on this Mac' shows, click 'Choose folder'. That opens a macOS file dialog (with Cancel and Open buttons): never click inside that dialog, use only keys there: press cmd+shift+g, type ${worktree}, press enter, wait one second, and press enter again; the dialog then closes. If instead a path field inside Capy shows (with 'Select' at its bottom), press cmd+a, type ${worktree}, and press cmd+enter. If no project named capy is in the list, click 'New project', then 'Folder on a machine', then 'This Mac', replace the path with ${worktree}, press cmd+enter, press enter on 'Create capy', close the 'Share capy' box with escape, and then pick the project as above. Never send a message, never pick ClickVids or any other project, never leave the run selector on Cloud.",
+        "allowKeys": [
+          "cmd+a"
+        ]
+      },
+      {
+        "kind": "goal",
+        "maxActions": 1,
+        "goal": "Only look, click nothing. Above the composer, the project selector must read 'capy' and the selector to its right must read this Mac (a machine name or 'This Mac'), not 'Cloud'. If both are true answer done. If the project is anything else, or the run selector reads Cloud, answer fail and say what they read."
+      }
+    ],
+    "configure": {
+      "own": [
+        {
+          "kind": "goal",
+          "maxActions": 8,
+          "goal": "The model selector inside the composer (it shows a model name such as 'Claude Fable 5.1', left of the effort selector) reads 'Claude Opus 5.5', and the effort selector next to it reads 'High'. If it already does, answer done. Otherwise click the model selector, type Opus 5.5 in its search field, and click 'Claude Opus 5.5' in the Claude Code list; then set the effort to High if it is not. Change nothing else, and never send a message."
+        },
+        {
+          "kind": "expectText",
+          "region": {
+            "x": 620,
+            "y": 503,
+            "w": 210,
+            "h": 30
+          },
+          "texts": [
+            "Opus 5.5",
+            "Opus 5,5"
+          ],
+          "timeoutMs": 8000
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "ai.capy.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+o"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "alt+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "alt+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": true
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.capy",
+      "~/Library/Application Support/Capy"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "9YWUN5FK23",
+    "agentExecutables": []
+  },
+  "orchestrationTrigger": "Use subagents for this task: start one subagent per work item on the shared machine, wait for all of them, then merge their work into main.",
+  "notes": [
+    "Calibrated from the bundle only (no launch) on Capy 0.5.0 (CFBundleVersion 0.5.0), main binary SHA-256 89d19588. Estimates are marked; the GUI session verifies every rect with probe-region.",
+    "UNKNOWN launchComposerRect: whether an empty thread centres its composer. Left null; GUI session records it.",
+    "timed.send enter: Steer is the default Enter key at rest (threads.md; renderer localStorage capy-web:input-prefs-v4 enter=steer). timed.newThread cmd+shift+o is thread.new in main.js and threads.md. longThread alt+1 and shortThread alt+2 depend on sidebar order (threads.md: Option+1..9); the session confirms the long thread is row 1.",
+    "orchestrationTrigger is an ESTIMATE, not verified in the app: ADES.md 3.15 says subagents, and subagents.md describes the shared-machine placement. Fresh-machine subagents are cloud machines and break the local-only rule, so the line says shared. Confirm before Track C.",
+    "Model: the own harness pin is Opus 5.5 (anthropic/claude-opus-5-5, default, docs models-and-pricing.md). Opus 5.5 on Capy's own agent bills Capy credits or an Anthropic key on a plan. claude-code/* models run on the Claude Agent SDK, a different harness (faq.md, Which subscriptions can I connect?), so they are not OWN results.",
+    "Sign-in: the account is the ademark user's capy.ai account, not the owner's. login.files holds the session and device-pairing files (names only, never read). Reset does not move ~/Library/Application Support/Capy, so these files survive reset anyway.",
+    "reset.jsonKeys is empty: Capy keeps model, effort and connections server-side or in localStorage, and state.json is a nested object that setJsonKeys would overwrite. reset.seeds is empty: restoreSeed throws when a seed is missing and no seed exists yet.",
+    "Updater: electron-updater in Capy sets autoDownload false, autoInstallOnAppQuit true, allowDowngrade false (main.js). A downloaded update installs at quit and changes the bundle hash, so the gate becomes stale. No setting to turn updates off was found.",
+    "GUI session 2026-10-24 on 0.5.0 (signed in as the owner's capy.ai account '<owner name>', org Click, Claude Max connected). The model menu offers only 'Claude Code' models (Claude Fable 5.1, Claude Opus 5.5, Sonnet 5.5, Haiku 5.5) with the Claude subscription; no Anthropic API key is connected, so Capy's own harness (anthropic/claude-opus-5-5) is not available. These threads are Claude Code on the Agent SDK, not OWN: agents ['own'] in bench/adapters/capy.ts does not fit this setup.",
+    "BLOCKER: a 'This Mac' thread (project capy, machine <owner-mac>, 'Current checkout', branch main) answered 'Reply with exactly: CAPY CALIBRATION OK' correctly, but no claude or agent process appeared under Capy (ps during and after), and no session log was written anywhere under ~ (no ~/.claude/projects/-Users-ademark-arena-capy, no new .jsonl). Only Capy's file sync changed locally (~/.capy/drive/*, ~/.capy/git-shadow/*, arena .git/index). So the agent loop runs on Capy's servers and the Mac only hosts the files: the replay server can never answer (Track A A4/A8/A10/A11 impossible) and the local-only rule does not hold. Gate not run (it would send every replay prompt to the real model on the owner's subscription and add threads to the owner's account).",
+    "openProject: the project picker (click 622,405) lists the account's projects with a search field; a private project 'capy' (Folder on a machine > This Mac > ~/arena/capy, Access 'Only you until you share it') was created 2026-10-24, so typing capy + Enter selects it and the machine switches to <owner-mac>. 'No project' on This Mac takes no folder, and picking a GitHub-backed project with a non-matching folder fails ('This folder does not match zqkra/clickvids').",
+    "configure.own: model button 700,518 > 'Claude Opus 5.5' 754,748; effort button 815,518 > High 806,633 (menu Low, Medium, High, Extra high, Max; factory default Extra high). Escape does not close the composer menus; a click on the empty page does. No permission-mode control; the composer's settings menu holds Access, MCP servers, Pin, Folder, Tags.",
+    "Rects: probe-region in the empty new-thread view returned 576,439 285x17 (the composer is in the middle of the page, y 425-540); in a thread the composer docks at the bottom (text line y 902, 468-1364). The composer is not focused after a menu click, so focusClick is its centre.",
+    "2026-11-11: the first real block (control-2026-11-10T08-31-19Z-capy-1 and -2, on 0.7.2; this profile is from the 0.5.0 bundle) ended at the first seed thread with 'no session log for agent \"own\"': the wait threw before it reached the idle fallback this profile sets. Now the wait of an own agent ends by the idle fallback alone, read on the project folder, and the adapter is liveModel (bench/adapters/capy.ts), so Track A runs only A1, A2, A5, A6 and A9; A3 needs the replay marker. Not checked on the real screen: openProject, newThread and the rects are still the estimates of 0.5.0, and a block that fails keeps failure-<track>-<n>.png.",
+    "2026-11-11, calibrated by hand on 0.7.2 in the owner's account with the harness's own helper at 1600x1000 (this profile was from the 0.5.0 bundle). Facts: (1) The harness ran in the owner's real project. The look of control-2026-11-10T08-31-19Z-capy-3 shows the composer on project ClickVids, run selector Cloud, model Claude Fable 5.1: openProject typed 'capy' and pressed Enter, and Enter picks nothing in the project list, so every seed went to ClickVids in the cloud (threads CLIC-12 to CLIC-21). (2) Project selector at (622,405): 'Search projects', the list, then 'No project (This Mac)', 'New project', 'Manage projects'. New project asks 'Where does this project live?' (GitHub repository, Folder on a machine, Git URL, Empty project), then 'Which machine has the folder?' (This Mac first), then a path field with a folder list (cmd+enter selects), then 'Create <name>' (enter) and a 'Share <name>' box (escape). The new project is not selected by itself. (3) Run selector right of the project: Cloud, '<machine> This Mac', Other devices. This Mac on a project with no folder there opens 'Set up capy on this Mac' with 'Choose folder'. (4) Model selector at (700,518) has 'Search models' and a Claude Code list with Claude Opus 5.5; the model text is dark on white and OCR reads it, the two selectors above the composer are faint and OCR reads nothing there. (5) The bench account's Capy is another machine of the same account than the owner's ('<owner-mac>, Mac mini'), so its project folder must be set there. Changes: configure.own and openProject are goals for the screen agent, with a read of 'Opus 5.5' and a second look that fails unless the project is capy and the run selector is this Mac, so nothing is sent to another project or to the cloud. Not yet run on the real screen.",
+    "2026-11-11, run of the screen agent with these goals in the owner's account (bench steps cannot run there, so the goals were given to achieveGoal with the helper's own click and keys): configure.own reached 'Claude Opus 5.5 High' in 3 actions, and OCR reads '* Claude Opus 5.5' in the region of the check. openProject picked capy and This Mac in 4 actions; 'Choose folder' then opens a macOS file dialog, not Capy's own path field, and the agent's clicks on its Open button did nothing in 8 tries, while cmd+shift+g and the typed path worked. The goal now says to use only keys in that dialog. Capy offered an update to 0.8.0 during the run."
+  ]
+}

@@ -1,0 +1,395 @@
+{
+  "schema": 1,
+  "ade": "paseo",
+  "app": {
+    "path": "/Applications/Paseo.app",
+    "version": "0.15.0",
+    "bundleSha256": "5e8685a0b860a9708cb130109492c097c88a3677ca2f207cf901a4ec2fde937e",
+    "processNames": [
+      "Paseo",
+      "Paseo Helper",
+      "Paseo Helper (Renderer)",
+      "Paseo Helper (GPU)",
+      "Paseo Helper (Plugin)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Paseo",
+    "bundleId": "sh.paseo.desktop",
+    "composerRect": {
+      "x": 559,
+      "y": 845,
+      "w": 800,
+      "h": 90
+    },
+    "activeComposerRect": {
+      "x": 559,
+      "y": 845,
+      "w": 800,
+      "h": 90
+    },
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 330,
+      "y": 75,
+      "w": 1260,
+      "h": 780
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 0,
+        "y": 815,
+        "w": 320,
+        "h": 145
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.paseo",
+      "~/Library/Application Support/Paseo"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      "Library/Application Support/Paseo/Local Storage",
+      ".paseo/server-id"
+    ],
+    "jsonKeys": [
+      {
+        "file": "~/.paseo/config.json",
+        "keys": {
+          "version": 1,
+          "daemon": {
+            "listen": "127.0.0.1:6767",
+            "relay": {
+              "enabled": false
+            },
+            "mcp": {
+              "enabled": true,
+              "injectIntoAgents": false
+            }
+          }
+        }
+      },
+      {
+        "file": "~/Library/Application Support/Paseo/desktop-settings.json",
+        "keys": {
+          "version": 1,
+          "settings": {
+            "releaseChannel": "stable",
+            "notifications": {
+              "playSound": false
+            },
+            "daemon": {
+              "manageBuiltInDaemon": true,
+              "keepRunningAfterQuit": false
+            }
+          },
+          "migrations": {
+            "legacyRendererSettingsImported": true,
+            "daemonStopOnQuitDefaultApplied": true
+          }
+        }
+      }
+    ]
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 2500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "keys",
+        "combo": "cmd+o"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1200
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 3000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 660,
+          "y": 545
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "type",
+        "text": "claude-opus-5-5"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 670,
+          "y": 201
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 773,
+          "y": 545
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 773,
+          "y": 395
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 893,
+          "y": 545
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 869,
+          "y": 503
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 700
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 900,
+          "y": 484
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "wait",
+          "ms": 300
+        }
+      ],
+      "codex": [
+        {
+          "kind": "keys",
+          "combo": "cmd+k"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "type",
+          "text": "${model}"
+        },
+        {
+          "kind": "wait",
+          "ms": 600
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "keys",
+          "combo": "cmd+k"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "type",
+          "text": "Full Access"
+        },
+        {
+          "kind": "wait",
+          "ms": 600
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 400
+        },
+        {
+          "kind": "keys",
+          "combo": "cmd+k"
+        },
+        {
+          "kind": "wait",
+          "ms": 500
+        },
+        {
+          "kind": "type",
+          "text": "high"
+        },
+        {
+          "kind": "wait",
+          "ms": 600
+        },
+        {
+          "kind": "enter"
+        },
+        {
+          "kind": "wait",
+          "ms": 400
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "sh.paseo.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+a"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+alt+left"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+alt+1"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.paseo"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "99ZMJMKU9Y",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.3: agents launch agents through Paseo tools or the CLI. The tools need injectIntoAgents true (off by factory); the trigger line and that setting need a real C1 run." },
+  "notes": [
+    "masks: none recorded. Candidate animated elements found in the bundle: the agent working/connecting status dot and spinner in the sidebar, streaming text in the timeline, relative timestamps, the context/usage meter, and the daemon connection pill.",
+    "focusClick: null. Paseo binds Cmd+L to 'Focus message input' (message-input-focus-cmd-l-mac) and focuses the composer when a new agent tab opens; the GUI must confirm the probe types without a click.",
+    "openProject uses Cmd+O ('Open project', action agent.new). Do NOT use open --args: a second instance with a path opens a second window (dist/main.js second-instance -> desktopWindowOwner.openAdditional), and the echo timer captures one window.",
+    "timed.newThread is Cmd+Shift+A ('New agent', workspace.tab.target.agent) and needs an open workspace. Cmd+N is 'New workspace', not a thread. Cmd+O is 'Open project'.",
+    "No app sign-in. Claude runs the system `claude` CLI (provider manifest defaultBinary claude) and Codex runs `codex app-server`; both read the account's ~/.claude and ~/.codex. No login files to keep.",
+    "Data: PASEO_HOME defaults to ~/.paseo (server/dist/server/server/paseo-home.js) holding config.json, agents/, projects/projects.json, projects/workspaces.json, worktrees/. Electron userData is the default ~/Library/Application Support/Paseo (app.setName('Paseo') before ready), holding desktop-settings.json and the renderer storage. reset moves both.",
+    "desktop-settings.json keys: releaseChannel stable, notifications.playSound false, daemon.manageBuiltInDaemon true, daemon.keepRunningAfterQuit false (factory). config.json keys: daemon.relay.enabled false (factory), daemon.mcp.enabled true, daemon.mcp.injectIntoAgents false (factory; the persisted default resolves to false in config.js).",
+    "Orchestration: agents can create agents only through the injected Paseo MCP tools (create_agent, create_workspace) or the `paseo` CLI. injectIntoAgents is false by factory and gates those tools (bootstrap.js setPaseoToolsEnabled(config.mcpInjectIntoAgents !== false)). The CLI lives in the bundle and is only linked into ~/.local/bin by an explicit install action (dist/integrations/cli-install), so it is not on PATH by default. C1 therefore needs injectIntoAgents true, which would also add the Paseo tools to every Track B request; the profile keeps the factory value, so orchestrationTrigger is null until the harness can enable it for Track C only. The GUI session should verify the Bypass/Full Access mode labels and whether a lead agent sees Paseo tools.",
+    "configure uses the command center (Cmd+K, action command-center.toggle) because Paseo has no keyboard shortcut for the model picker. This is UNVERIFIED: the GUI session must confirm that typing a model slug, 'Bypass' and 'Full Access' highlights the matching command and that Enter applies it to the draft agent; adjust or remove the steps if not.",
+    "Mode labels from provider-manifest.js: Claude default 'Auto mode' (id auto), pin 'Bypass' (id bypassPermissions); Codex default 'Auto-review' (id auto-review), pin 'Full Access' (id full-access).",
+    "Auto-update cannot be switched off from config: auto-updater.js sets autoUpdater.autoDownload = true and only exposes releaseChannel stable/beta. A self-update between calibration and the night makes the gate stale.",
+    "waitDone cwd=worktree assumes the agent workspace is the project directory (local isolation). If the GUI shows a managed worktree under ~/.paseo/worktrees for a new agent, change it to any.",
+    "GUI session 2026-10-24 on 0.12.0. Fresh data shows a home with Add project / Import session / Setup providers / Pair device and no onboarding dialog.",
+    "openProject (checked): cmd+o opens 'Search for directory'; typing the absolute path (paste right after cmd+o was lost) and Enter adds the project and lands on 'New workspace' (Local, Chat) with the composer focused (probe-region 583,474 412x18). The composer starts on 'Select model'. Because the profile adapter runs steps.configure before steps.openProject, the model/effort/mode clicks live at the end of openProject: model button (660,545) > type claude-opus-5-5 > click 'Opus 5.5' (670,201; Enter does not pick it); effort (773,545) > High (773,395); mode (893,545) > Bypass (869,503) (list Plan mode, Always ask, Accept file edits, Auto mode, Bypass; factory Auto mode), Escape, click the composer.",
+    "cmd+n opens a new 'New workspace' chat that keeps project, Local, Opus 5.5, High and Bypass (checked). Each chat is its own entry under the project in the sidebar, newest first: cmd+1 = newest (long), cmd+2 = the one before (seed) (checked with two chats).",
+    "Replay (checked): Paseo runs the system claude (/Users/ademark/.local/bin/claude, stream-json, --effort high) with launchd's ANTHROPIC_BASE_URL. Session logs: ~/.claude/projects/-Users-ademark-arena-paseo/. A second claude with --effort medium starts next to it (side/title agent).",
+    "openProject fix (gate 2026-10-24 run 1, screenshots): on a fresh data folder cmd+o first shows an 'Add project' chooser (Search for directory / Browse / Clone from GitHub / New directory) and the typed path was lost; Enter picks the highlighted 'Search for directory' first. When cmd+o goes straight to the search field (seen once a project exists), that Enter on an empty field does nothing.",
+    "Gate 2026-10-24 run 2: once a chat exists, cmd+n opens a new agent TAB in the same workspace (tab strip under the header) whose composer is docked at the bottom (text y 857-920), not the centred 'New workspace' composer; A3 typed into the bottom composer while it watched y 474 and timed out. composerRect is now the bottom composer. A11 open passed with cmd+1; switch (cmd+2) timed out: agents are tabs, so cmd+1/cmd+2 (workspace jump) and the tab order still need a check.",
+    "A11 on 0.15.0 (repair 2026-11-06, checked on the screen): the project is one workspace and every agent is a tab, so cmd+1/cmd+2 (Jump to workspace) never moved and the long thread stayed open. shortThread is cmd+alt+1 (Jump to tab, absolute, so a repeat is harmless): tab 1 is the block's first seed thread, replay:seed, whose reply holds 'unchanged'. longThread is Previous tab from tab 1, which wraps to the last tab (the handler is (index+delta+n)%n), and A11 builds its long thread last. Jump to tab stops at 9 and tab count depends on test order, so no index reaches the long thread.",
+    "Previous tab's default is Alt+Shift+[ and the native helper has no [ key, so the seed rebinds it to Alt+Cmd+Left: Settings > Shortcuts writes @paseo:keyboard-shortcut-overrides to Local Storage. The seed is Local Storage from a clean launch plus .paseo/server-id, because @paseo:daemon-registry names that server; daemon-keypair.json is not seeded. The rebind changes one key only, and the command center also lists the agent (cmd+k, 'long'), but that route would add its typing to the timed open.",
+    "After a turn ends Paseo collapses the tool calls of the long thread to 'Read 1 file' above LONGTHREAD-END, so the reopened thread is short on screen and A11 scroll has little to move.",
+    "bench/adapters/paseo.ts holds waitDone for replay:long-2000 until THREAD-END is on screen: the thread paints about 9 steps a second after the session log ended, only while its tab is open, and A11 must not start before the paint ends.",
+    "Positions checked on 0.15.0, window points: the bottom composer box is x 550-1370, y 868-984, and probe-region found the typed line at 567,886 412x18 (ocr_found false, so composerRect stays; it contains that line). The tab strip is at y 54, above threadRect, and the thread column ends above the composer, inside threadRect. The sidebar card at the bottom left (update offer, then 'Set up worktree scripts') sits under the mask.",
+    "A4 is not settled. The nights of 2026-11-05, on this same 0.15.0, timed out on 15 of 26 repetitions: the first frame shows the empty tab's 'Import session', then the prompt and 'Worked for 0s', and LEDGERMARK never shows. A smoke gate runs one A4 repetition, and the failures began at repetition 3 and 5, so the passing gates of 2026-11-06 do not rule it out. Their cause is not known; A11 left the long thread half painted on those nights, and whether that caused it is unchecked."
+  ],
+  "agentGuide": "Cmd+Shift+A opens a new agent tab and Cmd+L focuses its message box. Never open a second window."
+}

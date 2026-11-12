@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "ade": "super-engineering",
+  "app": {
+    "path": "/Applications/super.engineering.app",
+    "version": "15aae8f8",
+    "bundleSha256": "efef5274024b69e8ca7993ef348e064521347f8fd300a9860e7d488f867e9df8",
+    "processNames": [
+      "super.engineering"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "super.engineering",
+    "bundleId": "engineering.super.app",
+    "composerRect": {
+      "x": 430,
+      "y": 820,
+      "w": 420,
+      "h": 60
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 420,
+      "y": 480,
+      "w": 760,
+      "h": 320
+    },
+    "focusClick": {
+      "x": 800,
+      "y": 848
+    },
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.super.engineering"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      ".super.engineering/settings.json",
+      ".super.engineering/tool-status.json"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/super.engineering.app/Contents/MacOS/sc",
+          "workspace",
+          "open",
+          "${worktree}",
+          "--activate",
+          "--json"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+l"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      }
+    ],
+    "configure": {
+      "claude": [],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "engineering.super.app"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+t"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+p"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "long-2000"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+p"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "replay:seed"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "enter"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.super.engineering"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "MR38E36N26",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "Use the `sc` CLI to orchestrate this change.",
+  "orchestration": {
+    "settings": [
+      {
+        "file": "~/.super.engineering/settings.json",
+        "path": [
+          "experimental",
+          "agent_orchestration"
+        ],
+        "value": true
+      }
+    ],
+    "workers": "sessions"
+  },
+  "notes": [
+    "GUI-calibrated 2026-11-07 (repair attempt 1, build 15aae8f8, bundleSha unchanged) on the real 1600x1000 window. composerRect 430,820,420,60: the chat composer sits at the bottom of the center pane (text line y 840-858) in an empty tab, in a thread with messages and right after relaunch, so activeComposerRect and launchComposerRect are null. probe-region gave 449,837,112,21, but Vision misreads the 12 pt text in that tight box ('ademHrkq'); 430,820,420,60 read 'ademarkqz' in every frame checked, and it leaves out the send button (1154,913), which turns orange when text is typed. threadRect 420,480,760,320 covers the bottom of the message column where the last turn shows, kept at 320 pt tall because tall regions made watch OCR misread small text (MonoCode). focusClick 800,848 is inside the composer: after relaunch and after a tab switch the composer is not focused ('cmd+L to focus chat'), and an ademark-native click there focuses it (checked).",
+    "timed.newThread is cmd+t (File > New Tab): a new Claude chat tab in the same worktree, composer focused. cmd+n is File > New Worktree: it makes ~/.super.engineering/worktrees/<project>/sc-<name> and the agent runs there, which is why prove-1 B1 (2026-11-07) timed out with 'no session log' (the captured request had cwd .../worktrees/super-engineering/sc-tunneled-boson-77f0) while waitDone looked in the arena worktree. With cmd+t the session log is ~/.claude/projects/<worktree>/<id>.jsonl (checked), so waitDone cwd stays worktree.",
+    "A11: cmd+1..9 are 'Activate Navigation Slot' and select worktrees, not tabs (Settings > General 'Use Cmd+number to switch tabs' is off by factory and left off); Next/Previous Tab are cmd+shift+] / [, which ademark-native keys cannot post; ctrl+tab does nothing. So longThread/shortThread open the command palette (cmd+p, 'Toggle Command Palette'), type text from the thread's user message and press Enter: the palette matches conversation message text and lists matches newest first (checked with two tabs holding the same prompt: the newer was first). 'long-2000' matches only the long thread; 'replay:seed' matches the newest seed thread, which is A11's short thread made just before the long one.",
+    "Seed (reset.seeds): fresh data shows onboarding (default harness, approval mode, chat view, sidebar). Done once in the GUI: Claude Code with Opus 5.5 (factory preselected), approval 'Bypass' (pin: full access; settings.json ai_execution.starting_permission_modes all bypass, Codex shows 'Full access'), chat view 'Chat UI' (factory), sidebar 'Compact' (factory). Then Settings > General: Enhance prompt off (enhance_prompt false), Automatic network update checks off (provider_update_checks false); Settings > Privacy: Share anonymous usage data off (telemetry.enabled false). onboarding_completed lives in tool-status.json, so the seed is settings.json plus tool-status.json, saved with save-seed.sh before any project was opened (projects [], no threads). A launch on only these two files went straight to the home screen with all three settings kept (checked).",
+    "Model and effort: Settings > Routing shows Session default 'CLI default, Detected: Opus 5.5, High' and settings.json ai_routing.defaults.session_default is claude_code / claude-opus-5-5; the composer shows 'Opus 5.5 High' (right after relaunch it can read 'CLI default High' until detection finishes). steps.configure stays empty.",
+    "Update: build 15aae8f8 downloads the nightly update (d678fcc) into ~/.super.engineering/update-cache on its own and shows 'Update' and 'Restart to update'; never press them. Quitting does not install it (bundle SHA checked after quit), and /Applications/super.engineering.app belongs to the owner's account, so this account cannot replace it. The seed leaves update-cache out.",
+    "Masks stay empty: an echo (cmd+t then probe) reported dirty rect 0,0,1600,1000 in 38 of 47 frames, because GPUI repaints the whole window, so no mask can make it settle (settling is not a validity condition). Ready came at 186 ms. Native app (GPUI, Rust): no CDP, no Electron, and the Accessibility tree shows only the window buttons. Profiles never use Accessibility.",
+    "Clicks: on the first-run onboarding screens an ademark-native click only hovered the Continue button (twice); a physical click from agent-desktop --headed worked. In the main window (tabs, composer, search icon) ademark-native clicks work. The seed skips onboarding, so no profile step clicks there.",
+    "Data folder: https://super.engineering/docs/cli-local-api/ says fresh launches create ~/.super.engineering (or ~/.super.engineering-dev for development), and upgraded profiles keep their original home with a symlink. The folder does not exist in the owner's account, which never launched the app. The ~/.superconductor path from an earlier note does not appear in the current docs, so do not use it.",
+    "Orchestration (C1 only): enable Settings > Experimental > Agent orchestration (https://super.engineering/docs/agent-orchestration/). The trigger line is the vendor's own recommended invocation, 'Use the sc CLI to orchestrate this change.' from the same page. The docs warn against prescribing team topology; the C1 prompt does this, so this is a known tension to record in REPORT.",
+    "steps.openProject runs the bundled sc CLI: sc workspace open <worktree> --activate --json (checked 2026-11-07: it answered created/activated and the window showed the project's main worktree with one Claude chat tab, in a new 'arena' workspace beside 'Default'), then waits 1.5 s and presses cmd+l ('focus chat') so the composer has focus. The sc CLI needs the app open, so this runs after launch. Do not use alt+cmd+left/right: they switch workspaces.",
+    "Login: the docs say the app brings the user's coding-agent CLIs and accounts (https://super.engineering/docs/ intro), so login.kind is agent-cli. ADES 3.13 says the chat UI uses non-interactive claude -p unless the Compliant Claude view beta is on; that changes billing and must be checked in the GUI. Checked 2026-11-07: the chat UI runs the system claude 2.1.303 through the Agent SDK (captured User-Agent claude-cli/2.1.303 (external, sdk-cli)); 'Compliant Claude view' (beta) is off by factory and left off.",
+    "Processes: the bundle has no helper apps. Contents/MacOS holds super.engineering and sc; Contents/Resources/bin holds the sc binaries. So processNames is only super.engineering. ADES 3.13 says the process list is unknown; confirm with ademark-native procs during the GUI session.",
+    "waitDone cwd is worktree: a chat in a cmd+t tab wrote ~/.claude/projects/-private-tmp-se-cal-arena/<id>.jsonl for the scratch folder /tmp/se-cal/arena (checked 2026-11-07). idleFallback stays false.",
+    "2026-10-24: the build renamed its bundle to /Applications/super.engineering.app on first launch; adapter, profile and pin now use that path.",
+    "Repair 2026-11-07 attempt 1 gate results (calibrate gate --runs 1 --scratch --agent claude,own). With ADEMARK_BASELINE set (run control-2026-11-07T08-15-55Z) both tries stop at the contamination check before super.engineering is driven: bare claude body 9f4eb621... != baseline 3039327d..., the same drift outside the ADE that stopped prove-2 B for this ADE and for monocode, diri and the others; no file of this ADE can change it, so the orchestrator must find the drift or re-baseline the run. Diagnostic run with the baseline unset (gate-super-engineering-2026-11-07T11-28-57Z-1, this profile): reset with the seed, launch, sc open, cmd+t, paste and Enter all work, every waitDone found end of turn in ~/.claude/projects/-Users-ademark-arena-super-engineering/, and every test except A11 passed.",
+    "A11 open still times out, and no profile field can fix it: the chat UI drains a long turn far behind the CLI. The 2000-message thread's session log ended at 06:32:26 (waitDone done), but the open tab still showed a live 'Step N of 1000' ticker: step 544 in frames-setup and 557-560 in frames-open 6 s later, about 7 steps/s, so LONGTHREAD-END appears about a minute after the log ends, after the 30 s open watch. The palette did open the long thread at about 1.04 s after t0 (frames-open: 'replay:long-2000 ... Step 1 of 1000'); the switch back with 'replay:seed' passed at 1032 ms (the trigger's two 400 ms waits are part of that time). Later, once caught up, the same tab shows 'Step 1 of 1000 / Read 1 file / LONGTHREAD-END ... 1001 turns' inside threadRect (checked). waitDone.idleFallback only applies when no session log is found, so A11 needs the harness to wait until the long thread's end is on screen before the first repetition.",
+    "2026-11-11, C1: the seed's settings.json has experimental.agent_orchestration false (Settings > Experimental > Agent orchestration), and the app binary answers every orchestration command with 'agent orchestration is disabled in super.engineering settings' while it is off. A Track C block sets it true after the reset and before the launch (orchestration.settings); every other track keeps the vendor's default. Its orchestration is the sc CLI (sc team run, sc agent send, sc layout run), which opens chats of their own, so C1 needs two client sessions at work (orchestration.workers)."
+  ],
+  "agentGuide": "Cmd+T opens a new chat tab; Cmd+N makes a new worktree, which is not what we want. The chat box is at the bottom of the center pane."
+}

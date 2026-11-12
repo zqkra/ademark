@@ -1,0 +1,78 @@
+---
+
+const rows = [
+  {
+    key: "Setup",
+    value:
+      "One Mac mini M4 with 16 GB on macOS 27, with the display at 60 Hz. The tests run in a macOS user that exists only for the benchmark. One app is open at a time and nothing runs but the harness. All apps work on the same repo commit with the same AGENTS.md and the same prompts, byte for byte.",
+  },
+  {
+    key: "As shipped",
+    value:
+      "Each app runs the way its maker ships it. We add no skills, plugins, MCP servers or instructions, and a clean Claude Code config is restored before each app. We set only what has to match: Claude Opus 5.5 at high effort, full access inside the app's own worktree and no automatic model routing. Orca, super.engineering and Capy have their experimental orchestration switched on for the build test only. Capy runs its own agent, so its numbers include it. Cloud modes are not tested.",
+  },
+  {
+    key: "Speed and weight",
+    value:
+      "A replay server on the Mac answers in place of the model, so the time measured belongs to the app and not to the network. A probe keystroke and the frame where it appears time all apps the same way. Memory and CPU count every process the app is responsible for, agents included.",
+  },
+  {
+    key: "Tokens and builds",
+    value:
+      "Requests go to Claude for real and are read from a network capture of all the app's processes. Side calls for titles and branch names count too. Dollars use Anthropic's API prices. Hidden tests that the agents never see grade the build.",
+  },
+  {
+    key: "Counting",
+    value:
+      "Work began on 18 October. Every number here comes from the last complete run, which ended on 12 November, since runs are never mixed. Each one is the median of the valid runs of one attempt. A test runs again only when it has fewer valid runs than its minimum, and the new attempt counts whatever it shows. Ranks order the medians. Tie intervals come with the full release.",
+  },
+  {
+    key: "Gaps",
+    value:
+      "“Did not finish” means the app could not complete the test. “Not measured” means our harness could not measure it, and that says nothing about the app. Neither enters a rank, and the Report gives the cause of each one.",
+  },
+];
+
+---
+<section id="method" class="section">
+  <div class="wrap">
+    <h2 class="section-title">Method</h2>
+    <dl class="rows">
+      {rows.map((row) => (
+        <div class="row">
+          <dt>{row.key}</dt>
+          <dd>{row.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+  </div>
+</section>
+
+<style>
+  .rows {
+    margin: 0;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 780px);
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  dt {
+    font: 600 16px/24px var(--font-sans);
+  }
+  dd {
+    margin: 0;
+    font: 400 16px/24px var(--font-sans);
+  }
+
+  @media (max-width: 720px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

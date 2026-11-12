@@ -1,0 +1,17 @@
+id = "C4-agent-killed"
+version = "1.0.0"
+track = "C"
+model = "claude"
+mode = "local"
+thread = "new"
+prompt = "prompt.md"
+time_cap_s = 900
+grade_groups = ["W3-cursor"]
+
+[fault]
+kind = "agent_kill"
+at_s = 90
+
+[recovery]
+wait_s = 60
+message = "continue"

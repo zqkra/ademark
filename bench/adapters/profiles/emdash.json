@@ -1,0 +1,358 @@
+{
+  "schema": 1,
+  "ade": "emdash",
+  "app": {
+    "path": "/Applications/Emdash.app",
+    "version": "1.2.10",
+    "bundleSha256": "e7af1ede11bce959a6f50c50bb9702864907760e26bd47a5489494246f48e895",
+    "processNames": [
+      "Emdash",
+      "Emdash Helper",
+      "Emdash Helper (GPU)",
+      "Emdash Helper (Plugin)",
+      "Emdash Helper (Renderer)"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Emdash",
+    "bundleId": "com.emdash.stable",
+    "composerRect": {
+      "x": 565,
+      "y": 558,
+      "w": 470,
+      "h": 32
+    },
+    "activeComposerRect": {
+      "x": 328,
+      "y": 908,
+      "w": 1260,
+      "h": 26
+    },
+    "launchComposerRect": {
+      "x": 328,
+      "y": 804,
+      "w": 1060,
+      "h": 26
+    },
+    "newThreadComposerRect": {
+      "x": 565,
+      "y": 558,
+      "w": 470,
+      "h": 32
+    },
+    "threadRect": {
+      "x": 328,
+      "y": 85,
+      "w": 1260,
+      "h": 780
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 1290,
+        "y": 5,
+        "w": 300,
+        "h": 30
+      },
+      {
+        "x": 425,
+        "y": 45,
+        "w": 30,
+        "h": 30
+      }
+    ],
+    "drive": "cdp",
+    "dataDirs": [
+      "~/Library/Application Support/Emdash",
+      "~/emdash"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 799,
+          "y": 638
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "clone",
+          "--quiet",
+          "--bare",
+          "${worktree}",
+          "${worktree}/.git/ademark-origin.git"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "remote",
+          "add",
+          "origin",
+          "${worktree}/.git/ademark-origin.git"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "fetch",
+          "--quiet",
+          "origin"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "branch",
+          "--set-upstream-to=origin/main",
+          "main"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 826,
+          "y": 450
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "type",
+        "text": "arena"
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 1003,
+          "y": 548
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+g"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 576,
+          "y": 533
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 600
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "wait",
+          "ms": 300
+        }
+      ],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.emdash.stable"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 770,
+          "y": 573
+        }
+      }
+    ],
+    "send": [
+      {
+        "kind": "keys",
+        "combo": "cmd+enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 150,
+          "y": 132
+        }
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 150,
+          "y": 164
+        }
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Emdash",
+      "~/emdash"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "2AZ6648627",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": null,
+  "notes": [
+    "bundleSha256 is the main binary SHA-256 (Contents/MacOS/Emdash), the value gates.ts compares with installed binarySha256.",
+    "userData is appData/emdash, which is ~/Library/Application Support/emdash (applyIdentity in index-D75PbGY3.js, USER_DATA_DIR_NAME emdash in boot-guard). The databases sit there: emdash4.db (current), emdash3.db, emdash.db, conversations.db, workspace-registry.db, pull-requests.db, mementos.db (index-DsWXTM2W.js). The folder is not on disk yet on this account.",
+    "Worktrees and the projects folder default to ~/emdash/worktrees and ~/emdash/repositories (index-DsWXTM2W.js). The adapter's old dataDirs entry (~/emdash/worktrees) was a worktree root, not the database folder.",
+    "login.kind is agent-cli: Emdash's own sign-in is optional (onboarding has a Skip for now button), and it runs the account's claude and codex CLIs in node-pty.",
+    "autoApprove is a provider preference (ptyPreferenceSchema, default false, index-DsWXTM2W.js) stored in the app, not in a settings file, so it is a GUI setting. ADES 3.9 wants it on. Without it, approval prompts block unattended runs.",
+    "Launch-time writes: Claude hooks go to settings.json under CLAUDE_CONFIG_DIR or ~/.claude, and Codex hooks to config.toml (agents-gIvWhVSs.js). Skills go to .agentskills inside the project, and only on explicit install or create (runtimes-agent-config-node-CfzT-wi7.js). Skills are not global. Hook timing (launch or first thread) was not verified.",
+    "Telemetry: boot-guard reads telemetryEnabled (default true unless the value is false, 0 or no); no envPrefix is set, so the env name is the raw key. A stored userOptOut flag also exists. Opt-out is a GUI item. Auto-update: a 60-minute check interval and a 30-second startup delay (update-service-CKQ1sk2P.js). Whether downloads install automatically was not confirmed.",
+    "orchestrationTrigger null matches ADES 3.9 (orchestration not supported). No launch agent label appears in the bundle, so launchAgents is empty. The helper executables match the bundle names (Contents/Frameworks).",
+    "GUI session 2026-10-24 on 1.2.8. Fresh data: 'Connect GitHub' sign-in (Skip for now 799,638), then 'Welcome. Start shipping' (cmd+enter), then the project home. macOS asked for microphone access on first launch (denied once; TCC keeps the answer). An 'Update' button sits in the sidebar footer; the version stayed 1.2.8.",
+    "openProject (checked): a task needs a push remote ('Error creating task: Cannot publish the task branch because the repository has no push remote'), so the same local bare origin as Conductor is made inside .git. Home 'Open project' (826,450) opens 'Add Project' (name field focused; Choose 1003,548 opens the macOS panel; cmd+shift+g path Enter Enter; cmd+enter Create). The project page shows Tasks with 'Create Task (cmd+n)'.",
+    "Threads are tasks: cmd+n opens a 'Create Task' modal (task name focused, agent Claude Code, 'Auto-approve permissions' toggle at 576,533, prompt box, Model...). openProject ends by turning Auto-approve on (it persists in the app across tasks; reset clears it). timed.newThread is cmd+n plus a click in the prompt box; timed.send is cmd+enter (Create). On 1.2.10, with Model left at 'Model...' and auto-approve on, the task starts `claude --session-id ... --dangerously-skip-permissions <prompt>` in a terminal tab and Claude Code reports 'Opus 5.5 with high effort' (the ~/.claude snapshot). The 1.2.8 `--model opus[1m]` flag is gone.",
+    "Repair 2026-11-06 on 1.2.10 (1.2.11 is offered in Settings and by the sidebar Update button; declined). First-run, Open project, modal and composer positions were read on the real window and did not move.",
+    "Workspace mode (checked): a default task runs in ~/emdash/worktrees/<project>-<hash>/<project>-<task>-<id>. Track B (shared.ts) and Track C look for the session log by cwd equal to ctx.worktree, so B1 and B3 had 'no session log', and a task never changes files in the arena. emdash.ts newThread now picks 'Use the repository directory' in Workspace Settings, so the agent runs in ~/arena/emdash, its log is in -Users-ademark-arena-emdash, and waitDone cwd is worktree. Two tasks in the same folder work. DEVIATION to record: Emdash's default is a new worktree per task, and A4 and Tracks B and C now skip that worktree creation. ADES 3.9's check 'the worktree exists under ~/emdash/worktrees' no longer applies, and TESTS Track C allows 'a local worktree or checkout'. A3 still times only cmd+n and the prompt click, as in the default mode, and creates no task.",
+    "Settings 'Create branch and worktree by default' does not choose the repository directory: off only moves the modal from 'Create new branch' to 'Checkout branch'. The renderer's defaultPreset gives repo-root only for an unborn or non-git project. No setting or JSON key does it, so the choice is made per task.",
+    "Telemetry: Settings > General > Privacy & Telemetry stores kv telemetry:enabled in emdash4.db. emdash.ts clicks the switch once after each reset (it was on before this repair, against the ADES 3.9 pin). The switch point assumes the 'An update is available' card is shown; it was there on fresh data within 15 s. Settings search does not filter the page. Check with: select value from kv where key='telemetry:enabled'.",
+    "Quit: with an agent session alive, quit shows 'Quit Emdash? N running agent sessions may be stopped' with Cancel focused. Return cancels (checked), which is the old A1/A2/A9 quit failure; cmd+enter is Quit (checked). emdash.ts quit and reset press cmd+q then cmd+enter.",
+    "The git origin steps of openProject stay: they are what a default worktree task needs, and the repository directory mode does not push.",
+    "Launch (checked): Emdash keeps no window bounds, so every launch opens at 1400 x 900 and timed.launch does not resize it. It reopens the last view, the last task's Claude Code TUI with the prompt focused. launchComposerRect is in that 1400 x 900 window: probe-region found the text at 344,809,78,15 with no focus click. composerRect is the modal's prompt box, so A1 and A2 timed out while the probe text filled the TUI. Harness note: this rect breaks CALIBRATE rule 5 on purpose, because the launch window is not 1600 x 1000.",
+    "A11 (checked on 1.2.10): the sidebar lists a project's tasks newest first by creation, and selecting a task does not reorder them. A11 builds the short thread and then the long one, so row 1 (150,132) is long and row 2 (150,164) is short. Creating a task expands a collapsed project. cmd+alt+up/down are relative, so they cannot serve: rep 2 starts on the short thread.",
+    "Mask 425,45,30,30 is the tab's working spinner next to 'Claude (1)' (dirty 431,51,18,18 in the A1 and A2 frames).",
+    "A4 repair 2026-11-06 on 1.2.10 (checked on the real window; positions did not move): reps 2-4 of the control run were false first words. The Create Task modal opens over the last task, so the watch read the previous rep's LEDGERMARK in the thread rect in the first frames after t0 (2-3 frames), and the replay log was read before the request came (it came about 600 ms later). The next rep then started while the task was opening, so cmd+n was lost and rep 3 typed into the TUI. emdash.ts newThread now clicks the project row (75,100) twice first: the project page lists task names only, and the modal keeps its positions there. Twice because A3 leaves its modal open, and with a modal open a row click only closes it (checked). Smoke gates run one rep per test, so a gate cannot show this; it needs two A4 reps in a row.",
+    "waitDone repair 2026-11-06 (checked): all tasks share ~/arena/emdash, so the default waitDone took the end of turn of an A10 stream (session 4813e230, replay:stream-3) as the end of the long A11 thread. A11 setup started 33 s before the last long-2000 request, the thread was still at step 489, and 'open' timed out; the earlier gates passed only because they started 15 s before it, and their 15 s 'open' was the agent still working. emdash.ts now waits, after a task's first send, for a log born after that send.",
+    "A3 newThreadComposerRect (ADEMARK-55), checked 2026-11-10 on 1.2.10 with control-2026-11-10T08-31-19Z-emdash-1/emdash/A3/rep-02/video.mov. cmd+n opens a Create Task modal over the old thread, which stays on screen behind it, so the old thread's marker never goes: the night's 17.9 s came from one frame where OCR missed it. The proof is the echo in the modal's prompt box instead. At 0 s, before cmd+n, the old thread's transcript is at y 100 to 250, its composer (the Claude Code input) at y 921, and nothing is drawn at y 551 to 636. At 3 s the prompt box is x 561 to 1039, y 551 to 636, text line at y 573, and the old transcript and composer are still in the same places, outside it. newThreadComposerRect (x 565 to 1035, y 558 to 590) overlaps neither them nor activeComposerRect (y 908 to 934). If cmd+n fails, the probe goes to the old composer at y 921, and the Claude Code TUI shows no typed text in its transcript before Enter, so nothing is ever read in this region.",
+    "A3 timed.newThread keeps its wait of 800 ms and the click on the prompt box (770,573), checked 2026-11-10 on the same video. The modal opens with the caret in the task name field (giant-deer-own, frames at 0.18 and 0.4 s), so without the click the probe types the task name. The modal is drawn about 150 ms after cmd+n, and the echo's own focusClick is posted right after the triggers with no wait, so it would land on the old thread. The 800 ms is a fixed wait inside the stopwatch: A3's notes give it as fixed_wait_ms. A real fix needs a trigger that waits for the modal (native helper).",
+    "A1 and A2 checked 2026-11-10 (ADEMARK-55, low spread on a long time): the first read is the first frame with any text in launchComposerRect, 7 characters in A2 (about 1.95 s into the video) and 10 to 13 in A1 (about 2.2 s). Before it the Claude pane is blank (A2 rep-01 video at 1.6 and 1.85 s): the terminal buffers the keys, and Claude Code draws its input already holding them. The times (A1 about 4.2 s, A2 about 3.1 s) are the real start of the CLI inside the app."
+  ],
+  "agentGuide": "Work happens in tasks. Cmd+N opens the new task dialog, and its Create button starts the task with the agent."
+}

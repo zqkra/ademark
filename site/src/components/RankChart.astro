@@ -1,0 +1,59 @@
+---
+// One test, every ADE ranked by its median. Gray runs up to the Bare CLI line, pink is what the app adds on top.
+// Apps without a number close the list as quiet rows; the Report says why.
+import Mark from "./Mark.astro";
+import Missing from "./Missing.astro";
+import { BARE, metric as metricOf, ranked, stat, type Chart } from "../data/results";
+import { delta, fmt, nb } from "../data/format";
+
+interface Props {
+  chart: Chart;
+}
+const { chart } = Astro.props;
+const metric = metricOf(chart.test);
+const rows = ranked(metric.key);
+const ref = stat(BARE, metric.key)?.m ?? 0;
+const max = Math.max(ref, ...rows.map((r) => r.stat.m));
+const base = ref / max;
+const side = (id: string, v: number) =>
+  chart.side === "usd" && chart.usdKey ? fmt(stat(id, chart.usdKey)?.m ?? 0, "USD") : delta(v, ref);
+---
+<article class="card chart" data-test={chart.test}>
+  <h3 class="chart-title">{nb(chart.title)}</h3>
+
+  <div class="tax" style={`--base:${base}`}>
+    <div class="tax-top">
+      <div class="legend">
+        <span><i class="sq dim"></i>Up to the Bare CLI</span>
+        <span><i class="sq pink"></i>More than the Bare CLI</span>
+      </div>
+      <div class="plot-label">
+        <span class:list={["bare-label small", { flip: base > 0.72 }]}>Bare CLI {fmt(ref, metric.unit)}</span>
+      </div>
+    </div>
+    {rows.map((row) => {
+      const v = row.stat.m;
+      const low = Math.min(v, ref) / max;
+      const extra = Math.max(0, v - ref) / max;
+      return (
+        <div class="tax-row" data-family={row.app.family}>
+          <span class="rank">{row.rank}</span>
+          <div class="name">
+            <Mark app={row.app} />
+            <span>{row.app.name}</span>
+          </div>
+          <div class="plot" style={`--low:${low};--extra:${extra};--end:${v / max}`}>
+            <span class:list={["base", { solo: extra === 0 }]}></span>
+            {extra > 0 && <span class="extra"></span>}
+            <span class="line"></span>
+            <span class="val">
+              <b>{fmt(v, metric.unit)}</b>
+              <em>{side(row.app.id, v)}</em>
+            </span>
+          </div>
+        </div>
+      );
+    })}
+    <Missing test={chart.test} has={rows.map((r) => r.app.id)} />
+  </div>
+</article>

@@ -1,0 +1,27 @@
+{
+  "ade": "diri",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T15:21:03.897Z",
+  "harnessCommit": "b81ed8a72b55ddd748b4ad39cfef180a66b37076",
+  "version": "0.11.2",
+  "bundleSha256": "0ab268ca09451414fd0c09ca531a9e4168c3d026f0b4c842536d6b80e713cf66",
+  "failures": [
+    "diri A7 app-p95: fewer than 5 agents for 17 s",
+    "diri A7 agents-p95: fewer than 5 agents for 17 s",
+    "diri A7 total-p95: fewer than 5 agents for 17 s",
+    "diri A7 app-peak: fewer than 5 agents for 17 s",
+    "diri A7 per-agent-p95: fewer than 5 agents for 17 s",
+    "diri A7 agent-count: fewer than 5 agents for 17 s",
+    "diri A11 open: the short thread did not show before the open",
+    "diri A11 scroll-gaps: the short thread did not show before the open",
+    "diri A11 scroll-max-gap: the short thread did not show before the open",
+    "diri A11 switch: the short thread did not show before the open",
+    "diri A3 default-mode: old-thread draft not read in the composer: [\"> HOLLOI*INEI\"]",
+    "diri A4 total: timed_out",
+    "diri A4 before-request: timed_out",
+    "diri A4 on-screen: timed_out",
+    "diri A2 relaunch: gate failure",
+    "diri A1 cold: processes survived"
+  ]
+}

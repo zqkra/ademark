@@ -1,0 +1,9 @@
+id = "B3-real-prompt"
+version = "1.0.0"
+track = "B"
+model = "both"
+mode = "local"
+thread = "new"
+prompt = "prompt.md"
+time_cap_s = 300
+grade_groups = []

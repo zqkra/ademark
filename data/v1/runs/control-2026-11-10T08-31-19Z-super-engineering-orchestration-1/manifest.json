@@ -1,0 +1,29 @@
+{
+ "run_id": "control-2026-11-10T08-31-19Z-super-engineering-orchestration-1",
+ "apps": {
+  "super-engineering": {
+   "version": "15aae8f8"
+  }
+ },
+ "agent_versions": {
+  "claude": "2.1.303 (Claude Code)",
+  "codex": "codex-cli 0.163.0"
+ },
+ "model": [
+  "claude-opus-5-5"
+ ],
+ "effort": [
+  "high"
+ ],
+ "started_at": "2026-11-11T13:22:19.667Z",
+ "ended_at": "2026-11-11T13:42:00.679Z",
+ "test_ids": [
+  "C1"
+ ],
+ "machine": {
+  "model": "Mac16,10",
+  "chip": "Apple M4",
+  "ram_gb": 16
+ },
+ "macos_build": "26A434"
+}

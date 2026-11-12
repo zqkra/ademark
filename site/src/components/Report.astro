@@ -1,0 +1,575 @@
+---
+// The long read: what the numbers say, why some are missing, and what comes next.
+// Every figure here is checked against results.json and orchestration.json. No number is estimated.
+import Mark from "./Mark.astro";
+import { ADES, APPS, ORCHESTRATION, app, coverage, gapsOf } from "../data/results";
+import { nb } from "../data/format";
+
+type Block =
+  | { p: string }
+  | { h: string }
+  | { figure: string; caption: string }
+  | { table: "tests" | "orchestration" | "coverage" | "gaps" };
+
+// What each ranked test measures, in plain words, and why it is worth measuring.
+const TESTS = [
+  { name: "Cold start", what: "Time from launch to typing, with the app fully closed and memory purged.", why: "You pay it after each restart." },
+  { name: "Relaunch", what: "The same, after a normal quit.", why: "The launch most people do every day." },
+  { name: "New thread", what: "From the new-thread action until you can type.", why: "You do it dozens of times a day." },
+  { name: "First word", what: "From Enter to the first word of the answer, with a local server that answers at once.", why: "The delay the app adds before the model even starts." },
+  { name: "Typing lag", what: "Keystroke to pixel while 5 agents stream.", why: "A busy app makes the composer stutter." },
+  { name: "Long thread", what: "Opening and scrolling a thread of about 2,000 messages.", why: "Long sessions reach that size." },
+  { name: "Memory at rest", what: "The app and its agents with 5 idle threads.", why: "On 16 GB it decides how much else fits." },
+  { name: "Idle CPU", what: "CPU and power use while nothing happens.", why: "On a laptop it drains the battery." },
+  { name: "Memory under load", what: "The app and its agents while 5 agents stream for 3 minutes.", why: "The peak you reach in real work." },
+  { name: "Memory per thread", what: "What each extra open thread costs, from 5 to 20.", why: "Most people leave threads open." },
+  { name: "Memory after quit", what: "What is still in memory 60 s after you quit.", why: "Leftover processes keep using RAM after the app looks closed." },
+  { name: "Hello tokens", what: "Every token sent when you type “hi” in a new thread.", why: "The fixed cost of each new thread, paid from your API bill or your plan's limits." },
+  { name: "Request anatomy", what: "What that first request carries: system prompt, tools and MCP tools.", why: "Where the hello tokens come from." },
+  { name: "Real prompt tokens", what: "The same count for one real question answered by reading code.", why: "Closer to normal use than a “hi”." },
+  { name: "Repo rules", what: "Whether the repo's AGENTS.md reaches the agent and is followed.", why: "Your project's rules only work if the app passes them on." },
+  { name: "Build", what: "A lead agent splits 4 work items across workers and merges them, and hidden tests grade the result.", why: "What orchestration is for." },
+];
+
+const chapters: { id: string; title: string; blocks: Block[] }[] = [
+  {
+    id: "report-summary",
+    title: "The short version",
+    blocks: [
+      {
+        p: "We have worked on ADEMark every day since we announced it on 18 October. The numbers on this page all come from the last complete run, which ended on 12 November 2026, because runs from different days are never mixed. All 16 ADEs went through the same tests on one Mac mini M4 with 16 GB. Next to them ran a control called the Bare CLI. It is plain Claude Code in the Ghostty terminal and shows what each app adds to the agent it wraps.",
+      },
+      {
+        p: "The apps ran the way their makers ship them. We added no skills, plugins, MCP servers or instructions. The few settings that had to match are listed in the Method.",
+      },
+      {
+        p: "There is no overall winner. The method fixed no weights before the run, and adding the tests up afterwards would mean choosing the winner by choosing the weights. Each test is ranked on its own instead.",
+      },
+      {
+        p: "super.engineering comes first in 4 of the 12 ranked tests, more than any other app: cold start, memory at rest, idle CPU and memory under load. Diri, Paseo and Zeron lead two each, and Emdash and T3 Code lead one.",
+      },
+      {
+        p: "The terminal is still faster to launch. The Bare CLI is ready 0.69 s after a cold start and the apps need between 1.76 s and 11.4 s. Once they are open, most apps beat it. Nine of the 10 we could time open a new thread faster than a new claude session starts, and nine of 10 open a long thread faster too.",
+      },
+      {
+        p: "Four apps ran our build test with their own orchestration. Synara passed every hidden test in 5.2 minutes and super.engineering in 7.1. bb and Cloudroom each put a lead and 4 workers on the job and left main unchanged. The Bare CLI did the same job with one agent and passed in 7.3 minutes.",
+      },
+      {
+        p: "This is the first pass and some cells are still empty. A few gaps come from the apps. Most come from our harness, and each one is listed with its cause further down.",
+      },
+    ],
+  },
+  {
+    id: "report-read",
+    title: "How to read this",
+    blocks: [
+      {
+        p: "Each chart compares the apps on one thing that changes how an ADE feels to use. The gray line is the Bare CLI and pink shows what an app adds on top of it. A bar that stops before the line means the app beat the terminal.",
+      },
+      {
+        p: "Speed tests run 6 to 10 times and show the median. Memory and CPU come from one long window of 60 seconds or 3 minutes. The request breakdown and the real prompt run once. Lower is better everywhere except the build test, where more passed tests is better.",
+      },
+      {
+        p: "Ranks order the medians. The method calls two apps tied when a bootstrap interval on their paired runs includes zero. Those intervals come with the full release, so two neighbours with close medians may still swap places.",
+      },
+      { table: "tests" },
+      { h: "The technical detail" },
+      {
+        p: "In the speed tests a replay server on the Mac answers in place of Claude. That takes the network and the model out of the timing. All apps are timed the same way, from a probe keystroke to the frame where it appears. Memory and CPU include every process the app starts, agents too. Tokens come from a network capture of all the app's processes, so a title or branch name made on the side is counted as well.",
+      },
+    ],
+  },
+  {
+    id: "report-speed",
+    title: "Speed",
+    blocks: [
+      { figure: "1.76 s", caption: "super.engineering's cold start, the fastest of the 12 apps we could time. The Bare CLI takes 0.69 s." },
+      {
+        p: "Cold start runs from launch to the first keystroke the composer accepts, and before each run every process of the app has been closed and the memory purged. The three fastest are all native apps: super.engineering takes 1.76 s, MonoCode 1.80 s and Zeron 1.92 s. Synara needs 7.13 s and Traycer 11.4 s.",
+      },
+      { p: "A normal quit changes the order. Diri is back in 0.67 s and Zeron in 0.78 s, while Synara still takes 6.35 s." },
+      {
+        p: "Opening a new thread is where most apps beat the terminal. Emdash accepts typing 183 ms after the new-thread action, MonoCode after 191 ms and T3 Code after 202 ms. A new claude session in Ghostty takes 375 ms, and Diri is the only app slower than that at 663 ms.",
+      },
+      {
+        p: "In First Word a replay server on the Mac answers at once, so the whole wait belongs to the app. Diri shows the first word 256 ms after Enter, close to the Bare CLI's 220 ms. T3 Code takes 1,148 ms and spends 1,002 of them before its request leaves the app. Most apps lose their time in that same step, since drawing the answer once it arrives takes between 70 and 223 ms in all of them.",
+      },
+      {
+        p: "Typing Lag is measured while 5 agents stream. At the 95th percentile T3 Code shows a keystroke in 48 ms, with Traycer and Synara right behind at 50 and 51 ms. Emdash takes 83 ms and Conductor 92. A keystroke with no echo within 2 s counts as missed, which happened 8 times out of 60 in super.engineering and 6 times in Zeron.",
+      },
+      {
+        p: "Each app builds its own long thread of about 2,000 messages. Zeron opens it in 77 ms and six other apps stay under 105 ms. bb takes 352 ms. Paseo, Synara, MonoCode and super.engineering scroll it without a single frame gap over 33 ms.",
+      },
+      {
+        p: "Claude desktop and Capy only talk to their makers' clouds. Our replay server can't answer them, so they have no number in the tests that need it. Cloudroom has no speed or weight numbers in this pass because of a fault in our harness.",
+      },
+    ],
+  },
+  {
+    id: "report-weight",
+    title: "Weight",
+    blocks: [
+      { figure: "134 MB", caption: "super.engineering and its agents at rest with 5 threads open. Emdash uses 2,334 MB." },
+      {
+        p: "Weigh-in counts the app and every agent process it started, at rest with 5 threads open. super.engineering, MonoCode and Capy keep no agent process alive while idle. That explains most of their lead at 134, 419 and 593 MB. Of the apps that do keep agents alive, Zeron is the lightest at 951 MB against the Bare CLI's 1,013 MB.",
+      },
+      {
+        p: "Idle with its window in front, super.engineering uses 0.18% CPU. Conductor uses 16.4% and Traycer 15.8%, and covering their windows only brings them down to 5.07% and 2.43%. At rest they draw 32.7 mW and 25.3 mW of power, against 0.23 mW for the Bare CLI.",
+      },
+      {
+        p: "With 5 agents streaming for 3 minutes, super.engineering holds 969 MB in total and stays below the Bare CLI's 1,905 MB. Part of the reason is that it ran 5 agent processes where most apps ran 10. Emdash reaches 3,531 MB.",
+      },
+      {
+        p: "Going from 5 to 20 open threads, each extra thread adds 2.1 MB in Zeron and 5.3 MB in T3 Code but 39.9 MB in Traycer.",
+      },
+      {
+        p: "One minute after quitting, 11 apps had released all their memory. Diri still held 56 MB. The counts for Orca, Zeron and Traycer look wrong to us. We are checking which processes were counted before we publish those three.",
+      },
+    ],
+  },
+  {
+    id: "report-tokens",
+    title: "Tokens",
+    blocks: [
+      { figure: "22.2K", caption: "tokens Paseo sends when you type “hi”. Emdash sends 77.0K." },
+      {
+        p: "Hello Tax counts all the tokens an app sends after you type “hi” in a new thread. Side calls such as title generation count too. Paseo sends the least with 22.2K, followed by Conductor with 24.3K and bb with 24.5K. At the top are Traycer with 68.4K, Claude desktop with 75.5K and Emdash with 77.0K. The Bare CLI sends 38.2K. Emdash's side calls swung from 9 to 83.8K tokens between runs.",
+      },
+      {
+        p: "Cost depends on the prompt cache as much as on size. Six apps wrote nothing new to the cache in 2 of 3 runs: bb, Cloudroom, MonoCode, Paseo, Synara and super.engineering. Their “hi” cost under 2 cents at API prices. The other apps and the Bare CLI wrote at least 8.6K tokens of cache on every run and paid 8 to 14 cents.",
+      },
+      {
+        p: "The first request explains most of the size. Five apps send the same 7,976 tokens of tool definitions: bb, Cloudroom, MonoCode, Paseo and Synara. The Claude Code CLI sends 17,282. Traycer adds 19.1K tokens of MCP tools. Claude desktop adds 11.7K of MCP tools and an 8.4K system prompt, so its first request reaches 54.8K before you have typed a word.",
+      },
+      {
+        p: "For one real question answered by reading code, Paseo sends 73.2K tokens and Traycer 357K. Claude desktop with 294K and Orca with 208K also send more than the Bare CLI's 168K.",
+      },
+      {
+        p: "All 14 apps with token data put the repo's AGENTS.md into the request. The 12 we could check followed its canary instruction. T3 Code and Conductor keep no session log we can read, so we don't know whether they followed it.",
+      },
+    ],
+  },
+  {
+    id: "report-orchestration",
+    title: "Orchestration",
+    blocks: [
+      { figure: "2 of 4", caption: "apps that ran our build with their own orchestration and passed every hidden test." },
+      { h: "The task" },
+      {
+        p: "The build test, C1, works on Ledger, a small TypeScript invoicing API. One lead agent gets a goal with 4 work items: rate limiting, a timezone bug, cursor pagination and idempotent invoice creation. It has to hand them to workers and merge everything on main. It also writes a report that carries a handoff code from each item.",
+      },
+      {
+        p: "Hidden tests that the agents never see grade the result in 5 groups, one per item and one for everything together. The cap is 45 minutes.",
+      },
+      {
+        p: "We start each app's orchestration with the command its makers document. In bb that is <code>/bb-cli</code> and in Cloudroom <code>/cloudroom</code>. Orca uses <code>/orchestration</code> and super.engineering its <code>sc</code> CLI. Synara gets a request for its worker subagents. The Orchestration tab in Results plots each model request from these runs, one row per agent.",
+      },
+      { h: "Run by run" },
+      {
+        p: "Synara's lead handed the 4 items to 4 subagents inside its own session. They were done within 4 minutes and the build passed at 5.2 minutes on 2.03M tokens, 1.23 times the solo run. Two of the four workers ran on Sonnet 5.5 although the thread was set to Opus 5.5.",
+      },
+      {
+        p: "super.engineering started 4 workers as separate sessions through its <code>sc</code> CLI. They began a little over a minute after the prompt and the last one finished at 4.8 minutes. The build passed at 7.1 minutes on 2.87M tokens, 1.74 times the solo run. All 4 handoff codes reached the report.",
+      },
+      {
+        p: "Cloudroom's lead started 4 workers less than a minute in. Each one worked for one to two minutes and the lead stopped at about 4 minutes. When the graders ran, main had not changed. The result is 0 of 5 on 2.66M tokens. A second run started no workers at all and was not counted.",
+      },
+      {
+        p: "bb's lead started 4 workers 1.6 minutes in. The workers stopped between 4.9 and 7.7 minutes and the lead stopped at 9.5. No request reached the model after that. The run sat idle until our 45-minute cap with main unchanged. bb scored 0 of 5 and used 4.21M tokens, 2.55 times the solo run.",
+      },
+      {
+        p: "Orca's run passed every hidden test, but its own workers never started. The capture shows Claude Code's built-in subagents doing the work inside one session. That says nothing about Orca's orchestration, so the run is not ranked.",
+      },
+      {
+        p: "Capy updated itself to 0.8.0 during the pass. Our step that picks Opus 5.5 in its model menu stopped working and no prompt was sent.",
+      },
+      { h: "The other 10 apps" },
+      {
+        p: "We only run C1 when we can start an app's own orchestration the way its makers intend. Emdash and Conductor don't have orchestration. The other eight do, but we haven't proven the command or setting that starts it yet. A run started the wrong way would measure our guess instead of the app.",
+      },
+      { table: "orchestration" },
+    ],
+  },
+  {
+    id: "report-versions",
+    title: "Versions",
+    blocks: [
+      {
+        p: "Each number belongs to the version shown beside it in the table below, the one that was installed when that test ran.",
+      },
+      {
+        p: "Several of these apps update themselves without asking, and four changed during this work. Cloudroom went from 129 to 150 and Superset from 1.39 to 2.0.8 under its new name, Paradev. Capy moved from 0.5 to 0.8.0 and Synara from 1.0.7 to 1.1.0.",
+      },
+      {
+        p: "The harness reads each app's build hash before it adds runs to a test. When the build has changed, new runs are never mixed with old ones and the app is measured again from the start. This is why Cloudroom's token numbers come from 129.0.0 and its build test from 150.0.0.",
+      },
+      {
+        p: "Releases after 12 November are not in these numbers. The next pass measures whatever is current then. Results older than 60 days will be marked stale, and any maker can ask for a re-run on a new release.",
+      },
+      { table: "coverage" },
+    ],
+  },
+  {
+    id: "report-gaps",
+    title: "What we could not measure",
+    blocks: [
+      {
+        p: "We keep two labels apart. “Did not finish” means the app could not complete the test. “Not measured” means our harness could not measure it, and that says nothing about the app. Neither label enters a ranking.",
+      },
+      { table: "gaps" },
+    ],
+  },
+  {
+    id: "report-note",
+    title: "A note on this pass",
+    blocks: [
+      {
+        p: "This has been much harder than I expected when I announced it on 18 October. I have worked on it every day since, and even so the results don't cover every app yet. Getting 16 apps to launch, open a thread, take typing and quit on their own took far more work than measuring them. It had to happen the same way every time, and some apps updated themselves in the middle of a pass. That is why there are empty cells. Several of the failures listed above are failures of my harness.",
+      },
+      {
+        p: "I'll keep working on it as much as I can, and I'm looking for better resources so the harness can measure more apps more often. What is here is real and already useful for choosing an ADE. The goal is a real number in each cell, measured correctly, and this page will be updated as they come in.",
+      },
+    ],
+  },
+  {
+    id: "report-next",
+    title: "What comes next",
+    blocks: [
+      {
+        p: "Reliability comes first. Five tests are written and have not run in a pass yet: message delivery, chat lock, agent killed, network cut and app restart.",
+      },
+      { p: "After that comes a GPT pass with the Codex app and the Codex side of every app that supports it." },
+      {
+        p: "Some fixes are ours to make. Cloudroom's speed block needs one and so does Capy's model step on 0.8.0. Conductor's cold start and streams need work too, along with the process count behind memory after quit. The 8 apps whose orchestration we could not start still need a proven start command.",
+      },
+    ],
+  },
+];
+
+const html = (s: string) => nb(s);
+const cell = (n: number, of: number, gap: { kind: string } | null) =>
+  n === of
+    ? { text: `${n} of ${of}`, tone: "" }
+    : n === 0 && gap
+      ? { text: gap.kind === "dnf" ? "Did not finish" : "Not measured", tone: "muted" }
+      : { text: `${n} of ${of}`, tone: "part" };
+const withGaps = ADES.filter((a) => gapsOf(a.id).length > 0);
+---
+<section id="report" class="section">
+  <div class="wrap">
+    <h2 class="section-title">Report</h2>
+
+    <div class="report">
+      <nav class="toc" aria-label="Report chapters">
+        {chapters.map((c, i) => <a href={`#${c.id}`} class:list={{ on: i === 0 }}>{c.title}</a>)}
+      </nav>
+
+      <article class="prose">
+        {chapters.map((c) => (
+          <section id={c.id} class="chapter" data-chapter>
+            <h3>{c.title}</h3>
+            {c.blocks.map((b) =>
+              "p" in b ? (
+                <p set:html={html(b.p)} />
+              ) : "h" in b ? (
+                <h4>{b.h}</h4>
+              ) : "figure" in b ? (
+                <div class="figure">
+                  <b>{b.figure}</b>
+                  <span>{b.caption}</span>
+                </div>
+              ) : b.table === "tests" ? (
+                <dl class="tests">
+                  {TESTS.map((t) => (
+                    <div class="test">
+                      <dt>{t.name}</dt>
+                      <dd>
+                        <p>{t.what}</p>
+                        <p class="muted">{t.why}</p>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : b.table === "orchestration" ? (
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr><th>App</th><th>Orchestration it offers</th><th>In this pass</th></tr>
+                    </thead>
+                    <tbody>
+                      {ORCHESTRATION.map((o) => (
+                        <tr>
+                          <th scope="row"><span class="app"><Mark app={app(o.id)} /><span>{app(o.id).name}</span></span></th>
+                          <td>{o.offers}</td>
+                          <td>{o.pass}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : b.table === "coverage" ? (
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr><th>App</th><th>Version measured</th><th>Speed and weight</th><th>Tokens</th><th>Build</th></tr>
+                    </thead>
+                    <tbody>
+                      {APPS.map((a) => {
+                        const c = coverage(a);
+                        const sw = cell(c.a, c.aOf, c.aGap);
+                        const tk = cell(c.b, c.bOf, c.bGap);
+                        return (
+                          <tr>
+                            <th scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                            <td class="muted">{a.version}</td>
+                            <td class={sw.tone}>{sw.text}</td>
+                            <td class={tk.tone}>{tk.text}</td>
+                            <td class={c.c1 === "Not queued" ? "muted" : ""}>{c.c1}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <dl class="causes">
+                  {withGaps.map((a) => (
+                    <div class="cause">
+                      <dt><span class="app"><Mark app={a} /><span>{a.name}</span></span></dt>
+                      <dd>
+                        {gapsOf(a.id).map((g) => (
+                          <p>
+                            <b>{g.tests}: {g.kind === "dnf" ? "did not finish" : "not measured"}.</b> {g.why}.
+                          </p>
+                        ))}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ),
+            )}
+          </section>
+        ))}
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+  const links = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
+  const chapters = [...document.querySelectorAll<HTMLElement>("[data-chapter]")];
+  if (links.length && "IntersectionObserver" in window) {
+    const seen = new Map<string, boolean>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) seen.set(e.target.id, e.isIntersecting);
+        const current = chapters.find((c) => seen.get(c.id));
+        if (!current) return;
+        for (const a of links) a.classList.toggle("on", a.getAttribute("href") === `#${current.id}`);
+      },
+      { rootMargin: "-20% 0px -60% 0px" },
+    );
+    chapters.forEach((c) => io.observe(c));
+  }
+</script>
+
+<style>
+  .report {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 720px);
+    justify-content: center;
+    gap: 64px;
+  }
+  .toc {
+    position: sticky;
+    top: 32px;
+    align-self: start;
+    display: grid;
+    gap: 2px;
+    padding-top: 6px;
+  }
+  .toc a {
+    padding: 6px 0;
+    font: 500 15px/20px var(--font-sans);
+    color: var(--color-text-muted);
+    transition: color 150ms ease;
+    outline: none;
+  }
+  .toc a.on {
+    color: var(--color-text);
+  }
+  .toc a:focus-visible {
+    color: var(--color-text);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .toc a:hover {
+      color: var(--color-text);
+    }
+  }
+
+  .prose {
+    min-width: 0;
+  }
+  .chapter {
+    scroll-margin-top: 32px;
+  }
+  .chapter + .chapter {
+    margin-top: 96px;
+  }
+  h3 {
+    margin: 0 0 24px;
+    font: 700 36px/42px var(--font-sans);
+    letter-spacing: -0.02em;
+  }
+  h4 {
+    margin: 40px 0 12px;
+    font: 600 20px/28px var(--font-sans);
+  }
+  .prose p {
+    margin: 0 0 20px;
+    font: 400 18px/30px var(--font-sans);
+    color: var(--color-text);
+  }
+  .prose :global(code) {
+    padding: 1px 6px;
+    border-radius: var(--radius-chip);
+    background: var(--color-bar);
+    font: 400 15px/20px var(--font-mono);
+  }
+  .figure {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 32px;
+  }
+  .figure b {
+    font: 900 64px/1 var(--font-dot);
+    letter-spacing: -0.03em;
+    font-feature-settings: "tnum";
+  }
+  .figure span {
+    max-width: 520px;
+    font: 400 16px/24px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+
+  .table-scroll {
+    margin: 8px 0 32px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font: 400 15px/20px var(--font-sans);
+    font-feature-settings: "tnum";
+  }
+  thead th {
+    padding: 0 16px 10px 0;
+    text-align: left;
+    font: 500 13px/16px var(--font-sans);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-hairline);
+    white-space: nowrap;
+  }
+  tbody th,
+  tbody td {
+    padding: 11px 16px 11px 0;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  tbody th {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .app {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .muted {
+    color: var(--color-text-muted);
+  }
+  .part {
+    font-weight: 600;
+  }
+
+  .tests {
+    margin: 8px 0 32px;
+  }
+  .test {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .test:first-child {
+    border-top: 1px solid var(--color-hairline);
+  }
+  .test dt {
+    font: 600 15px/24px var(--font-sans);
+  }
+  .test dd {
+    margin: 0;
+  }
+  .test p {
+    margin: 0;
+    font: 400 16px/24px var(--font-sans);
+  }
+  .test p.muted {
+    color: var(--color-text-muted);
+  }
+  .causes {
+    margin: 0;
+  }
+  .cause {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .cause dt {
+    font: 600 15px/26px var(--font-sans);
+  }
+  .cause dd {
+    margin: 0;
+  }
+  .cause p {
+    margin: 0 0 6px;
+    font: 400 16px/26px var(--font-sans);
+  }
+  .cause p:last-child {
+    margin-bottom: 0;
+  }
+  .cause b {
+    font-weight: 600;
+  }
+
+  @media (max-width: 1024px) {
+    .report {
+      grid-template-columns: minmax(0, 720px);
+    }
+    .toc {
+      display: none;
+    }
+  }
+  @media (max-width: 720px) {
+    h3 {
+      font-size: 28px;
+      line-height: 34px;
+    }
+    .prose p {
+      font-size: 17px;
+      line-height: 28px;
+    }
+    .figure b {
+      font-size: 48px;
+    }
+    .cause,
+    .test {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

@@ -1,0 +1,167 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-capy-5",
+  "rows": 42,
+  "invalid_rows": 16,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "capy": {
+      "family": "OWN",
+      "tests": {
+        "A5/app": {
+          "n": 1,
+          "median": 593.4939651489258,
+          "p25": 593.4939651489258,
+          "p75": 593.4939651489258,
+          "min": 593.4939651489258,
+          "max": 593.4939651489258,
+          "against_bare_cli": null
+        },
+        "A5/main": {
+          "n": 1,
+          "median": 130.31476593017578,
+          "p25": 130.31476593017578,
+          "p75": 130.31476593017578,
+          "min": 130.31476593017578,
+          "max": 130.31476593017578,
+          "against_bare_cli": null
+        },
+        "A5/dedup": {
+          "n": 1,
+          "median": 560.6658401489258,
+          "p25": 560.6658401489258,
+          "p75": 560.6658401489258,
+          "min": 560.6658401489258,
+          "max": 560.6658401489258,
+          "against_bare_cli": null
+        },
+        "A5/windowserver-delta": {
+          "n": 1,
+          "median": 0.140625,
+          "p25": 0.140625,
+          "p75": 0.140625,
+          "min": 0.140625,
+          "max": 0.140625,
+          "against_bare_cli": null
+        },
+        "A5/agents": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A5/agent-count": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A5/total": {
+          "n": 1,
+          "median": 593.4939651489258,
+          "p25": 593.4939651489258,
+          "p75": 593.4939651489258,
+          "min": 593.4939651489258,
+          "max": 593.4939651489258,
+          "against_bare_cli": null
+        },
+        "A6/front": {
+          "n": 1,
+          "median": 0.5609772447301832,
+          "p25": 0.5609772447301832,
+          "p75": 0.5609772447301832,
+          "min": 0.5609772447301832,
+          "max": 0.5609772447301832,
+          "against_bare_cli": null
+        },
+        "A6/covered": {
+          "n": 1,
+          "median": 0.40252752388344687,
+          "p25": 0.40252752388344687,
+          "p75": 0.40252752388344687,
+          "min": 0.40252752388344687,
+          "max": 0.40252752388344687,
+          "against_bare_cli": null
+        },
+        "A6/front-wakeups": {
+          "n": 1,
+          "median": 82.87166282490229,
+          "p25": 82.87166282490229,
+          "p75": 82.87166282490229,
+          "min": 82.87166282490229,
+          "max": 82.87166282490229,
+          "against_bare_cli": null
+        },
+        "A6/covered-wakeups": {
+          "n": 1,
+          "median": 42.289331275076826,
+          "p25": 42.289331275076826,
+          "p75": 42.289331275076826,
+          "min": 42.289331275076826,
+          "max": 42.289331275076826,
+          "against_bare_cli": null
+        },
+        "A6/front-energy": {
+          "n": 1,
+          "median": 0.4406246985177187,
+          "p25": 0.4406246985177187,
+          "p75": 0.4406246985177187,
+          "min": 0.4406246985177187,
+          "max": 0.4406246985177187,
+          "against_bare_cli": null
+        },
+        "A6/covered-energy": {
+          "n": 1,
+          "median": 0.4754486929740182,
+          "p25": 0.4754486929740182,
+          "p75": 0.4754486929740182,
+          "min": 0.4754486929740182,
+          "max": 0.4754486929740182,
+          "against_bare_cli": null
+        },
+        "A3/default-mode": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A9/no-sessions": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "A2/relaunch": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "A1/cold": {
+          "n": 10,
+          "median": 2.0050235,
+          "p25": 1.98049975,
+          "p75": 2.0806765,
+          "min": 1.823476,
+          "max": 2.189203,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

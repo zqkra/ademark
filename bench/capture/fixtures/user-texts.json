@@ -1,0 +1,93 @@
+[
+  {
+    "name": "anthropic reminder block before the prompt",
+    "body": {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "<system-reminder>\nCodebase instructions\n</system-reminder>"
+            },
+            {
+              "type": "text",
+              "text": "hi"
+            }
+          ]
+        }
+      ]
+    },
+    "candidates": [
+      "<system-reminder>\nCodebase instructions\n</system-reminder>hi",
+      "<system-reminder>\nCodebase instructions\n</system-reminder>",
+      "hi"
+    ]
+  },
+  {
+    "name": "anthropic string content",
+    "body": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hi there"
+        }
+      ]
+    },
+    "candidates": [
+      "hi there"
+    ]
+  },
+  {
+    "name": "openai input with developer and later user messages",
+    "body": {
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "developer rules"
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "# AGENTS.md instructions\nFollow the repo rules."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "<environment_context>\n  <cwd>/Users/x/wt</cwd>\n</environment_context>"
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "hi"
+            }
+          ]
+        }
+      ]
+    },
+    "candidates": [
+      "# AGENTS.md instructions\nFollow the repo rules.",
+      "<environment_context>\n  <cwd>/Users/x/wt</cwd>\n</environment_context>",
+      "hi"
+    ]
+  }
+]

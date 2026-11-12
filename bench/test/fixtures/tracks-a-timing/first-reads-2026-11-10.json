@@ -1,0 +1,294 @@
+{
+ "source": "control-2026-11-10T08-31-19Z, valid A1 to A3 rows: the first frame with a new probe run, the longest one for each app and test",
+ "reads": [
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bare-cli-1",
+   "test": "A3",
+   "rep": 2,
+   "ocr": [
+    "l ademap"
+   ],
+   "chars": 5
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bare-cli-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    "l adema"
+   ],
+   "chars": 5
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bare-cli-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "l adeMapkqzadem"
+   ],
+   "chars": 13
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bb-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "denl"
+   ],
+   "chars": 2
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bb-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    "SK anythlng. @ io meniion flles. folders. or sectlons"
+   ],
+   "chars": 2
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-bb-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "SK anythlng. @ io meniion flles. folders. or sectlons"
+   ],
+   "chars": 2
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-claude-desktop-1",
+   "test": "A2",
+   "rep": 8,
+   "ocr": [
+    "rkqz4"
+   ],
+   "chars": 4
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-claude-desktop-1",
+   "test": "A1",
+   "rep": 3,
+   "ocr": [
+    "ademarkqzad4"
+   ],
+   "chars": 11
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-diri-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "> demal"
+   ],
+   "chars": 4
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-diri-1",
+   "test": "A1",
+   "rep": 5,
+   "ocr": [
+    "> ademirkqzl"
+   ],
+   "chars": 9
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-diri-topup-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "> demarl"
+   ],
+   "chars": 5
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-emdash-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "De8crlb8 whatth8 agent should do, or us8 I tO 88lect a prompt..."
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-emdash-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    ") arkqzadl"
+   ],
+   "chars": 7
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-emdash-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    ") arkqzademarkql"
+   ],
+   "chars": 13
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-monocode-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "ad4"
+   ],
+   "chars": 2
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-monocode-1",
+   "test": "A2",
+   "rep": 4,
+   "ocr": [
+    "admar"
+   ],
+   "chars": 5
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-monocode-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "ad•nl"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-paseo-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "detn"
+   ],
+   "chars": 2
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-paseo-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    "arkd"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-paseo-1",
+   "test": "A1",
+   "rep": 3,
+   "ocr": [
+    "qza"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-super-engineering-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "8dema"
+   ],
+   "chars": 4
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-super-engineering-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    "vp8 a m8ssage..."
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-super-engineering-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "yp8 a m8ssage..."
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-synara-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "dem"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-synara-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "rkq"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-t3code-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "ademarkqzademarkq2ademarkqzademarkq2ademarkqzademarkq2ademarkqzademarkqzademarkqzademark"
+   ],
+   "chars": 88
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-t3code-1",
+   "test": "A2",
+   "rep": 1,
+   "ocr": [
+    "emarkqzademarkq2ademarkqzademarkq2ademarkqzademarkq2ademarkqzademarkqzademarkqzademarkqz"
+   ],
+   "chars": 88
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-t3code-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "demarkqzademarkqzademarkq2ademarkqzademarkq2ademarkqzademarkq2ademarkqzademarkqzademarkq"
+   ],
+   "chars": 88
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-traycer-2",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "sk Traycer anything. @ mention for context"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-traycer-2",
+   "test": "A1",
+   "rep": 5,
+   "ocr": [
+    "point-. the comparison has to be on the parsed date, not on the string, or a I"
+   ],
+   "chars": 4
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-zeron-1",
+   "test": "A3",
+   "rep": 1,
+   "ocr": [
+    "adern"
+   ],
+   "chars": 3
+  },
+  {
+   "attempt": "control-2026-11-10T08-31-19Z-zeron-1",
+   "test": "A1",
+   "rep": 1,
+   "ocr": [
+    "adl",
+    "Full accee"
+   ],
+   "chars": 2
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+id = "C6-app-restart"
+version = "1.0.0"
+track = "C"
+model = "claude"
+mode = "local"
+thread = "new"
+prompt = "prompt.md"
+time_cap_s = 900
+grade_groups = ["W3-cursor"]
+
+[fault]
+kind = "app_restart"
+at_s = 90
+
+[recovery]
+wait_s = 60
+message = "continue"

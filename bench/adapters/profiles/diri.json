@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "ade": "diri",
+  "app": {
+    "path": "/Applications/diri.app",
+    "version": "0.11.2",
+    "bundleSha256": "0ab268ca09451414fd0c09ca531a9e4168c3d026f0b4c842536d6b80e713cf66",
+    "processNames": [
+      "diri"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "diri",
+    "bundleId": "com.dirijor.diri",
+    "composerRect": {
+      "x": 18,
+      "y": 924,
+      "w": 1540,
+      "h": 26
+    },
+    "threadRect": {
+      "x": 18,
+      "y": 40,
+      "w": 1560,
+      "h": 860
+    },
+    "clearKeys": [
+      "ctrl+u"
+    ],
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 1240,
+        "y": 50,
+        "w": 350,
+        "h": 100
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/Library/Application Support/Dirijor",
+      "~/Library/Application Support/diri",
+      "~/Library/Caches/diri"
+    ],
+    "launchAgents": [],
+    "activeComposerRect": null,
+    "launchComposerRect": null
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      "Library/Application Support/Dirijor"
+    ],
+    "jsonKeys": [
+      {
+        "file": "~/Library/Application Support/diri/prefs.json",
+        "keys": {
+          "defaultAgent": "claude-code",
+          "automaticUpdates": false,
+          "sidebarOrdering": "newestFirst",
+          "whatsNewSeenVersion": "0.11.2"
+        }
+      }
+    ]
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 2000
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/diri.app/Contents/Resources/bin/dirijor",
+          "session",
+          "spawn",
+          "claude-code",
+          "--cwd",
+          "${worktree}",
+          "--title",
+          "seed"
+        ],
+        "timeoutMs": 20000
+      },
+      {
+        "kind": "wait",
+        "ms": 6000
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "wait",
+          "ms": 300
+        }
+      ],
+      "codex": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.dirijor.diri"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+t"
+      }
+    ],
+    "send": [
+      {
+        "kind": "keys",
+        "combo": "ctrl+m"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": true
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Dirijor",
+      "~/Library/Application Support/diri",
+      "~/Library/Caches/diri"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "A56RVNJ69X",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.11: the dirijor MCP lets agents spawn and merge other agents. The MCP is exposed only when configured; no trigger line is proven." },
+  "notes": [
+    "PLACEHOLDER: orchestrationTrigger null means UNKNOWN here, not 'no orchestration'. ADES 3.11 says the dirijor MCP lets agents spawn and merge agents; GETTING_STARTED says the MCP is exposed only when the user explicitly configures it. No trigger line was identified, and C1 reports null as 'not supported'. Decide before any C1 run.",
+    "Login: none inside Diri. Claude Code and Codex use their own CLI logins in the ademark account (not checked; ~/.claude and ~/.codex exist in the owner's account, contents not read), so login.kind is agent-cli. The profile does not touch accounts.json.",
+    "Telemetry: DIRI_TELEMETRY=off stops recording (diri-telemetry lib.rs), but a profile cannot set environment variables. The profile sets telemetry/config.json upload to false; whether that stops every upload path was not verified, and recording stays local.",
+    "Auto-update: prefs.json automaticUpdates false (prefs.rs). What's-new: whatsNewSeenVersion is set to 0.10.0 because a missing field reads as empty and would show the highlights once.",
+    "Processes: the engine dirijord-rs runs from the bundle (Contents/Resources/bin, daemon_launch.rs) and survives quit by design, so waitForPid by bundle path can attach to it after a normal quit. Holders are launchd jobs with label prefix com.dirijor.diri.holders. (holder/launcher.rs); reset() can only bootout exact labels. The wake helper is a system LaunchDaemon (com.dirijor.diri.wake, earlier pass). No Dirijor launch daemon or agent exists on this Mac (checked by name), and diri.ts notes that the helper needs admin approval.",
+    "Data: prefs.json lives in ~/Library/Application Support/diri, not in Dirijor (diri-proto paths.rs prefs_file). The adapter dataDirs in diri.ts lists only Dirijor, so the profile adds the diri folder and the caches. The owner's Mac has no Diri data folder yet.",
+    "Shortcuts: cmd+t runs new-default (commands.rs), which starts the default agent; cmd+1 and cmd+2 run select-session-1 and select-session-2 (commands.rs). Custom ordering keeps the order stable when a session is opened (prefs sidebarOrdering). Whether a new session is appended or prepended is unverified.",
+    "Versions: 0.10.0 (build 20261018.074940), bundle SHA-256 computed with shasum on the main executable, matching pins/versions.json (binary_sha256, team_id). Team A56RVNJ69X from codesign. Minimum macOS 15.",
+    "Seed (2026-10-24, fixes the BLOCKED agents.json mode): seeds/diri/home/Library/Application Support/Dirijor holds agents.json (claude-code launchArgs --model claude-opus-5-5 --effort high --dangerously-skip-permissions; codex args too) and telemetry/config.json (upload false), dirs 0700 and files 0600; restoreSeed's cpSync keeps the modes (checked). With it Diri starts `claude --model claude-opus-5-5 --effort high --dangerously-skip-permissions --settings <Dirijor/inject/claude-hooks.json> --mcp-config ... --plugin-dir ... --session-id ...` in the chosen folder (ps; cwd /Users/ademark/arena/diri), and the TUI shows 'Opus 5.5 with high effort ... bypass permissions on'. The Dirijor jsonKeys were dropped (they would rewrite agents.json as 0644 after the seed).",
+    "GUI session 2026-10-24 on 0.10.0: the empty window offers 'Start Claude Code (cmd+T)' and 'Choose a folder...' (896,553, macOS open panel); choosing the folder starts a Claude Code session in it at once. Sessions are full-window terminals; the composer is Claude Code's TUI prompt (y ~936). First launch asked macOS for Desktop, Documents and Apple Music access (all denied; TCC keeps the answers, reset does not touch them) and showed a 'diri sends crash and error reports' toast.",
+    "Replay (checked): the agent had launchd's ANTHROPIC_BASE_URL. Session logs: ~/.claude/projects/-Users-ademark-arena-diri/.",
+    "Open: cmd+t (new session) and cmd+1/cmd+2 session order were not checked in the GUI (sidebar hidden by default).",
+    "Gate 2026-10-24 run 1: 'seed thread 1/2 did not finish: timeout' twice. The replay log shows the contamination request and 313-byte side calls but no seed request, and no session log under ~/.claude/projects/-Users-ademark-arena-diri: the seed prompt typed after cmd+t was not submitted to Claude Code (focus or where cmd+t opens the session is the next thing to check).",
+    "send (checked 2026-10-24 after gate run 2): in Diri's terminal the posted Return key (keycode 0x24) inserts a new line in Claude Code's prompt instead of submitting (the seed sat there as 'replay:seed' + empty line); ctrl+m submits (the agent then retried against the replay port). timed.send is ctrl+m.",
+    "openProject (2026-11-06): the click on 'Choose a folder' missed, so cmd+t opened Claude in /Users/ademark, and the prompt sat in the trust dialog. `dirijor session spawn` makes the arena the project with no click. Checked from a clean seed: cmd+t, paste and ctrl+m answer in ~/arena/diri on claude-opus-5-5.",
+    "0.11.2 (2026-11-07 repair, checked live): `dirijor session spawn` still makes the arena the project, but the spawned session no longer opens in the window ('No session open'); cmd+t then starts Claude Code in ~/arena/diri on Opus 5.5 high with bypass permissions (checked from a fresh seed). The spawn stays `claude-code`: with a `shell` spawn the first gate try after reset lost the seed (gate 10:32Z: contamination 'hi', one 313-byte side call, then no seed request for 2 min; the retry seeded), while the claude spawn warms Claude before cmd+t and seeded on the first try (gate 08:58Z). Composer: the TUI prompt line is at y ~937 in a 1600x1000 window, inside composerRect.",
+    "0.11.2 session order (checked): cmd+1..cmd+8 select sessions in sidebar order and cmd+9 the last one. With sidebarOrdering custom the hidden spawned session was session 1 and new sessions were appended, so A11's cmd+1 never showed the long thread ('open: timed_out'). sidebarOrdering newestFirst (prefs.json) makes cmd+1 the newest session (A11's long thread) and cmd+2 the one before it (the short thread). whatsNewSeenVersion is 0.11.2.",
+    "BLOCKED on 0.11.2, harness side (not fixable in this profile): Diri now reads letters from the key code and ignores the event's Unicode string. ademark-native types every character as virtual key 0 (kVK_ANSI_A) with a Unicode string (KeyPoster.typeText), so 'ademarkqz' arrives as 'aaaaaaaaa' in Claude Code and in a plain zsh tab alike (checked live with `ademark-native keys --text`; terminalOptionAsMeta off does not change it). A3, A4 and every echo/typing probe therefore never see the probe (gate 2026-11-07T08:58Z: A3 'new thread did not appear in 30 s', A4 timed_out, the A3 video shows a prompt full of 'a'). Paste (cmd+v) and key combos (cmd+t, ctrl+m, cmd+1) work.",
+    "BLOCKED on 0.11.2, harness side: session processes are fully disowned. diri-holder starts each session's /bin/zsh with ppid 1 and its own responsible pid, and claude runs under that zsh (checked with ademark-native procs), so neither the parent chain nor responsible_pid links them to the app, the engine or the holder. A7 sampled no agents ('fewer than 5 agents'). Matching ~/.local/share/claude/versions as a vendorDir would count and kill every Claude on the machine (macos.ts procsUnder comment), so the profile does not do it. Killing the bundle processes (diri, dirijord-rs, diri-holder) does end the sessions (checked: no zsh or claude left, no launchd respawn).",
+    "Repair 2026-11-07 attempt 1 gate results (calibrate gate --runs 1 --scratch). With ADEMARK_BASELINE set (run control-2026-11-07T08-15-55Z) every try stops at the contamination check before Diri is driven (bare claude body 9f4eb621... != baseline 3039327d...), the same drift that stopped prove-2 B for this and the other ADEs; no Diri file can change it. Diagnostic run with the baseline unset (gate-diri-2026-11-07T10-47-56Z-1, this profile): every seed thread finishes on the first try in ~/arena/diri, A11 passes (open 69 ms, switch 71 ms in the 10:32Z run), A5/A6/A8/A9/A10/A12 write rows. Still failing: A3 and A4 (key-code typing, above), A7 (disowned sessions, above), A2 relaunch 'gate failure' (cpu_quiet_ok false: the idle Claude sessions of the block's threads outlive the quit by Diri's design, cpu_top 2.1.303 x4 at 1.2-1.8 %; closing them in steps.quit would hide A9's ghost weight, so the profile does not), and A1 cold 'processes survived' (dirijord-rs and two diri-holder stay after the quit as designed; which pid survived the kill was not logged, and by hand a kill -9 of the bundle processes left nothing and launchd did not respawn the holders; holder labels com.dirijor.diri.holders.<hash> change every launch, so launchAgents cannot list them).",
+    "A3 (night of 2026-11-10): the echo's default clear (cmd+a, delete) does not empty Claude Code's TUI prompt, so the probe left text such as 'demadem' (rep-01/video.mov, last frame) and the seed that followed was sent as 'demadem' + 'replay:seed'. The replay server matched nothing and answered 'ok', so from rep-02 on the old thread had no marker and 6 rows were invalid (frames-old-thread.json of diri-1 and diri-topup-1). clearKeys is ctrl+u, as in Bare CLI and Orca, whose prompt is the same TUI. NOT YET SEEN ON SCREEN in Diri.",
+    "A4 (night of 2026-11-10): the native helper now types letters, digits and space with their real key codes (KeyPoster.physicalKey), but other characters still go as key code 0, which Diri reads as 'a'. 'replay:hi' arrived as 'replayahi' (OCR 'replJyah*', answer 'ok', a-replay.jsonl request with no session) and all 18 rows timed out. A4 now pastes the prompt for Diri (PASTE_PROMPT in a4-first-word.ts), the same path as send. The A3 probe 'ademarkqz' is letters only, so it is typed with real key codes."
+  ],
+  "agentGuide": "Each conversation is a tab where Claude Code runs in the project. Cmd+T opens a new one.",
+  "excludeTests": {
+    "A7": "Diri starts its Claude sessions detached (ppid 1, their own responsible pid), so the harness cannot tell them from other Claude processes yet",
+    "A5:agents": "Diri starts its Claude sessions detached (ppid 1, their own responsible pid), so the harness cannot tell them from other Claude processes yet"
+  }
+}

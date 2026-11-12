@@ -1,0 +1,33 @@
+{
+  "ade": "t3code",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T16:17:16.145Z",
+  "harnessCommit": "948af22dde85792203c3400593c9d4492d17e20b",
+  "version": "0.1.7",
+  "bundleSha256": "5c867afbd805f8f6d71149d374dfaa2771328f2235c4abdde8b08c9aa5b41f53",
+  "failures": [
+    "t3code A7 app-p95: streams never reached the model: stream-5, stream-1",
+    "t3code A7 agents-p95: streams never reached the model: stream-5, stream-1",
+    "t3code A7 total-p95: streams never reached the model: stream-5, stream-1",
+    "t3code A7 app-peak: streams never reached the model: stream-5, stream-1",
+    "t3code A7 per-agent-p95: streams never reached the model: stream-5, stream-1",
+    "t3code A7 agent-count: streams never reached the model: stream-5, stream-1",
+    "t3code A7 app-p95: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A7 agents-p95: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A7 total-p95: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A7 app-peak: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A7 per-agent-p95: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A7 agent-count: streams never reached the model: stream-2, stream-3, stream-4, stream-5, stream-1",
+    "t3code A8 max: no probes",
+    "t3code A11 open: the short thread did not show before the open",
+    "t3code A11 scroll-gaps: the short thread did not show before the open",
+    "t3code A11 scroll-max-gap: the short thread did not show before the open",
+    "t3code A11 switch: the short thread did not show before the open",
+    "t3code A11 open: timed_out",
+    "t3code A11 scroll-gaps: the long thread did not open",
+    "t3code A11 scroll-max-gap: the long thread did not open",
+    "t3code A11 switch: the long thread did not open",
+    "t3code A3 default-mode: old-thread draft not read in the composer: []"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "ade": "conductor",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T16:02:57.506Z",
+  "harnessCommit": "03b6142da5543cd99a46980aad8cfbd81576de78",
+  "version": "0.91.2",
+  "bundleSha256": "66a8555d1172a4fef4e1871fd94827b741a46556bda3ccd49c4cbe33e309b997",
+  "failures": [
+    "conductor A block: seed thread 1/2 did not finish: timeout",
+    "conductor A block: step steps.openProject[4] (expectText): \"project\" did not show within 30 s"
+  ]
+}

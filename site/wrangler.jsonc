@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // A static site: Cloudflare serves dist/ as assets, no server code.
+  "name": "ademark",
+  "compatibility_date": "2026-10-12",
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [{ "pattern": "ademark.dev", "custom_domain": true }]
+}

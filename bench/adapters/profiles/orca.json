@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "ade": "orca",
+  "app": {
+    "path": "/Applications/Orca.app",
+    "version": "1.4.249",
+    "bundleSha256": "5ac3fffc33e580c0f7ad0c8573a49bbc64aee5fe3151732af4da47d986afa249",
+    "processNames": [
+      "Orca",
+      "Orca Helper",
+      "Orca Helper (GPU)",
+      "Orca Helper (Plugin)",
+      "Orca Helper (Renderer)",
+      "Orca Terminal Host",
+      "orca-notification-status",
+      "orca-keyboard-layout",
+      "orca-terminal-host"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Orca",
+    "bundleId": "com.stablyai.orca",
+    "composerRect": {
+      "x": 285,
+      "y": 914,
+      "w": 940,
+      "h": 28
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "clearKeys": [
+      "ctrl+u"
+    ],
+    "threadRect": {
+      "x": 285,
+      "y": 40,
+      "w": 875,
+      "h": 850
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 1360,
+        "y": 976,
+        "w": 240,
+        "h": 24
+      },
+      {
+        "x": 0,
+        "y": 976,
+        "w": 180,
+        "h": 24
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/Library/Application Support/Orca"
+    ],
+    "launchAgents": [
+      "com.stablyai.orca.terminal.87499b080a45f1e3.v55"
+    ]
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      "Library/Application Support/Orca/profiles"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/Orca.app/Contents/Resources/bin/orca",
+          "repo",
+          "add",
+          "--path",
+          "${worktree}",
+          "--json"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/Orca.app/Contents/Resources/bin/orca",
+          "terminal",
+          "create",
+          "--worktree",
+          "path:${worktree}",
+          "--title",
+          "ademark",
+          "--focus",
+          "--json"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "wait",
+          "ms": 300
+        }
+      ],
+      "codex": []
+    },
+    "quit": [],
+    "beforeRelaunchQuit": [],
+    "beforeColdQuit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.stablyai.orca"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+alt+t"
+      },
+      {
+        "kind": "wait",
+        "ms": 6000
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+j"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "type",
+        "text": "long-2000"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "enter"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+j"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "type",
+        "text": "replay:seed"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "enter"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Orca",
+      "~/Library/Application Support/orca",
+      "~/.orca"
+    ],
+    "launchAgentLabels": [
+      "com.stablyai.orca.terminal.87499b080a45f1e3.v55"
+    ],
+    "teamId": "6CX3WHS9HZ",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "/orchestration",
+  "orchestration": {
+    "workers": "sessions"
+  },
+  "notes": [
+    "steps.openProject runs orca repo add --path, which registers the repo (src/cli/handlers/repo.ts). It does not make the worktree the active view: worktree set changes metadata only. Making ${worktree} active is a GUI step that is not scripted yet.",
+    "steps.configure is empty: model, effort and permissions are not pinned by a step yet. Set Claude to Opus 5.5 at high and Codex to GPT-6.1 Sol at high in the agent settings during the GUI session, then save the seed so they persist.",
+    "Settings persistence: the profile directory holds profile-state.db (with .authority and a backup), active-view.json, orca-github-cache.json, orca-secret-protection.json and browser-host-client-identity.json. No settings JSON was found (names only; contents not read), so reset.jsonKeys is empty and settings survive through reset.seeds, which the GUI session creates after configuring.",
+    "Telemetry: opt-out is in Settings > Privacy (PrivacyPane). The env opt-outs DO_NOT_TRACK and ORCA_TELEMETRY_DISABLED are recognized (PrivacyPane.test.ts), but a profile cannot set env vars for the app. A banner acknowledge sets telemetry.optedIn to true (src/main/telemetry/client.ts around line 318). Whether a fresh profile starts opted in was not verified: check in the GUI and turn it off before saving the seed.",
+    "Login: no sign-in is required for local use. OrcaAccountSettingsPane has a 'local' account state. Claude and Codex use their own CLI logins, so login.kind is agent-cli.",
+    "Launch agent label: com.stablyai.orca.terminal.<first 16 hex of sha256(resolved userData path)>.v49. For /Users/ademark/Library/Application Support/Orca the hash is cbeaed61fa732845 (shasum -a 256). No Orca launch agent exists in the owner account's ~/Library/LaunchAgents. Confirm the label with launchctl list after the first launch (read only).",
+    "Orchestration: off by default (localStorage key orca.orchestration.enabled, src/renderer/src/lib/orchestration-setup-state.ts). The trigger /orchestration is the skill invocation that Orca's own usage examples use (src/renderer/src/lib/orchestration-usage-examples.ts: 'Use /orchestration to ...'). Enable it only for Track C, in the orchestration settings pane (OrchestrationPane.tsx). The toggle label is a GUI check.",
+    "Global config: the orchestration skill installs under the agent's skills folder (the test fixture uses ~/.claude/skills/orchestration/SKILL.md). ADES 3.8 says the install is unverified; diff ~/.claude and ~/.codex after the block.",
+    "~/.orca exists in the owner's account (folder dated Oct 19 17:45) and its role is unknown. It is listed under vendorDirs for attribution only and is not moved aside.",
+    "The process list is the executables the bundle ships: Orca, the Orca Helper set under Contents/Frameworks, Orca Terminal Host under Contents/Helpers, orca-notification-status and orca-keyboard-layout under Contents/MacOS. Orca Computer Use.app under Contents/Resources is excluded because its executable name was not read.",
+    "waitDone cwd is worktree: Claude and Codex record the working directory in their session logs, and Orca runs each agent in its worktree. Not confirmed in a live run, so idleFallback is false.",
+    "GUI session 2026-10-24 on 1.4.230. A fresh data folder shows a 3-step welcome (default agent preselected Claude with Yolo mode on; theme; notifications) and then an Add project modal; an 'Update Available: Orca v1.4.239 is ready' toast also appears (autoDownload is off in the bundle; the version stayed 1.4.230 after quit). The seed (seeds/orca/home/.../Orca/profiles, profile-state.db from the calibration session after the welcome, tabs closed) skips the welcome; afterLaunch presses Escape for any leftover modal.",
+    "Agents run as terminal tabs: cmd+alt+t (tab.newAgent) starts `claude --dangerously-skip-permissions` in the active workspace, and Claude Code itself reports 'Opus 5.5 with high effort' (the ~/.claude snapshot), so configure needs no clicks. `orca agent launch --model claude-opus-5-5 --effort high` was also checked. The composer is Claude Code's TUI prompt line (y ~912); newThread waits 2.5 s for the TUI to start before typing.",
+    "openProject (checked): `orca repo add --path <arena>` is idempotent; `orca terminal create --worktree path:<arena> --focus` makes that workspace active (cmd+alt+t needs an active workspace).",
+    "Replay (checked): the agent had launchd's ANTHROPIC_BASE_URL; with no server on 8787 it showed 'Connection refused ... Retrying in 7s attempt 5/10'. Session logs go to ~/.claude/projects/-Users-ademark-arena-orca/ (cwd worktree).",
+    "A11: tab.selectByIndex is ctrl+1..9 (no 'last tab' on 9) and the tab count before A11 varies with the adaptive repetitions, so A11 uses the palette (cmd+j), which lists open tabs by prompt text: 'long-2000' / 'replay:seed' + Enter.",
+    "Repair 2026-11-07 attempt 1 on 1.4.249 (checked on the real window): cmd+alt+t still opens a Claude Code tab (Opus 5.5 with high effort, bypass permissions on) and orca terminal create --focus still makes the arena workspace active. Claude Code's prompt line moved down to y 920-936: OCR of the old composerRect (y 900-926) read nothing and of y 914-942 read '> ademarkqz', which explains A3 'new thread did not appear' and A4 timing out every repetition. composerRect ends at x 1225 because the update toast sits at x 1225-1585, y 775-960; threadRect ends at x 1160 because the one-time 'Terminal shortcut handled' toast sits at x 1165-1585, y 660-752. clearKeys is ctrl+u: Claude Code's TUI ignores cmd+a, delete.",
+    "Repair 2026-11-07: the leftover claude. 1.4.249 resolves its userData as ~/Library/Application Support/orca (lowercase; same folder on this case-insensitive disk) and runs its PTY daemon as the launchd job com.stablyai.orca.terminal.87499b080a45f1e3.v55 (16 hex of sha256 of the lowercase path), executable orca-terminal-host under orca/daemon-host/. Quit Orca (cmd+q / quit event) leaves that job and its claude tabs alive by design ('Sessions won't be interrupted'; the menu also has Quit Completely…). The profile still named the old v49 label and 'Orca Terminal Host', so reset booted out nothing and claude survived; launchAgents, processNames and vendorDirs now name the live job, so reset boots it out. The default quit is kept on purpose: held sessions are factory behaviour that A9 reports.",
+    "Repair 2026-11-07: 1.4.249 shows one feature tip per launch until each is seen (Search every agent session; Let agents drive Orca with the Orca CLI (declined, no CLI or skills installed); Jump to a worktree with cmd+J; Dictate into any pane). Escape closes each and records it in profile-state.db (featureTipsSeenIds), which lives in the seeded profiles folder. All four were dismissed, telemetry 'Share anonymous usage data' turned off (Settings > Privacy & Telemetry; it was on), Update Delay set to 30 days (1.4.253 on hold until Dec 7; there is no off switch and nothing was installed), tabs closed with orca terminal close --worktree path:<arena> --all, and the seed re-saved with save-seed.sh orca 'Library/Application Support/Orca/profiles'. afterLaunch keeps its Escape for any later tip.",
+    "Repair 2026-11-07 diagnostic gate (ADEMARK_BASELINE unset, gate-orca-2026-11-07T11-57-40Z-1, profile 8c216f5): reset with the new seed, launch, CLI project, cmd+alt+t, paste and Enter all worked; both seed threads finished and A5, A6, A7, A8 (0 missed), A10 were valid. Only A11 failed: in frames-setup and frames-open the cmd+j palette showed its empty-query view ('Search chats, terminals, ...', RECENT CHATS & TERMINALS) for every frame, so the typed 'long-2000' / 'replay:seed' never reached its input and Enter opened the top entry; the long thread's Claude tab was still drawing 'Step 612 of 1000' after waitDone. On an idle app the palette takes text even at 0 ms after cmd+j (checked live), so the palette opens late under that load. The wait after cmd+j is now 1000 ms (was 400) in both triggers; it is inside A11's measured time (t0 is before the first trigger). Not yet proven by a gate run: the run was stopped at the 10-minute limit during its retry. If A11 still fails, the harness should wait until the long thread's end is on screen before the first repetition (same finding as super-engineering).",
+    "Repair 2026-11-07: the official gate (calibrate gate --runs 1 --scratch --agent claude,own, with ADEMARK_BASELINE of run control-2026-11-07T08-15-55Z) and prove-2 B both stop at the contamination check before Orca is driven: bare `claude -p replay:hi` body 9f4eb621... != baseline 3039327d.... Every prove run of that control before about 09:25Z matched the baseline (bare-cli, conductor, diri, monocode, super-engineering) and every one after got 9f4eb621 (orca, t3code, traycer, synara, bb, zeron, cloudroom, emdash, paseo, ...), with claude 2.1.303 unchanged since Oct 19. No Orca file can change it: the orchestrator must find the drift or re-baseline.",
+    "2026-11-08: the seed prompt never reached the model after cmd+alt+t and 2.5 s: a cold Claude TUI needs longer. The wait is 6 s; A3 is not supported here because a wait after the action would count inside the stopwatch.",
+    "2026-11-09 (ADEMARK-42): A2 and A1 run steps.beforeRelaunchQuit and steps.beforeColdQuit, untimed, before their quit: orca terminal close --worktree path:<arena> --all (the command that closed the tabs on 2026-11-07), then cmd+alt+t and the 6 s of timed.newThread, so Orca restores exactly one fresh Claude tab. Evidence: control-2026-11-09T04-18-06Z-orca-1 A9/rep-03/processes-no-sessions.json held about 50 zsh and Claude 2.1.303 pairs under orca-terminal-host after a quit, and A1 rep-02/video.mov at 1.2 s shows `zsh: command not found: dclaude`, a probe letter typed before Orca's own `claude --resume`. Not yet checked on the real screen: that cmd+alt+t still finds an active workspace after the close.",
+    "2026-11-10 (ADEMARK-53): steps.beforeRelaunchQuit and steps.beforeColdQuit are empty again. Evidence, control-2026-11-10T08-31-19Z-orca-1 and -orca-topup-1: A2 rep 1 of the top-up ran the close, cmd+alt+t and the quit, and the relaunched window (video.mov at 20 s and 58 s) showed the arena workspace with no tab at all, so no prompt line and timed_out. Each repetition ends with its own quit, so the next step ran on a stopped app and `orca terminal close` exited 1 with 'Could not read Orca runtime metadata ... Start the Orca app first' (the CLI needs the running app's orca-runtime.json). A failed step is now a note on the row, not its reason. Without the steps A1 and A2 meet the 9 Nov states again: a probe in the shell before `claude --resume` (PROBE_IN_SHELL_REASON) and a busy terminal host after the quit (A2 ends with the sweep reason).",
+    "2026-11-10 (ADEMARK-53): A3 is excluded (excludeTests.A3). Evidence, control-2026-11-10T08-31-19Z-orca-1 A3/rep-02/video.mov at 3 s and -orca-topup-1 A3/rep-04 at 3 s: after cmd+alt+t the new tab is a zsh prompt, the probe's first letter lands before Orca's `claude --plugin-dir ... --dangerously-skip-permissions`, zsh answers 'command not found: eclaude' (or dclaude), and the probe letters pile up at the shell prompt at y 112, far from composerRect. The composer region read only 'Your n' from 8.5 s on. No Claude tab starts, so no Ready frame exists. A wait would have to sit inside the stopwatch.",
+    "2026-11-11, C1: the installed build 1.4.249 has no orca.orchestration.enabled key; its orchestration is the orca orchestration CLI with child agents in their own worktrees, and its own examples read 'Use /orchestration to split this ... across parallel child agents'. The bench account has no ~/.claude/skills/orchestration, so whether /orchestration reaches the agent is still a GUI check. C1 counts only with two client sessions at work (orchestration.workers): a run of Claude Code subagents inside one session is not Orca's orchestration."
+  ],
+  "agentGuide": "The agent runs in terminal tabs: Cmd+Alt+T opens a new Claude terminal, and its prompt line at the bottom is where you type. A plain shell tab is not the agent.",
+  "excludeTests": {
+    "A3": "cmd+alt+t opens a shell tab and Orca types its own claude command into it a moment later, so the first probe letter reaches the shell first (10 Nov, all 10 rows: 'zsh: command not found: dclaude' and 'eclaude', the rest of the probe at the shell prompt). The helper would need to start the probe only once the agent's prompt line is drawn, with t0 still at the action"
+  }
+}

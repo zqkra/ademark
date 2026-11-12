@@ -1,0 +1,574 @@
+---
+import Mark from "./Mark.astro";
+import RankChart from "./RankChart.astro";
+import AnatomyChart from "./AnatomyChart.astro";
+import BuildChart from "./BuildChart.astro";
+import SwimChart from "./SwimChart.astro";
+import {
+  ADES,
+  APPS,
+  BARE,
+  CHARTS,
+  FAMILIES,
+  METRICS,
+  PASS,
+  RELIABILITY,
+  gap,
+  ranked,
+  stat,
+} from "../data/results";
+import { bare as plain } from "../data/format";
+
+const tabs = [
+  { id: "overview", name: "Overview", caption: "Every test at a glance" },
+  { id: "speed", name: "Speed", caption: "Launch, reply, typing" },
+  { id: "weight", name: "Weight", caption: "Memory and CPU" },
+  { id: "tokens", name: "Tokens", caption: "What a request carries" },
+  { id: "orchestration", name: "Orchestration", caption: "Agents building together" },
+  { id: "reliability", name: "Reliability", caption: "Not measured yet" },
+];
+
+// Overview grid: one column per test, each ranked on its own.
+const groups = [
+  { name: "Speed", span: METRICS.filter((m) => m.category === "speed").length },
+  { name: "Weight", span: METRICS.filter((m) => m.category === "weight").length },
+  { name: "Tokens", span: METRICS.filter((m) => m.category === "tokens").length },
+];
+const ranks = Object.fromEntries(METRICS.map((m) => [m.key, ranked(m.key)]));
+function cell(appId: string, key: string, test: string) {
+  const s = stat(appId, key);
+  const g = gap(appId, test);
+  if (!s) return { text: g?.kind === "dnf" ? "DNF" : "·", tier: g?.kind === "dnf" ? "dnf" : "none", v: "" };
+  if (appId === BARE) return { text: plain(s.m, METRICS.find((m) => m.key === key)!.unit), tier: "ref", v: String(s.m) };
+  const rows = ranks[key];
+  const rank = rows.find((r) => r.app.id === appId)!.rank;
+  const p = rows.length > 1 ? (rank - 1) / (rows.length - 1) : 0;
+  const tier = rank === 1 ? "t1" : p <= 1 / 3 ? "t2" : p <= 2 / 3 ? "t3" : "t4";
+  return { text: plain(s.m, METRICS.find((m) => m.key === key)!.unit), tier, v: String(s.m) };
+}
+const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", USD: "USD" } as const;
+---
+<section id="results" class="section" data-show="all">
+  <div class="wrap">
+    <h2 class="section-title">Results</h2>
+
+    <div class="controls">
+      <div class="segments" role="tablist" aria-label="Category">
+        {tabs.map((t, i) => (
+          <button
+            class:list={["segment", { active: i === 0 }]}
+            role="tab"
+            id={`tab-${t.id}`}
+            aria-controls={`panel-${t.id}`}
+            aria-selected={i === 0 ? "true" : "false"}
+            data-tab={t.id}
+          >
+            <span class="label">{t.name}</span>
+            <span class="caption">{t.caption}</span>
+          </button>
+        ))}
+      </div>
+      <div class="selects">
+        <label class="select">
+          <span class="key">ADE type</span>
+          <select data-family-filter>
+            {FAMILIES.map((f) => <option value={f.id}>{f.label}</option>)}
+          </select>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+        </label>
+        <span class="small">Every app as it ships, on {PASS.model}. {PASS.machine}. Since 18 October, {PASS.dates}.</span>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview">
+      <article class="card chart overview">
+        <div class="grid-scroll">
+          <table class="grid" data-grid>
+            <thead>
+              <tr class="groups">
+                <th colspan="2"></th>
+                {groups.map((g) => <th colspan={g.span}>{g.name}</th>)}
+              </tr>
+              <tr class="heads">
+                <th class="pos" aria-label="Position"></th>
+                <th class="who" aria-sort="ascending">
+                  <button data-sort="name" aria-label="Sort by name">ADE</button>
+                </th>
+                {METRICS.map((m) => (
+                  <th aria-sort="none">
+                    <button data-sort={m.key} aria-label={`Sort by ${m.short}`}>
+                      <span>{m.short}</span>
+                      <em>{unitLabel[m.unit]}</em>
+                    </button>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {APPS.filter((a) => a.id === BARE).map((a) => (
+                <tr class="ref" data-family="control">
+                  <td class="pos"></td>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  {METRICS.map((m) => <td class="ref">{cell(a.id, m.key, m.test).text}</td>)}
+                </tr>
+              ))}
+              {ADES.map((a) => (
+                <tr data-family={a.family} data-name={a.name.toLowerCase()}>
+                  <td class="pos"></td>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  {METRICS.map((m) => {
+                    const c = cell(a.id, m.key, m.test);
+                    return <td class={c.tier} data-key={m.key} data-v={c.v}>{c.text}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-legend small">
+          <span><i class="sq signal"></i>First</span>
+          <span><i class="sq dim"></i>Top third</span>
+          <span><i class="sq bar"></i>Middle third</span>
+          <span>DNF did not finish</span>
+          <span>{"\u00b7"} not measured</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="panel" id="panel-speed" role="tabpanel" aria-labelledby="tab-speed" data-panel="speed" hidden>
+      {CHARTS.speed.map((c) => <RankChart chart={c} />)}
+    </div>
+
+    <div class="panel" id="panel-weight" role="tabpanel" aria-labelledby="tab-weight" data-panel="weight" hidden>
+      {CHARTS.weight.map((c) => <RankChart chart={c} />)}
+    </div>
+
+    <div class="panel" id="panel-tokens" role="tabpanel" aria-labelledby="tab-tokens" data-panel="tokens" hidden>
+      <RankChart chart={CHARTS.tokens[0]} />
+      <AnatomyChart />
+      <RankChart chart={CHARTS.tokens[1]} />
+    </div>
+
+    <div class="panel" id="panel-orchestration" role="tabpanel" aria-labelledby="tab-orchestration" data-panel="orchestration" hidden>
+      <SwimChart />
+      <BuildChart />
+    </div>
+
+    <div class="panel" id="panel-reliability" role="tabpanel" aria-labelledby="tab-reliability" data-panel="reliability" hidden>
+      <p class="pending">Not measured yet. These five tests are written and have not run.</p>
+      <dl class="rows">
+        {RELIABILITY.map((r) => (
+          <div class="row">
+            <dt>{r.name} <span class="small">{r.test}</span></dt>
+            <dd>{r.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <p class="why small">Why some apps have no number: <a href="#report-gaps">read the report</a>.</p>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("#results");
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-panel]")];
+    const show = (id: string) => {
+      for (const t of tabs) {
+        const on = t.dataset.tab === id;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+      }
+      for (const p of panels) p.hidden = p.dataset.panel !== id;
+      const url = new URL(location.href);
+      if (id === "overview") url.searchParams.delete("view");
+      else url.searchParams.set("view", id);
+      history.replaceState(null, "", url);
+    };
+    const start = new URLSearchParams(location.search).get("view");
+    if (start && tabs.some((t) => t.dataset.tab === start)) show(start);
+    tabs.forEach((t, i) => {
+      t.tabIndex = i === 0 ? 0 : -1;
+      t.addEventListener("click", () => show(t.dataset.tab!));
+      t.addEventListener("keydown", (e) => {
+        const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        next.focus();
+        show(next.dataset.tab!);
+      });
+    });
+
+    const filter = root.querySelector<HTMLSelectElement>("[data-family-filter]");
+    filter?.addEventListener("change", () => {
+      root.dataset.show = filter.value;
+      renumber();
+    });
+
+    // Overview grid: sort by a column. The Bare CLI row stays on top, missing values go last.
+    const grid = root.querySelector<HTMLTableElement>("[data-grid]");
+    const body = grid?.tBodies[0];
+    let sortKey = "name";
+    const renumber = () => {
+      if (!body) return;
+      let n = 0;
+      for (const row of body.querySelectorAll<HTMLTableRowElement>("tr:not(.ref)")) {
+        const pos = row.querySelector(".pos")!;
+        const visible = getComputedStyle(row).display !== "none";
+        const has = sortKey !== "name" && row.querySelector<HTMLElement>(`td[data-key="${sortKey}"]`)?.dataset.v;
+        pos.textContent = visible && has ? String(++n) : "";
+      }
+    };
+    grid?.querySelectorAll<HTMLButtonElement>("[data-sort]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!body) return;
+        sortKey = btn.dataset.sort!;
+        const rows = [...body.querySelectorAll<HTMLTableRowElement>("tr:not(.ref)")];
+        const val = (r: HTMLTableRowElement) => {
+          const v = r.querySelector<HTMLElement>(`td[data-key="${sortKey}"]`)?.dataset.v;
+          return v ? Number(v) : Infinity;
+        };
+        rows.sort((a, b) =>
+          sortKey === "name" ? a.dataset.name!.localeCompare(b.dataset.name!) : val(a) - val(b) || a.dataset.name!.localeCompare(b.dataset.name!),
+        );
+        body.append(...rows);
+        grid.querySelectorAll("th[aria-sort]").forEach((th) => th.setAttribute("aria-sort", "none"));
+        btn.closest("th")!.setAttribute("aria-sort", "ascending");
+        const col = [...btn.closest("tr")!.children].indexOf(btn.closest("th")!);
+        grid.querySelectorAll(".sorted").forEach((el) => el.classList.remove("sorted"));
+        if (sortKey !== "name") grid.querySelectorAll(`tr > :nth-child(${col + 1})`).forEach((el) => {
+          if (!el.closest(".groups")) el.classList.add("sorted");
+        });
+        renumber();
+      });
+    });
+  }
+</script>
+
+<style>
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .segments {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--radius-tile);
+    background: var(--color-bar);
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 0 0 150px;
+    padding: 10px 0;
+    border: 0;
+    border-radius: var(--radius-mark);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: background-color 160ms ease;
+    outline: none;
+  }
+  .segment .label {
+    font: 600 15px/20px var(--font-sans);
+    color: var(--color-text);
+  }
+  .segment .caption {
+    font: 400 12px/16px var(--font-sans);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .segment.active {
+    background: var(--color-text);
+  }
+  .segment.active .label {
+    color: var(--color-surface);
+  }
+  .segment.active .caption {
+    color: var(--color-ramp-2);
+  }
+  .segment:not(.active):focus-visible {
+    background: var(--color-hover);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .segment:not(.active):hover {
+      background: var(--color-hover);
+    }
+  }
+  .selects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px 16px;
+  }
+  .select {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: var(--radius-mark);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .select .key {
+    font: 400 14px/18px var(--font-sans);
+  }
+  .select select {
+    field-sizing: content;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0 18px 0 0;
+    margin-right: -18px;
+    font: 600 14px/18px var(--font-sans);
+    color: var(--color-text);
+    cursor: pointer;
+    outline: none;
+  }
+  .select svg {
+    pointer-events: none;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .panel[hidden] {
+    display: none;
+  }
+
+  /* Overview grid */
+  .overview {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .overview .grid-legend {
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+  .overview {
+    padding-top: 28px;
+  }
+  .why {
+    margin: 28px 0 0;
+    text-align: center;
+  }
+  .why a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-hairline);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .why a:hover {
+      text-decoration-color: var(--color-text);
+    }
+  }
+  .grid-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .grid {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+    font: 500 14px/18px var(--font-sans);
+    font-feature-settings: "tnum";
+  }
+  .grid th,
+  .grid td {
+    padding: 0;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .grid .groups th {
+    padding: 0 12px 8px;
+    text-align: left;
+    font: 600 13px/16px var(--font-sans);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .grid .groups th:first-child {
+    border-bottom: 0;
+  }
+  .grid .groups th + th {
+    border-left: 1px solid var(--color-hairline);
+  }
+  .grid .heads th {
+    width: 64px;
+    vertical-align: bottom;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .grid .heads button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    width: 100%;
+    padding: 10px 9px;
+    border: 0;
+    background: transparent;
+    font: 600 13px/16px var(--font-sans);
+    color: var(--color-text);
+    cursor: pointer;
+    outline: none;
+  }
+  .grid .heads button span {
+    white-space: normal;
+    text-align: right;
+  }
+  .grid .heads button em {
+    font: 400 12px/14px var(--font-sans);
+    font-style: normal;
+    color: var(--color-text-muted);
+  }
+  .grid .heads .who button {
+    align-items: flex-start;
+  }
+  .grid .heads th[aria-sort="ascending"] button span::after {
+    content: " \2193";
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .grid .heads button:hover {
+      background: var(--color-bar);
+    }
+  }
+  .grid .heads button:focus-visible {
+    background: var(--color-bar);
+  }
+  .grid .pos {
+    width: 32px;
+    padding-left: 20px;
+    color: var(--color-text-muted);
+    font: 500 13px/16px var(--font-sans);
+    text-align: right;
+  }
+  .grid .who {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-surface);
+    text-align: left;
+  }
+  .grid tbody .who {
+    height: 38px;
+    padding: 0 12px 0 10px;
+    font: 500 15px/20px var(--font-sans);
+  }
+  .grid .app {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .grid tbody tr + tr > * {
+    border-top: 1px solid var(--color-bar);
+  }
+  .grid tbody td {
+    padding: 0 9px;
+    height: 38px;
+  }
+  .grid tbody tr.ref > * {
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .grid td.t1 {
+    background: var(--color-signal);
+    color: var(--color-on-signal);
+    font-weight: 600;
+  }
+  .grid td.t2 {
+    background: var(--color-dim);
+  }
+  .grid td.t3 {
+    background: var(--color-bar);
+  }
+  .grid td.none {
+    color: var(--color-ramp-2);
+  }
+  .grid td.dnf {
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+  .grid .sorted {
+    box-shadow: inset 2px 0 0 var(--color-text), inset -2px 0 0 var(--color-text);
+  }
+  .grid thead .sorted {
+    box-shadow: inset 2px 0 0 var(--color-text), inset -2px 0 0 var(--color-text), inset 0 2px 0 var(--color-text);
+  }
+  .grid tbody tr:last-child .sorted {
+    box-shadow: inset 2px 0 0 var(--color-text), inset -2px 0 0 var(--color-text), inset 0 -2px 0 var(--color-text);
+  }
+  .grid-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin-top: 20px;
+  }
+  .grid-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pending {
+    margin: 0 auto 8px;
+    max-width: 780px;
+    width: 100%;
+    font: 500 18px/26px var(--font-sans);
+  }
+  .rows {
+    margin: 0 auto;
+    max-width: 780px;
+    width: 100%;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .row dt {
+    font: 600 16px/24px var(--font-sans);
+  }
+  .row dd {
+    margin: 0;
+    font: 400 16px/24px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 720px) {
+    .overview .grid-legend {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .grid .pos {
+      padding-left: 8px;
+      width: 28px;
+    }
+    .row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

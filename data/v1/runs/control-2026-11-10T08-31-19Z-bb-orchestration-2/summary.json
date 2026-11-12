@@ -1,0 +1,86 @@
+{
+  "run_id": "control-2026-11-10T08-31-19Z-bb-orchestration-2",
+  "rows": 16,
+  "invalid_rows": 8,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "bb": {
+      "family": "EL-SDK",
+      "tests": {
+        "C1/shipped": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/time-to-green": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-max": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/fan-out-total": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/handoff": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/codes-placed": {
+          "n": 1,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "C1/tokens-total": {
+          "n": 1,
+          "median": 4211797,
+          "p25": 4211797,
+          "p75": 4211797,
+          "min": 4211797,
+          "max": 4211797,
+          "against_bare_cli": null
+        },
+        "C1/usd-total": {
+          "n": 1,
+          "median": 5.4631048999999985,
+          "p25": 5.4631048999999985,
+          "p75": 5.4631048999999985,
+          "min": 5.4631048999999985,
+          "max": 5.4631048999999985,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

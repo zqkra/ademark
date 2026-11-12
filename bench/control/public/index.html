@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADEMark</title>
+<style>
+@font-face { font-family: Doto; src: url(/doto.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Host Grotesk"; src: url(/host-grotesk.woff2) format("woff2"); font-weight: 300 800; }
+@font-face { font-family: Geist; src: url(/geist.woff2) format("woff2"); font-weight: 100 900; }
+:root { --ground: #f7f7f7; --surface: #fff; --text: #0a0a0a; --muted: #6e6e6e; --hairline: #e2e2e2; --dim: #d6d6d6; --signal: #ff0d50; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ground); color: var(--text); font: 400 15px/1.45 "Host Grotesk", system-ui, sans-serif; }
+main { max-width: 760px; margin: 0 auto; padding: 40px 24px 64px; }
+header { display: flex; justify-content: space-between; align-items: center; }
+.wordmark { font: 700 18px Geist, system-ui, sans-serif; letter-spacing: -0.01em; }
+.state { color: var(--muted); font-weight: 500; font-size: 13px; }
+.hero { text-align: center; padding: 56px 0 40px; }
+.count { font: 900 clamp(72px, 16vw, 128px)/1 Doto, ui-monospace, monospace; font-variation-settings: "ROND" 0; letter-spacing: -0.035em; }
+.line { margin: 12px 0 4px; font-size: 17px; font-weight: 500; min-height: 24px; }
+.hint { margin: 0 0 24px; color: var(--muted); font-size: 13px; min-height: 20px; }
+.legend { display: flex; justify-content: center; gap: 18px; margin: 14px 0 0; }
+.key { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+button { font: 500 15px "Host Grotesk", system-ui, sans-serif; border: 0; border-radius: 8px; cursor: pointer; }
+.primary { background: var(--text); color: #fff; padding: 12px 28px; }
+.primary.busy { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--hairline); }
+.primary:disabled { opacity: .4; cursor: default; }
+.plain { display: block; margin: 14px auto 0; background: none; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 0; }
+.plain[hidden] { display: none; }
+.more { margin: 0 auto 12px; color: var(--muted); font-size: 13px; }
+.more summary { cursor: pointer; list-style: none; text-decoration: underline; }
+.more[hidden] { display: none; }
+.problems { background: var(--surface); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; }
+.problems p { margin: 0 0 6px; }
+.card { background: var(--surface); border-radius: 12px; overflow: hidden; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--hairline); }
+.row:first-child { border-top: 0; }
+.name { font-weight: 500; }
+.steps { display: flex; gap: 14px; }
+.step { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.dot { width: 9px; height: 9px; background: var(--dim); }
+.done .dot { background: var(--text); }
+.done { color: var(--text); }
+.running .dot { background: var(--signal); }
+.running { color: var(--text); }
+.failed .dot { background: none; box-shadow: inset 0 0 0 2px var(--signal); }
+.skipped .dot { background: none; box-shadow: inset 0 0 0 1px var(--dim); }
+.note { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+.retry { background: none; padding: 0; color: var(--text); font-size: 13px; text-decoration: underline; margin-left: 8px; }
+.warn { color: #9a6700; background: #fff4cc; border-radius: 8px; padding: 8px 12px; margin: 10px auto 0; max-width: 560px; }
+.warn[hidden] { display: none; }
+.fresh { color: var(--signal); font-weight: 500; }
+.log { color: var(--muted); font-size: 13px; margin-top: 16px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<main>
+  <header><div class="wordmark">ADEMark</div><div class="state" id="state"></div></header>
+  <section class="hero">
+    <div class="count" id="count">0/0</div>
+    <p class="line" id="line"></p>
+    <p class="hint" id="hint"></p>
+    <button class="primary" id="action">Start the night</button>
+    <p class="hint" id="missing" hidden></p>
+    <p class="hint warn" id="late" hidden></p>
+    <p class="hint" id="watchdog"></p>
+    <p class="hint" id="qa"></p>
+    <!-- One button (2026-11-10): the owner presses Start the night and nothing else. The rest is here, closed. -->
+    <details class="more" id="more">
+      <summary>More</summary>
+      <button class="plain" id="rehearse">Rehearse: one smoke lap of every app, about 2 h (optional)</button>
+      <button class="plain" id="newrun" hidden>End this run and start a new one</button>
+      <button class="plain" id="close" hidden>Close this night (its data stays, nothing starts)</button>
+      <button class="plain" id="permissions">Grant permissions (only if Start names a missing one)</button>
+      <p class="hint" id="rehearsal-line" hidden></p>
+    </details>
+  </section>
+  <div id="problems"></div>
+  <div class="card" id="list"></div>
+  <p class="legend"><span class="key done"><span class="dot"></span>Done</span><span class="key running"><span class="dot"></span>Now</span><span class="key failed"><span class="dot"></span>Failed</span><span class="key"><span class="dot"></span>To do</span></p>
+  <div class="log" id="log"></div>
+</main>
+<script>
+const NAMES = { prove: "Prove", measure: "Measure", "top-up": "Top-up", tokens: "Tokens", orchestration: "Orchestration", rehearse: "Rehearse" };
+// Tokens: the Track B blocks of 6 Nov took 4 to 5 min. Orchestration: C1 has a cap of 45 min (ADEMARK-49).
+const NORMAL = { prove: "10 to 15 min", measure: "about 30 min", "top-up": "5 to 30 min", tokens: "about 5 min", orchestration: "45 min, 90 if C1 runs twice", rehearse: "about 8 min" };
+const STATES = { permissions: "Asking for permissions", idle: "Ready", starting: "Checking", working: "Working", paused: "Paused", stopping: "Stopping", blocked: "Needs you" };
+const el = (id) => document.getElementById(id);
+const post = (path, body) => fetch(path, { method: "POST", headers: { "x-ademark": "1", "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });
+const esc = (text) => String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+let busy = false;
+
+function sentence(s) {
+  if (s.state === "permissions") return "Click Allow in every macOS window.";
+  if (s.state === "starting") return "Checking sign-ins, permissions and the Mac. Apps open after this.";
+  if (s.state === "stopping") return "Stopping. Wait a moment.";
+  if (s.state === "blocked") return "This needs your help. Fix it and press the button again.";
+  if (s.state === "paused") return `${s.notice}. It goes on by itself when this account is back on screen.`;
+  if (s.current && s.current.phase === "settling") return `${s.current.label}: waiting for the Mac to be calm before measuring. ${s.current.minutes} min so far.`;
+  if (s.current && s.current.progress) return `${s.current.label}. Now: ${nowText(s.current.progress)}`;
+  if (s.current) return `${s.current.label}: step ${s.current.stepIndex} of ${s.current.stepCount}, ${NAMES[s.current.step].toLowerCase()}${s.current.tests ? ` of ${s.current.tests}` : ""}. ${s.current.minutes} min so far.`;
+  if (s.finished && s.kind === "rehearsal") return `Rehearsal finished: ${s.newTotal} NEW. Tell Claude to read rehearsal.md.`;
+  if (s.closed) return "This night is closed. Its data stays. Tell Claude it finished.";
+  if (s.total && s.stale) return "Press Start the night. The old run ends, its data stays, and a new night measures all the apps by itself.";
+  // ADEMARK-51: after the first pass the button measures only what is missing, in the same night.
+  if (s.passOver && s.complete) return "The night is complete: every app is measured and no test is under its minimum.";
+  if (s.passOver && s.missing && s.missing.error) return `What is missing could not be read: ${s.missing.error}`;
+  if (s.passOver && s.missing) return "The night ran to its end. After a fix, press Measure what is missing: it measures only that, in this night.";
+  if (s.passOver) return "Reading what is missing.";
+  if (s.total) return "Paused. Press Continue the night to pick up where it stopped.";
+  return "Press Start the night. It measures all the apps by itself, in about 9 hours.";
+}
+
+// What each test does and why the screen may look idle, so nobody stops a run that is working (2026-11-08).
+const TESTS = {
+  A1: "Cold start: the app is closed and opened again, up to 10 times.",
+  A2: "Relaunch: quit and open again, up to 10 times.",
+  A3: "New chat speed, up to 10 times.",
+  A4: "First word of an answer, up to 10 times.",
+  A5: "RAM at rest: the app must sit untouched for up to 11 minutes. Nothing moves on screen.",
+  A6: "CPU at rest: the app must sit untouched for a few minutes, once in front and once covered.",
+  A7: "RAM while 5 agents answer: about 4 minutes.",
+  A8: "Typing delay while 5 agents answer: about 4 minutes.",
+  A9: "RAM left after quitting: about 2 minutes with the app closed.",
+  A10: "20 chats open, then RAM and typing: a few minutes.",
+  A11: "A 2,000-message chat: building it can take 10 minutes, then it is opened and scrolled 6 times.",
+  B1: "Hello tax: one short prompt, and the tokens the app sends for it.",
+  B2: "Request anatomy: what each model request of one prompt holds.",
+  B3: "Real prompt tax: one real coding prompt, and its tokens.",
+  B4: "Repo rules: whether the app sends the rules file of the repository.",
+  C1: "Orchestrated build: the app's agents build a feature together, up to 45 minutes. The screen may look idle.",
+};
+const STAGES = {
+  launch: "Opening the app.",
+  seed: "Creating 5 test chats in the app.",
+};
+
+function nowText(p) {
+  return p.stage === "test" ? (TESTS[p.test] || p.test) + (p.rep ? ` Repetition ${p.rep}.` : "") : STAGES[p.stage] || p.stage;
+}
+
+function hint(s) {
+  if (s.state === "permissions") return "About 14 windows. The apps open and close by themselves.";
+  if (s.state === "starting") return "Takes up to 5 minutes. Nothing opens yet.";
+  if (!s.current) return busy || s.finished ? "" : "One button. Then leave this Mac alone: do not log out, lock it or switch accounts.";
+  if (s.current.phase === "settling") return "Up to 10 minutes: background work after login slows the Mac, and that would make apps look slow. Do not touch the Mac.";
+  const limit = s.current.limitMinutes;
+  if (limit !== null && s.current.minutes >= limit) return `Past its limit of ${limit} min: the program stops it and moves on to the next app.`;
+  const part = s.current.progress ? `${s.current.progress.minutes} min in this part, ${s.current.minutes} min on this app. ` : "";
+  const stop = limit === null ? "" : ` It is stopped at ${limit} min.`;
+  return `${part}Normal is ${NORMAL[s.current.step]} per app.${stop} Do not log out. Switching to another account pauses the run until you come back.`;
+}
+
+function render(s) {
+  busy = ["starting", "working", "paused", "stopping", "permissions"].includes(s.state);
+  el("state").textContent = STATES[s.state] ?? s.state;
+  el("count").textContent = `${s.done}/${s.total}`;
+  el("line").textContent = sentence(s);
+  el("hint").textContent = hint(s);
+  const action = el("action");
+  // After the first pass (ADEMARK-51): Measure what is missing, or no button when the night is complete.
+  const fill = !busy && s.passOver && !s.stale && !s.closed;
+  action.textContent = busy ? "Stop" : fill ? "Measure what is missing" : s.total && !s.closed && !s.finished && !s.stale ? "Continue the night" : "Start the night";
+  action.dataset.path = busy ? "/api/stop" : fill ? "/api/fill" : "/api/start";
+  action.className = busy ? "primary busy" : "primary";
+  action.hidden = fill && !(s.missing && s.missing.line);
+  action.disabled = s.state === "stopping" || s.state === "permissions";
+  const missing = el("missing");
+  missing.hidden = !(fill && s.missing && s.missing.line);
+  missing.textContent = fill && s.missing ? s.missing.line : "";
+  // ADEMARK-49: the plan did not answer, so the tokens and orchestration steps of this pass were skipped, not failed.
+  const late = el("late");
+  late.hidden = !s.lateNote;
+  late.textContent = s.lateNote || "";
+  el("close").hidden = busy || !s.open || s.kind !== "night";
+  el("permissions").hidden = busy;
+  el("more").hidden = busy;
+  // A run that cannot go on (a changed native helper) ends here; its rows stay on disk.
+  el("newrun").hidden = busy || !s.open;
+  el("rehearse").hidden = busy;
+  // A warning, never a gate: Start works in every case (review R2, 2026-11-10).
+  const line = el("rehearsal-line");
+  line.hidden = !s.rehearsal;
+  line.className = s.rehearsal && s.rehearsal.level === "warn" ? "hint warn" : "hint";
+  line.textContent = s.rehearsal ? s.rehearsal.text : "";
+  // QA left the night on 2026-11-10: it runs by day with `ademark qa --run <id>`.
+  el("qa").textContent = s.kind === "night" ? s.qa : "Rehearsal: smoke rows, never a measurement.";
+  el("watchdog").textContent = s.watchdog === null ? "" : s.watchdog ? "Watchdog: on. A stuck Control is restarted by itself." : "Watchdog: off. Press Start to turn it on.";
+  el("problems").innerHTML = s.problems.length ? `<div class="problems">${s.problems.map((p) => `<p>${esc(p)}</p>`).join("")}</div>` : "";
+  el("list").innerHTML = s.ades.map((ade) => {
+    const steps = ade.steps.filter((step) => step.status !== "none").map((step) => `<span class="step ${step.status}"><span class="dot"></span>${NAMES[step.step] ?? step.step}</span>`).join("");
+    const failed = ade.steps.find((step) => step.status === "failed");
+    // A rehearsal lap and a top-up run once: no Retry for them.
+    const retry = !busy && failed && (failed.step === "prove" || failed.step === "measure");
+    const marks = ade.marks.fresh + ade.marks.accepted === 0 ? "" : `<span class="fresh">${ade.marks.fresh} NEW</span>, ${ade.marks.accepted} accepted limit. `;
+    // ADEMARK-56: a test set aside after review, with its reason, until the pass measures it again.
+    const aside = (ade.marks.setAside ?? []).map((text) => `<div>${esc(text)}</div>`).join("");
+    const text = (failed ? esc(failed.note) : "") + (retry ? `<button class="retry" data-ade="${esc(ade.id)}">Retry</button>` : "");
+    const note = marks || text || aside ? `<div class="note">${marks}${text}${aside}</div>` : "";
+    return `<div class="row"><div class="name">${esc(ade.label)}</div><div class="steps">${steps}</div>${note}</div>`;
+  }).join("");
+  el("log").textContent = s.log.join("\n");
+}
+
+async function tick() {
+  if (!document.hidden) render(await (await fetch("/api/state")).json());
+}
+el("action").onclick = () => post(el("action").dataset.path || "/api/start").then(tick);
+el("close").onclick = () => post("/api/close").then(tick);
+el("permissions").onclick = () => post("/api/permissions").then(tick);
+el("newrun").onclick = () => post("/api/new-run").then(tick);
+el("rehearse").onclick = () => post("/api/rehearse").then(tick);
+el("list").onclick = (event) => {
+  const ade = event.target.dataset?.ade;
+  if (ade) post("/api/retry", { ade }).then(tick);
+};
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>

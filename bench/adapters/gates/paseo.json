@@ -1,0 +1,17 @@
+{
+  "ade": "paseo",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T13:51:35.530Z",
+  "harnessCommit": "8337afbdddb8a47701900bb3b6a94b45918d82d5",
+  "version": "0.15.0",
+  "bundleSha256": "5e8685a0b860a9708cb130109492c097c88a3677ca2f207cf901a4ec2fde937e",
+  "failures": [
+    "paseo A11 open: the short thread did not show before the open",
+    "paseo A11 scroll-gaps: the short thread did not show before the open",
+    "paseo A11 scroll-max-gap: the short thread did not show before the open",
+    "paseo A11 switch: the short thread did not show before the open",
+    "paseo A3 default-mode: old-thread draft not read in the composer: []",
+    "paseo A2 relaunch: timed_out"
+  ]
+}

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ADEMark results
+    url: https://ademark.dev
+    about: The measured results, the report and the method.

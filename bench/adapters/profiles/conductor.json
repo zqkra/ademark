@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "ade": "conductor",
+  "app": {
+    "path": "/Applications/Conductor.app",
+    "version": "0.91.2",
+    "bundleSha256": "66a8555d1172a4fef4e1871fd94827b741a46556bda3ccd49c4cbe33e309b997",
+    "processNames": [
+      "conductor"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Conductor",
+    "bundleId": "com.conductor.app",
+    "composerRect": {
+      "x": 428,
+      "y": 305,
+      "w": 745,
+      "h": 32
+    },
+    "activeComposerRect": {
+      "x": 284,
+      "y": 842,
+      "w": 840,
+      "h": 32
+    },
+    "launchComposerRect": {
+      "x": 284,
+      "y": 842,
+      "w": 840,
+      "h": 32
+    },
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 270,
+      "y": 90,
+      "w": 870,
+      "h": 730
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 1155,
+        "y": 5,
+        "w": 440,
+        "h": 30
+      },
+      {
+        "x": 20,
+        "y": 255,
+        "w": 30,
+        "h": 70
+      }
+    ],
+    "drive": "ax",
+    "dataDirs": [
+      "~/Library/Application Support/com.conductor.app",
+      "~/conductor"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      "Library/Application Support/com.conductor.app/.window-state.json"
+    ],
+    "jsonKeys": [],
+    "warmLaunchMs": 15000
+  },
+  "blankRelaunchMs": 5000,
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "clone",
+          "--quiet",
+          "--bare",
+          "${worktree}",
+          "${worktree}/.git/ademark-origin.git"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "remote",
+          "add",
+          "origin",
+          "${worktree}/.git/ademark-origin.git"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "fetch",
+          "--quiet",
+          "origin"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "git",
+          "-C",
+          "${worktree}",
+          "branch",
+          "--set-upstream-to=origin/main",
+          "main"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 610,
+          "y": 450,
+          "w": 220,
+          "h": 40
+        },
+        "texts": [
+          "Open",
+          "project"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 711,
+          "y": 431
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+g"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "type",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 270,
+          "y": 100,
+          "w": 870,
+          "h": 60
+        },
+        "texts": [
+          "new copy",
+          "copy of"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "wait",
+          "ms": 500
+        }
+      ],
+      "codex": [
+        {
+          "kind": "run",
+          "argv": [
+            "open",
+            "conductor://settings/user/models"
+          ],
+          "timeoutMs": 15000
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        }
+      ]
+    },
+    "quit": [],
+    "beforeRelaunchQuit": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ],
+    "beforeColdQuit": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ]
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.conductor.app"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/com.conductor.app",
+      "~/conductor",
+      "~/.conductor"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "27XN666UJ7",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": null,
+  "notes": [
+    "Calibrated from the bundle only (no launch) on Conductor 0.91.2 (CFBundleShortVersionString 0.91.2), main binary SHA-256 66a8555d. ADES.md 3.14 says 0.91.0; the installed build is 0.91.2.",
+    "orchestrationTrigger null: ADES.md 3.14 says not supported, and the bundled SKILL.md says agents cannot create local workspaces (no CLI or API for them). The Conductor MCP is opt-in and not used here.",
+    "Settings: user and project settings are TOML (~/.conductor/settings.toml). setJsonKeys writes JSON top-level keys only, so reset.jsonKeys is empty. Pins that matter (model, effort, claude_code_executable_path, claude_provider) need a TOML seed or a GUI step. ~/.conductor is not in dataDirs, so reset does not move it, and restoreSeed refuses a target that exists.",
+    "Agents: the app runs its bundled Claude Code 2.1.300 and Codex 0.162.1 (main.strings). ADES rule 5 wants the system claude 2.1.303. claude_code_executable_path in ~/.conductor/settings.toml is the override; it is not set yet. The bundled binaries sit in ~/Library/Application Support/com.conductor.app/bin, inside dataDirs, so reset removes them and the app downloads them again.",
+    "Login: agent-cli. Conductor uses the Claude Code and Codex logins already on the Mac (installation doc and FAQ). It also needs gh auth in the terminal environment. login.files is empty because none of these live in dataDirs. The conductor.db settings table (anthropic_api_key, anthropic_base_url) does live in dataDirs, so reset would drop an API key set in the app.",
+    "GUI session 2026-10-24 on 0.91.2 (no Conductor account needed, plan FREE; gh is signed in as zqkra). After reset the window shows Home with 'Open project', 'Open GitHub project', 'Quick start' and no composer.",
+    "openProject (checked): opening the plain arena (no remote) asks 'Create a private GitHub repo?' (it would create zqkra/<name> on GitHub and push): never accept that. With a local bare clone as origin (made inside .git so it is new every block and invisible to git status) the project is added, and Conductor creates and opens a workspace branched from origin/main (~/conductor/workspaces/<repo>/<city>). The four git run steps do that, then 'Open project' (711,431), the open panel, cmd+shift+g, the path, Enter, Enter.",
+    "Model (checked): the default for new workspaces is [models] default in ~/.conductor/settings.toml (outside dataDirs, so reset keeps it). It was gpt-5.6-sol; on 2026-10-24 it was set to opus-5-5-1m (the id Conductor 0.91.2 uses for 'Opus 5.5', effort high in local-storage model-picker-configs), and loadout slot 1 was switched to Claude Code / Opus 5.5 / High in Settings > Default models. The cmd+n composer then shows 'Opus 5.5 High' (OCR). In a composer, ctrl+cmd+2 also selects Opus 5.5. configure.claude is only a wait.",
+    "Replay (checked): with ANTHROPIC_BASE_URL in launchd the agent (~/Library/Application Support/com.conductor.app/agent-binaries/claude/2.1.300/claude, Conductor's own build) had it in its env and showed 'Retrying (attempt n/10)' with no server on 8787, so Conductor reaches the replay server. The agent binary lives in a dataDir, so a reset removes it and the app re-provisions it.",
+    "Composers: cmd+n opens a centred 'What do you want to work on?' modal (text at y 318) whose Enter creates the workspace and sends; a workspace's own composer is at the bottom (probe-region 292,849 344x18, 'Add a follow up'). launchComposerRect is that bottom composer for a relaunch into a workspace; a launch right after reset shows Home and has no composer.",
+    "A11 (checked): the sidebar lists the repo's workspaces newest first; cmd+2 opened the second row. A11 makes the seed then the long workspace, so cmd+1 = long, cmd+2 = seed.",
+    "waitDone: the session log goes to ~/.claude/projects/-Users-ademark-conductor-workspaces-<repo>-<city>/, not the arena, so cwd stays any.",
+    "Seed (2026-10-24): on a fresh data folder the window opens at another size and the harness's resize right after launch leaves the Tauri webview black for good (reproduced by hand: resize within 0.6 s of open -> empty window, OCR finds nothing; cmd+r, minimise/restore and a second resize do not recover it). Gate runs then failed with 'seed thread n/2 did not finish: timeout' and not_frontmost clicks. seeds/conductor/home holds .window-state.json (main 1600x1000 at 80,60), so the window already has the measured geometry and the resize is a no-op: with it the Home screen renders after the same early resize.",
+    "openProject waits (2026-10-24 gate 3): with the click sent right after launch the project was never added (conductor.db repos = 0 in the set-aside data). openProject now waits for 'project' on the Home card (OCR) before the click and for the workspace banner 'You're in a new copy of <repo>' after the open panel.",
+    "BLOCKER (checked 2026-10-24): the first launch after ~/Library/Application Support/com.conductor.app is created anew stays a black window (Tauri webview never paints; OCR empty after 60 s, no dialog, app frontmost). Reproduced by hand with an empty folder, with only the window state, with conductor.db or agent-binaries/bin seeded, and even with an identical copy of a folder that had just rendered. Quitting and launching again on the same folder renders Home within 3 s, also with an immediate resize. reset() moves the folder aside every block, so every block's launch is a first launch; a profile cannot quit and relaunch (the harness keeps the first pid). Needs a harness change (a warm-up launch after reset, or not moving this folder).",
+    "reset.warmLaunchMs 15000 (2026-10-24): the first launch on a new data folder stays black; reset opens and quits the app once so the measured launch is the second one.",
+    "BLOCKER (checked live 2026-11-07, repair of prove-2): Conductor 0.91.2 no longer draws chat messages. The thread pane shows only the red text 'Your annual license key to use Virtuoso Message List in non-production environments has expired ... purchase a new key from https://virtuoso.dev/pricing/' (y about 80-115) and the message list stays empty: a workspace whose agent finished (renamed 'Unchanged reply' by the agent) has no user or assistant text on screen, and the Accessibility tree of the list group is empty. Tauri serves the UI from tauri://localhost, which Virtuoso treats as non-production, so this is a date time bomb in the pinned build. No setting (General, Experimental, Advanced) replaces the list. A4 on-screen and every A11 variant can never see text (gate 2026-11-07T08:34: A11 OCR read only the license line for 60 s), so the gate cannot pass. Needs a human: a new pin (the app offers an update, 'Conductor is joining Meta'; declined here, and /Applications/Conductor.app is owned by the owner's account so this account cannot replace it) or excluding A4/A11 for Conductor.",
+    "Live recheck 2026-11-07 on 0.91.2 (facts checked): Home, 'Open project' (711,431), the open panel and cmd+shift+g still work; the project opens into a new workspace. The workspace composer still sits at 292,849 (probe-region, inside activeComposerRect/launchComposerRect 284,842,840,32; OCR reads the probe as 'ademarkoz'). cmd+n still opens the 'What do you want to work on?' modal at y 317 (inside composerRect), and Enter there creates a workspace and starts the agent. A relaunch restores the last open view, including an unsent composer draft; it shows Home only when the app was quit on Home, which is why gate A1/A2 timed out after A4 left the app on Home. An update toast ('New update available', See changes / Restart, close X at about 1222,866) shows bottom right: never press Restart. When messages render again, re-measure threadRect below the license line and keep it 320 pt tall or less (watch OCR misreads small text in tall regions). Track B prove-2 stopped at the contamination check (body_sha256 9f4eb621... != 3039327d...), the same harness-wide drift MonoCode hit, before Conductor launched.",
+    "blankRelaunchMs 5000 (2026-11-09, ADEMARK-43): gate-conductor-2026-11-08T13-17-14Z-1 and 15-58-50Z-1, attempt 2: the window was black after the launch and steps.openProject[4] failed with '\"project\" did not show within 30 s' (events.log 13:21:23 and 16:02:57). launch() now reads the window once 5 s after the resize, and a window with no text gets one more launch before openProject. Not yet checked on the real screen: that the second launch paints.",
+    "Crash on quit (2026-11-09, ADEMARK-43): all 12 crash reports of 5 to 8 Nov (conductor-*.ips of the ademark account, read for notes/orca-conductor-cloudroom-causes-from-the-evidence-of-8-and-9.md) are one Conductor 0.91.2 bug. Thread sqlx-sqlite-worker-1, EXC_BAD_ACCESS SIGBUS KERN_MEMORY_ERROR, frames walIndexTryHdr, walIndexReadHdr, sqlite3WalCheckpoint, sqlite3WalClose, sqlite3PagerClose: SQLite crashes while it closes its database and reads the WAL shared memory. Each crash is the quit of the reset() warm-up launch, about 15 s after the open (example conductor-2026-11-05-053535.ips: launch 05:35:11.29, capture 05:35:26.58 -0500). It does not stop a run: gate-conductor-2026-11-07T08-34-37Z-1 crashed the same way and wrote 37 rows. The harness leaves Conductor's database files alone.",
+    "Text checks (2026-11-10, ADEMARK-52): in control-2026-11-10T08-31-19Z-conductor-1 and -conductor-2, steps.openProject[4] failed four times with '\"project\" did not show within 30 s'. The screenshots in waits/ (*-project.png) show Home with the 'Open project' card where the click (711, 431) expects it, and OCR read 'Open rxoiect' in all 4,030 frames (*-project-frames.json). The layout was right and the word was misread. The check now takes texts ['Open', 'project']: 'Open' was read right in every frame. 'Open GitHub project' sits at x 843, outside the region (610 to 830), so 'Open' still proves Home rendered. openProject[15] takes ['new copy', 'copy of'] from the workspace banner 'You're in a new copy of <repo>': no saved frame records how OCR reads that banner (it passed on gate-conductor-2026-11-07T08-34-37Z-1, which keeps no frames of a passed wait). The region (270, 100, 870, 60) is empty on Home, so a word of the banner proves the workspace opened. Not yet checked on the real screen.",
+    "2026-11-11: A3 joins A4 and A11 in excludeTests. A3 proves a new thread by reading the old thread's marker in the transcript before the action, and 0.91.2 draws no messages (control-2026-11-10T08-31-19Z-conductor-4/conductor/A3: in all 289 frames of the three repetitions threadRect reads only the Virtuoso licence text and 'Next unread'). Three repetitions and a top-up were invalid with 'the old thread's marker was not read before the action'.",
+    "2026-11-11: steps.beforeColdQuit and beforeRelaunchQuit open a workspace (cmd+2, the shortThread trigger) before the quit. In control-2026-11-10T08-31-19Z-conductor-4 every A1 and A2 repetition timed out: A1/rep-01/timeout-window.png shows Home, which has no composer, so no key could echo. The note of 2026-11-07 already says a relaunch restores the last open view and shows Home only when the app was quit on Home; the seed threads are made from the cmd+n modal and leave the app on Home. Not yet checked on the real screen: that cmd+2 on Home opens a workspace."
+  ],
+  "agentGuide": "A new chat in the current workspace starts with Cmd+N. Conductor 0.91.2 may leave the message list blank: that is the app, not a step to fix.",
+  "excludeTests": {
+    "A4": "Conductor 0.91.2 draws no chat messages (its message list license expired), so the first word never shows",
+    "A11": "Conductor 0.91.2 draws no chat messages, so the long thread's text never shows",
+    "A3": "Conductor 0.91.2 draws no chat messages, so the old thread's marker never shows and the new thread cannot be proven"
+  }
+}

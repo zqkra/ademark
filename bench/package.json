@@ -1,0 +1,7 @@
+{
+  "name": "ademark-bench",
+  "private": true,
+  "type": "module",
+  "bin": { "ademark": "cli.ts" },
+  "scripts": { "test": "bun test" }
+}

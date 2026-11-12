@@ -1,0 +1,39 @@
+{
+ "run_id": "control-2026-11-10T08-31-19Z-paseo-1",
+ "apps": {
+  "paseo": {
+   "version": "0.15.0"
+  }
+ },
+ "agent_versions": {
+  "claude": "2.1.303 (Claude Code)",
+  "codex": "codex-cli 0.163.0"
+ },
+ "model": [
+  "claude-opus-5-5"
+ ],
+ "effort": [
+  "high"
+ ],
+ "started_at": "2026-11-10T13:27:01.445Z",
+ "ended_at": "2026-11-10T13:55:42.385Z",
+ "test_ids": [
+  "A5",
+  "A6",
+  "A7",
+  "A8",
+  "A10",
+  "A11",
+  "A3",
+  "A4",
+  "A9",
+  "A2",
+  "A1"
+ ],
+ "machine": {
+  "model": "Mac16,10",
+  "chip": "Apple M4",
+  "ram_gb": 16
+ },
+ "macos_build": "26A434"
+}

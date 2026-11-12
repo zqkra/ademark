@@ -1,0 +1,27 @@
+#!/bin/zsh
+# Opens Ghostty because Accessibility and Screen Recording are granted to Ghostty, and the panel needs them. A login
+# shell does not read .zshrc, and Bun finds programs through the PATH it starts with, so PATH is set here.
+# This is the only way Control starts, also for the watchdog (`run --continue`): the screen permissions belong to
+# Ghostty. Arguments go to `bench/cli.ts control`.
+#
+# 2026-11-09 08:34: a second click started a second Ghostty, and Bare CLI's reset killed both. When Control already
+# answers, this opens its panel and starts nothing.
+repo=${0:A:h:h:h:h}
+[[ -f $repo/bench/cli.ts ]] || repo=$HOME/ADEMark
+port=7788
+for (( i = 1; i < $#; i++ )); do
+  [[ ${@[i]} == --port ]] && port=${@[i+1]}
+done
+if /usr/bin/curl -fsS -m 3 -o /dev/null "http://127.0.0.1:$port/api/state"; then
+  [[ " $* " == *" --continue "* || " $* " == *" --no-open "* ]] || /usr/bin/open "http://127.0.0.1:$port"
+  exit 0
+fi
+# A restart in the night must not change the code under the open run.
+pull='git pull --ff-only -q;'
+[[ " $* " == *" --continue "* ]] && pull=''
+# After a pull the native helper may be older than its sources (bin/ is not in git): build it before Control starts.
+# A failed build keeps the window open with the error, and Control does not start with an old helper.
+build='bash bench/native/build.sh --if-stale || { echo "ADEMark: the native helper did not build. Control was not started."; sleep 600; exit 1; };'
+exec /usr/bin/open -na Ghostty --args -e /bin/zsh -lc \
+  "export PATH=\"\$HOME/.local/bin:\$HOME/.bun/bin:/opt/homebrew/bin:\$PATH\"; cd ${(q)repo} && $pull $build bun bench/cli.ts control \"\$@\"" \
+  zsh "$@"

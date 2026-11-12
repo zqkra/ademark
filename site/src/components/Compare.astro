@@ -1,0 +1,358 @@
+---
+// Pick two ADEs and read every ranked test side by side: the median, the range of the runs, the Bare CLI line.
+import { ADES, BARE, METRICS, gap, stat } from "../data/results";
+
+const data = {
+  apps: ADES.map((a) => ({ id: a.id, name: a.name, mark: a.mark })),
+  metrics: METRICS.map((m) => ({ key: m.key, test: m.test, name: m.name, what: m.what, unit: m.unit })),
+  bare: Object.fromEntries(METRICS.map((m) => [m.key, stat(BARE, m.key)?.m ?? null])),
+  values: Object.fromEntries(
+    ADES.map((a) => [
+      a.id,
+      Object.fromEntries(
+        METRICS.map((m) => {
+          const s = stat(a.id, m.key);
+          const g = gap(a.id, m.test);
+          return [m.key, s ? [s.m, s.lo, s.hi, s.n] : g ? [g.kind, g.why] : null];
+        }),
+      ),
+    ]),
+  ),
+};
+const defaults = ["t3code", "bb"];
+---
+<section id="compare" class="section">
+  <div class="wrap">
+    <h2 class="section-title">Compare</h2>
+
+    <div class="pickers">
+      {defaults.map((id, i) => (
+        <>
+          {i === 1 && <span class="vs">vs</span>}
+          <label class="picker" data-side={i}>
+            <i class:list={["sq", i === 0 ? "ink" : "signal"]}></i>
+            <img class="mark" src={ADES.find((a) => a.id === id)!.mark ?? ""} alt="" width="20" height="20" />
+            <select data-pick={i} aria-label={i === 0 ? "First ADE" : "Second ADE"}>
+              {ADES.map((a) => <option value={a.id} selected={a.id === id}>{a.name}</option>)}
+            </select>
+            <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+          </label>
+        </>
+      ))}
+    </div>
+
+    <article class="card compare">
+      <div data-metrics></div>
+      <p class="key small">Dot: the median. Bar: lowest to highest run. Gray line: the Bare CLI.</p>
+    </article>
+  </div>
+  <script is:inline type="application/json" data-compare set:html={JSON.stringify(data)} />
+</section>
+
+<script>
+  import { fmt, type Unit } from "../data/format";
+
+  type Value = [number, number, number, number] | ["dnf" | "nm", string] | null;
+  interface Data {
+    apps: { id: string; name: string; mark: string | null }[];
+    metrics: { key: string; test: string; name: string; what: string; unit: Unit }[];
+    bare: Record<string, number | null>;
+    values: Record<string, Record<string, Value>>;
+  }
+
+  const root = document.querySelector<HTMLElement>("#compare");
+  const raw = root?.querySelector("[data-compare]")?.textContent;
+  if (root && raw) {
+    const data: Data = JSON.parse(raw);
+    const list = root.querySelector<HTMLElement>("[data-metrics]")!;
+    const picks = [...root.querySelectorAll<HTMLSelectElement>("[data-pick]")];
+    const name = (id: string) => data.apps.find((a) => a.id === id)!.name;
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+    const isNum = (v: Value): v is [number, number, number, number] => Array.isArray(v) && typeof v[0] === "number";
+
+    function verdict(ids: string[], vs: Value[]) {
+      const [a, b] = vs;
+      if (!isNum(a) && !isNum(b)) return { text: "No data for either", quiet: true };
+      if (!isNum(a)) return { text: `Only ${name(ids[1])} measured`, quiet: true };
+      if (!isNum(b)) return { text: `Only ${name(ids[0])} measured`, quiet: true };
+      if (a[0] === b[0]) return { text: "Same median", quiet: true };
+      if (a[3] > 1 && b[3] > 1 && a[1] <= b[2] && b[1] <= a[2]) return { text: "Runs overlap", quiet: true };
+      return { text: `${name(a[0] < b[0] ? ids[0] : ids[1])} ahead`, quiet: false };
+    }
+
+    function render() {
+      const ids = picks.map((p) => p.value);
+      picks.forEach((p, i) => {
+        const img = p.parentElement!.querySelector<HTMLImageElement>("img")!;
+        img.src = data.apps.find((a) => a.id === ids[i])!.mark ?? "";
+      });
+      list.innerHTML = data.metrics
+        .map((m) => {
+          const vs = ids.map((id) => data.values[id]?.[m.key] ?? null);
+          const ref = data.bare[m.key] ?? 0;
+          const top = Math.max(ref, ...vs.flatMap((v) => (isNum(v) ? [v[2]] : []))) * 1.08 || 1;
+          const x = (v: number) => Math.min(1, v / top);
+          const v = verdict(ids, vs);
+          const strips = vs
+            .map((val, i) => {
+              const who = `<div class="who"><i class="sq ${i ? "signal" : "ink"}"></i>${esc(name(ids[i]))}</div>`;
+              if (!isNum(val)) {
+                const why = val ? `${val[0] === "dnf" ? "Did not finish" : "Not measured"}: ${val[1]}.` : "Not run in this pass.";
+                return `<div class="strip">${who}<div class="lane missing">${esc(why)}</div><div class="value"></div></div>`;
+              }
+              const [med, lo, hi, n] = val;
+              return `<div class="strip">${who}
+                <div class="lane" style="--color:var(${i ? "--color-signal" : "--color-text"});--bare:${x(ref)}">
+                  <span class="rail"></span><span class="bare"></span>
+                  ${n > 1 ? `<span class="range" style="--lo:${x(lo)};--hi:${x(hi)}"></span>` : ""}
+                  <span class="dot" style="--x:${x(med)}"></span>
+                </div>
+                <div class="value"><b>${fmt(med, m.unit)}</b><span>${n > 1 ? `median of ${n}` : "1 run"}</span></div>
+              </div>`;
+            })
+            .join("");
+          const flip = x(ref) > 0.7;
+          return `<div class="metric">
+            <div class="metric-head">
+              <div><b>${m.name}</b><span>${esc(m.what)}</span></div>
+              <span class="verdict${v.quiet ? " quiet" : ""}">${esc(v.text)}</span>
+            </div>
+            ${strips}
+            <div class="axis"><span></span><div class="axis-plot small" style="--bare:${x(ref)}">
+              <span class="a0">0</span>
+              <span class="abare${flip ? " flip" : ""}">Bare CLI ${fmt(ref, m.unit)}</span>
+              ${flip ? "" : `<span class="amax">${fmt(top, m.unit)}</span>`}
+            </div><span></span></div>
+          </div>`;
+        })
+        .join("");
+    }
+
+    picks.forEach((p) => p.addEventListener("change", render));
+    render();
+  }
+</script>
+
+<style>
+  .pickers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: var(--radius-mark);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-surface);
+    cursor: pointer;
+  }
+  .picker .sq {
+    width: 10px;
+    height: 10px;
+  }
+  .picker select {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0 22px 0 0;
+    margin-right: -22px;
+    font: 500 16px/20px var(--font-sans);
+    color: var(--color-text);
+    cursor: pointer;
+    outline: none;
+  }
+  .picker svg {
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+  .vs {
+    font: 400 14px/18px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  .key {
+    margin: 8px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .compare {
+    padding-top: 16px;
+    --who: 170px;
+    --value: 150px;
+  }
+  .compare :global(.metric) {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .compare :global(.metric:last-child) {
+    border-bottom: 0;
+  }
+  .compare :global(.metric-head) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .compare :global(.metric-head b) {
+    font: 600 18px/24px var(--font-sans);
+    margin-right: 10px;
+  }
+  .compare :global(.metric-head div span) {
+    font: 400 14px/18px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  .compare :global(.verdict) {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: var(--radius-chip);
+    border: 1px solid var(--color-text);
+    font: 500 14px/18px var(--font-sans);
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+  .compare :global(.verdict.quiet) {
+    border-color: var(--color-hairline);
+    color: var(--color-text-muted);
+  }
+  .compare :global(.strip),
+  .compare :global(.axis) {
+    display: grid;
+    grid-template-columns: var(--who) 1fr var(--value);
+    gap: 16px;
+    align-items: center;
+  }
+  .compare :global(.strip) {
+    min-height: 32px;
+  }
+  .compare :global(.who) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font: 500 15px/20px var(--font-sans);
+    white-space: nowrap;
+  }
+  .compare :global(.who .sq) {
+    width: 10px;
+    height: 10px;
+  }
+  .compare :global(.lane) {
+    position: relative;
+    height: 32px;
+  }
+  .compare :global(.lane.missing) {
+    height: auto;
+    padding: 6px 0;
+    font: 400 14px/20px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  .compare :global(.lane > span) {
+    position: absolute;
+  }
+  .compare :global(.rail) {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--color-hairline);
+  }
+  .compare :global(.bare) {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--bare) * 100% - 1px);
+    width: 2px;
+    background: var(--color-ash);
+  }
+  .compare :global(.range) {
+    top: 50%;
+    left: calc(var(--lo) * 100%);
+    width: max(2px, calc((var(--hi) - var(--lo)) * 100%));
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color);
+    opacity: 0.25;
+    transform: translateY(-50%);
+  }
+  .compare :global(.dot) {
+    top: 50%;
+    left: calc(var(--x) * 100%);
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background: var(--color);
+    box-shadow: 0 0 0 2px var(--color-surface);
+    transform: translate(-50%, -50%);
+  }
+  .compare :global(.value) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .compare :global(.value b) {
+    font: 600 15px/20px var(--font-sans);
+    font-feature-settings: "tnum";
+  }
+  .compare :global(.value span) {
+    font: 400 13px/16px var(--font-sans);
+    color: var(--color-text-muted);
+  }
+  .compare :global(.axis) {
+    margin-top: 10px;
+  }
+  .compare :global(.axis-plot) {
+    position: relative;
+    height: 16px;
+  }
+  .compare :global(.axis-plot span) {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+  }
+  .compare :global(.a0) {
+    left: 0;
+  }
+  .compare :global(.abare) {
+    left: calc(var(--bare) * 100% + 8px);
+  }
+  .compare :global(.abare.flip) {
+    left: auto;
+    right: calc((1 - var(--bare)) * 100% + 8px);
+  }
+  .compare :global(.amax) {
+    right: 0;
+  }
+  @media (max-width: 720px) {
+    .compare {
+      --who: 76px;
+      --value: 64px;
+    }
+    .compare :global(.who) {
+      font-size: 13px;
+      gap: 6px;
+    }
+    .compare :global(.who) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .compare :global(.value span),
+    .compare :global(.amax) {
+      display: none;
+    }
+    .compare :global(.metric-head) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+</style>

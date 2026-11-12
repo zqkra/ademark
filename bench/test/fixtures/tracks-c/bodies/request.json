@@ -1,0 +1,11 @@
+{
+  "model": "claude-opus-5-5",
+  "messages": [
+    { "role": "user", "content": "In the Ledger repository, add rate limiting." },
+    { "role": "assistant", "content": "Working on it." },
+    {
+      "role": "user",
+      "content": "FIXTURE-FOLLOWUP-ONE: make the limit configurable with the environment variable RATE_LIMIT_RPS."
+    }
+  ]
+}

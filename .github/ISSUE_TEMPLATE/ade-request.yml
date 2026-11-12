@@ -1,0 +1,63 @@
+name: Request an ADE
+description: Ask for an agentic development environment to be added to ADEMark
+title: "Request: "
+labels: ["ade-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One ADE per issue. Vote on requests with a thumbs up on the first post. Requests with more votes are looked at first. A vote does not buy a place: inclusion follows the rule in METHODOLOGY.md section 2.
+  - type: input
+    id: name
+    attributes:
+      label: ADE name
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Website or repository
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version you checked
+    validations:
+      required: true
+  - type: checkboxes
+    id: agents
+    attributes:
+      label: Which agents it runs
+      options:
+        - label: Claude Code
+        - label: Codex
+        - label: Its own agent
+  - type: dropdown
+    id: local
+    attributes:
+      label: Does it run agents locally on macOS?
+      options:
+        - "Yes"
+        - "No"
+        - "Not sure"
+    validations:
+      required: true
+  - type: checkboxes
+    id: rule
+    attributes:
+      label: Inclusion rule
+      description: From METHODOLOGY.md section 2.
+      options:
+        - label: It is a macOS desktop app.
+          required: true
+        - label: Anyone can download it publicly today.
+          required: true
+        - label: It runs coding agents on a local repository.
+          required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Install notes, login steps, a free tier. Optional.

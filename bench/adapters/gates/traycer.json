@@ -1,0 +1,13 @@
+{
+  "ade": "traycer",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T14:16:21.052Z",
+  "harnessCommit": "b04d51815ef530e4d278c174baea79616d16f48d",
+  "version": "1.5.3",
+  "bundleSha256": "6029d5ff0a91088132d1b07f543e8205b9565fec54165202781c65be9ce1bce3",
+  "failures": [
+    "traycer A3 default-mode: old-thread draft not read in the composer: []",
+    "traycer A2 relaunch: gate failure"
+  ]
+}

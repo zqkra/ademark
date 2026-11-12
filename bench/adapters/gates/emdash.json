@@ -1,0 +1,12 @@
+{
+  "ade": "emdash",
+  "runs": 1,
+  "passed": 0,
+  "at": "2026-11-08T15:46:58.410Z",
+  "harnessCommit": "c367c0b6e69581e8d297a31451c83c713bb3d928",
+  "version": "1.2.10",
+  "bundleSha256": "e7af1ede11bce959a6f50c50bb9702864907760e26bd47a5489494246f48e895",
+  "failures": [
+    "emdash A3 default-mode: old-thread draft not read in the composer: []"
+  ]
+}

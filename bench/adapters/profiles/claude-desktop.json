@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "ade": "claude-desktop",
+  "app": {
+    "path": "/Applications/Claude.app",
+    "version": "4.23118.0",
+    "bundleSha256": "2f65868848f15b8ff0747f5db32e2d8ced33a5692f81b263130c268c9ae7cbdd",
+    "processNames": [
+      "Claude"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Claude",
+    "bundleId": "com.anthropic.claudefordesktop",
+    "composerRect": {
+      "x": 596,
+      "y": 921,
+      "w": 690,
+      "h": 34
+    },
+    "activeComposerRect": {
+      "x": 516,
+      "y": 921,
+      "w": 690,
+      "h": 34
+    },
+    "launchComposerRect": null,
+    "clearKeys": [
+      "cmd+a",
+      "delete"
+    ],
+    "threadRect": {
+      "x": 496,
+      "y": 56,
+      "w": 744,
+      "h": 800
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 1046,
+        "y": 380,
+        "w": 64,
+        "h": 64
+      },
+      {
+        "x": 1291,
+        "y": 965,
+        "w": 30,
+        "h": 30
+      },
+      {
+        "x": 1211,
+        "y": 965,
+        "w": 30,
+        "h": 30
+      }
+    ],
+    "drive": "keys",
+    "dataDirs": [
+      "~/Library/Application Support/Claude"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/Library/Application Support/Claude/config.json",
+      "~/Library/Application Support/Claude/Cookies",
+      "~/Library/Application Support/Claude/Local Storage",
+      "~/Library/Application Support/Claude/claude_desktop_config.json"
+    ],
+    "signIn": "Sign in to the Claude desktop app in the ademark account with the dedicated Claude Max account (Settings > Account), then open the Code tab once so the folder entry points are on."
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "open",
+          "claude://code/new?folder=${worktree}&source=os_open"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "wait",
+        "ms": 4000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 921,
+          "y": 567
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "keys",
+          "combo": "cmd+shift+i"
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1075,
+            "y": 700
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "keys",
+          "combo": "cmd+shift+e"
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1400,
+            "y": 723
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "keys",
+          "combo": "cmd+shift+m"
+        },
+        {
+          "kind": "wait",
+          "ms": 800
+        },
+        {
+          "kind": "click",
+          "point": {
+            "x": 1100,
+            "y": 915
+          }
+        },
+        {
+          "kind": "wait",
+          "ms": 1000
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.anthropic.claudefordesktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 140,
+          "y": 287
+        }
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 140,
+          "y": 321
+        }
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Claude",
+      "~/.claude"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "Q6L2SF6YDW",
+    "agentExecutables": [
+      "claude",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.16: subagents and session messages. No trigger line is decided." },
+  "notes": [
+    "Bundle: Claude.app 2.42304.2 (build 2.42304.2), bundle id com.anthropic.claudefordesktop, Electron 44.7.2, Team ID Q6L2SF6YDW, minimum macOS 13.0, URL schemes claude and msauth.com.anthropic.claudefordesktop. Sources: calibrate probe --ade claude-desktop, codesign -dv /Applications/Claude.app, Contents/Info.plist.",
+    "The Code tab is the Claude Code surface of the desktop app and its UI is served from claude.ai: the main window loads a remote URL (claude.ai / claude.com strings in app.asar .vite/build/index.chunk-BkhOOUzl.js). No layout code for the composer or the message column exists locally, so every rect here is an estimate for 1600x1000 points.",
+    "openProject: the app's own route for a folder is claude://code/new?folder=<path>&source=os_open (app.asar .vite/build/index.chunk-BkhOOUzl.js: QL(Fl.Code,'/new','os_open',{folder:e}) builds it and the folder drop handler FMa dispatches exactly it; protocol claude: comes from CFBundleURLTypes). steps.openProject opens that URL with open, which CALIBRATE.md ranks above an open step with args. It needs a signed-in account (same file, qXn). Alternative by hand: open -a /Applications/Claude.app <folder>, which uses the public.folder document type and lands in the same route.",
+    "newThread: Cmd+N is the menu item New Session in the Code surface (accelerator CmdOrCtrl+N, the label is picked by Ixi() between New Task and New Session; index.chunk-BkhOOUzl.js) and the documented Code tab shortcut (code.claude.com/docs/en/desktop, Keyboard shortcuts: Cmd N New session). It only creates a session for the Code surface, so openProject must run first.",
+    "send: Enter sends and Shift+Enter adds a line (code.claude.com/docs/en/desktop, Use the prompt box). The composer is remote UI, so this is not readable from the bundle.",
+    "Permission mode cannot be pinned through ~/.claude/settings.json from a profile: reset() writes reset.jsonKeys and then restores the clean snapshot as its last step, and the snapshot owns ~/.claude/settings.json (bench/core/snapshot.ts INCLUDED_PATHS), so a defaultMode written there is overwritten at once. Setting permissions.defaultMode is documented for the desktop app, so this is a harness ordering problem, not an app limitation.",
+    "Agent binary: the app provisions Claude Code into its data folder, not the bundle: ~/Library/Application Support/Claude/claude-code/2.1.295/<hash>/claude.app/Contents/MacOS/claude (239 MB). That is 2.1.295, not the system 2.1.303, and the app has no setting for a CLI path, so METHODOLOGY.md rule 8 cannot hold: record the version from each request's User-Agent.",
+    "reset moves ~/Library/Application Support/Claude aside, which also removes that provisioned Claude Code, so the first launch after a reset re-downloads it. If the night runs offline, keep the folder or pre-seed it. ~/.claude is never moved: ADES.md 3.16 says the CLI shares it and the harness owns it through the clean snapshot.",
+    "login.files: config.json holds oauth:tokenCache and oauth:tokenCacheV2 (top-level key names only were listed, no values read), so it is the file that keeps the sign-in; Cookies and Local Storage keep the claude.ai web session for the same window. The cookie encryption key lives in the login Keychain, which a reset does not touch.",
+    "Auto-update: Squirrel/ShipIt (Contents/Frameworks/Squirrel.framework). The only switches in the bundle are the managed settings autoUpdate.disabled (flatKey disableAutoUpdates) and autoUpdaterEnforcementHours, which arrive by MDM or managed configuration, so a profile cannot set them. ShipIt is not a launchd service in this account (launchctl print gui/501/com.anthropic.claudefordesktop.ShipIt: Could not find service, exit 113; bootout exits 3), so calibration.launchAgents and processes.launchAgentLabels stay empty: bootout() throws on a non-zero exit and would break every reset.",
+    "Telemetry: the desktop settings schema has a telemetry category (otlpEndpoint and friends) and the Claude Code engine honours DISABLE_TELEMETRY and CLAUDE_CODE_ENABLE_TELEMETRY (app.asar index.chunk-j3ja_Cdp.js). Nothing readable turns the desktop app's own analytics off without managed settings, so this profile does not switch it off; record it as a Track F fact unless the owner changes it in the ademark account.",
+    "Orchestration: the Code tab has subagents (Agent SDK Task tool) and cross-session messages (docs: let Claude check on, message, or archive your other sessions; ADES.md 3.16). No trigger line exists in the bundle: the slash commands, skills and plugins come from the server. orchestrationTrigger is null, so C1 reports not supported. The orchestrator must decide whether to send a trigger line (it changes the prompt for this ADE alone) or keep null.",
+    "processNames is only the main executable. Every helper (Claude Helper, Claude Helper (GPU)/(Plugin)/(Renderer), Claude iOS Sim) lives inside the bundle and pidsFor also matches by bundle path, so attribution and quit cover them.",
+    "GUI calibration 2026-10-24 on 2.42304.2 at 1600x1000 (ademark account, signed in to Max). Launch shows the Code tab New session view; the composer text line is at y 929 (probe-region rect 604,929,673x18; OCR reads ademarkqz as adernarkqz, the echo matcher needs only 2-char runs). composerRect pads that line. In a thread with messages the composer moves left (512-1281) and an Environment panel opens at x 1313+, so activeComposerRect is 548,921. threadRect is the message column above the composer.",
+    "Menus: cmd+n New Session (keeps the folder, model and permission mode), shift+cmd+o Open Folder. Digits do not select items in the model, effort or permission menus (checked: 5 left Auto selected), so configure.claude clicks: model menu Opus 5.5 at 1075,700; cmd+shift+e opens the model menu with the Effort submenu, High at 739,731; permission menu (Auto, Manual, Accept edits, Plan, Bypass permissions) Bypass at 945,915, then the first-time confirm 'Bypass all permissions?' button at 910,586 ('You won't be asked again for this workspace'). When the confirm is not shown that click lands on empty page.",
+    "openProject: the claude:// URL works; the first time per folder Claude Code asks 'Trust this workspace?' (Trust button 921,567). The answer is stored in ~/.claude.json projects[<path>].hasTrustDialogAccepted, which reset does not move, so later runs show no dialog and the click lands on empty page.",
+    "login.files adds claude_desktop_config.json: preferences.bypassPermissionsOptInByAccount and bypassPermissionsGateByAccount (the owner's 'Allow bypass permissions mode') live there; without it a reset drops the Bypass item from the permission menu.",
+    "A11: ctrl+1/ctrl+2 do nothing in 2.42304.2 (checked). The sidebar lists the project's sessions newest first under the project header (y 288): row 1 at y 322, row 2 at y 356. A11 makes the seed thread, then the long thread, so long = row 1, short = row 2; timed.longThread/shortThread click them.",
+    "waitDone: a prompt wrote ~/.claude/projects/-Users-ademark-arena-zprobe/<id>.jsonl with cwd exactly the folder (no git worktree, branch main), entrypoint claude-desktop, Claude Code 2.1.299, and an assistant end_turn line, so cwd is worktree.",
+    "Masks: an echo in a thread showed the whole window dirty in 261 of 268 frames (Electron repaints the full window), so the window never settles; the masked rects are the animated mascot above the composer's right end and the two positions of the usage ring. Settling is not a validity condition (pass.ts).",
+    "Updater: ShipIt installed 3.6556.2 at 05:02 as root (the owner typed a password; the bundle then belonged to the owner's account). Pinned 2.42304.2 was put back from pins/ and now belongs to ademark, so no ownership or admin prompt. Since then every check logs '[updater] Auto-update error: Error: The command is disabled and cannot be executed' and nothing is downloaded. CLAUDE_E2E_MANAGED_PLIST is honoured only in E2E builds (globalThis flag), so disableAutoUpdates cannot be set without root. Check the version before and after each gate.",
+    "Quit: steps.quit is empty (AppleScript quit, then the 10 s wait). Gate 2026-10-24 run 1: a keys quit step failed in A1 and A2 with 'ademark-native keys failed (exit 2): bad_arguments: --pid must be a positive pid' (no app pid there). After quit about 34 attributed processes stayed alive past 10 s (Claude Code sessions).",
+    "BLOCKER for Track A (gate 2026-10-24): the app does not use the replay server. Each local session gets ANTHROPIC_BASE_URL set by the app itself to its API host (index.chunk-BkhOOUzl.js iJ(): ANTHROPIC_BASE_URL: e.apiHost; VZe lists ANTHROPIC_BASE_URL among the variables the app controls), so launchd's ANTHROPIC_BASE_URL never reaches the engine. A4 frames show the real model's answer to replay:hi ('Hi! I'm in the Ledger repo...') instead of LEDGERMARK, and A11's replay:long-2000 got a real answer that asked a question (sidebar 'Blocked Replay long 2000 Asked a question'). Only an app-level custom API host (managed config, root) or a harness-side redirect (for example mitmproxy) can fix it; a profile cannot.",
+    "Repair 2026-11-07 attempt 1, checked live on the installed Claude.app 4.23118.0 (binary sha 2f658688..., installed 2026-11-05 07:12, engine claude-code 2.1.317 provisioned under ~/Library/Application Support/Claude/claude-code/). pins/versions.json still says 2.42304.2 and no 2.42304.2 installer is in this account, so the profile follows the installed build (the run manifest records 4.23118.0); the orchestrator must re-pin or reinstall. Still signed in (Max) after the prove-2 reset.",
+    "4.23118.0 layout at 1600x1000 (agent-desktop bounds and probe-region): New session view composer text line 604,929 (inside composerRect); in a thread the env panel opens at x 1281 and the composer text starts at 524,929, so activeComposerRect moved to x 516. Pills in the New session view: model 1141,968, permission 1248,968. cmd+shift+i opens the model menu (Opus 5.5 still at 1075,700); cmd+shift+e opens the same menu with the Effort submenu, which now opens to the right (Low/Medium/High/Extra/Max, High at 1400,723; the old 739,731 hit empty page); cmd+shift+m opens the permission menu shifted right (Bypass permissions at 1100,915; the old 945,915 fell left of the menu). No 'Bypass all permissions?' confirm appears: the per-folder mode and ack live in claude_desktop_config.json (epitaxy-folder-permission-mode-v2 and epitaxy-perm-mode-acks-v2, ~/arena/claude-desktop = bypassPermissions), a login file, so the old confirm click at 910,586 was dropped (it now hit the 'Turn on auto mode' start card, which would undo Bypass).",
+    "Start cards under 'Choose environment' (Import N Claude Code CLI sessions, Connect GitHub, Turn on auto mode) sat where openProject's Trust click 921,567 lands when no trust dialog shows (Connect GitHub at y 546-576 once the project has sessions). All three were dismissed on 2026-11-07; the app keeps that in claude_desktop_config.json (epitaxyPrefs.startCardDismissals auto-mode and connect-github, importableCliSessionsDismissed), which reset keeps, so the click lands on empty page. If a card comes back, dismiss it again. 'Trust this workspace?' (Trust workspace 921,567, Cancel has the focus ring, so Enter would cancel) showed after the prove-2 reset although ~/.claude.json already had hasTrustDialogAccepted for the folder.",
+    "Per launch the app may show a 'Notifications are turned off' toast (x 1165-1585, y 852-985) and a 'monthly API credits' or 'Approaching weekly usage limit' banner above the composer (y 864-908); their dismissals are not written to disk. No profile click lands there. Usage on 2026-11-07: weekly all-models 80%, resets Mon Nov 9 4:00 PM; a Track B night on the live model may hit the limit. A cold relaunch opens the New session view with the folder, Opus 5.5 High and Bypass kept. A11 rows: project header y 252, row 1 y 287, row 2 y 321. Masks: the mascot above the start cards (about 1046-1110, 380-444) and the usage ring in the New session (1291,965) and thread (1211,965) layouts.",
+    "Repair 2026-11-07 attempt 1 gate results (calibrate gate --runs 1 --scratch --agent claude,own). With ADEMARK_BASELINE set (run control-2026-11-07T08-15-55Z), both tries stop at the contamination check before the app is driven: bare claude body 9f4eb621... != baseline 3039327d..., the same drift outside the ADE that stopped prove-2 B for this ADE and every other one since about 09:25Z. No file of this ADE can change it; the orchestrator must find the drift or re-baseline. Diagnostic with the baseline unset (gate-claude-desktop-2026-11-07T12-43-17Z-1, this profile): passed 1/1, 14 valid rows (A1 cold 2.55 s, A2 relaunch 1.49 s, A3 191 ms, A5, A6, A9 no-sessions 0 MB). Both seed sessions ran claude-opus-5-5, effort high, bypassPermissions, engine 2.1.317, cwd ~/arena/claude-desktop; reset kept the sign-in, and nothing was alive 10 s after any quit.",
+    "adapter claude-desktop.ts: the adapter was exported as a spread copy ({ ...adapter, liveModel: true }). The copy was not registered as a profile adapter (profile check printed 'code adapter' and skipped validation), and its calibration, login and timed getters were frozen at import. It now uses Object.assign on the profile adapter itself."
+  ],
+  "agentGuide": "Work only in the Code tab (Claude Code), never in the regular chat. A new Code session starts with Cmd+N."
+}
