@@ -15,8 +15,9 @@ import { X_HANDLE } from "../data/links";
 const url = "https://ademark.dev/";
 const title = "ADEMark: every ADE, measured. The open ADE benchmark";
 const description = "First results of the open ADE benchmark. The apps you run coding agents in, measured test by test on one Mac for launch speed, memory, tokens and orchestration.";
-const image = `${url}og.png`;
-const imageAlt = "ADEMark. Every ADE, measured. A halftone orb of dots with a pink rim.";
+// A new file name for the results card, so X and other crawlers do not reuse the cached teaser card.
+const image = `${url}og-results.png`;
+const imageAlt = "ADEMark. Every ADE, measured. Test by test on one Mac, so you can pick the one that fits how you work. First results, 12 November 2026.";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -59,8 +60,8 @@ const structuredData = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
     <meta property="og:image:alt" content={imageAlt} />
 
     <meta name="twitter:card" content="summary_large_image" />

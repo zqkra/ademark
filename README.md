@@ -1,7 +1,7 @@
 <a href="https://ademark.dev">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/readme/banner-dark.png">
-    <img alt="ADEMark. Every ADE, measured. 16 ADEs, measured side by side. Pick yours." src=".github/readme/banner-light.png">
+    <img alt="ADEMark. Every ADE, measured. Test by test on one Mac, so you can pick the one that fits how you work." src=".github/readme/banner-light.png">
   </picture>
 </a>
 
