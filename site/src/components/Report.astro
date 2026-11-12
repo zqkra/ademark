@@ -4,6 +4,15 @@
 import Mark from "./Mark.astro";
 import { ADES, APPS, ORCHESTRATION, app, coverage, gapsOf } from "../data/results";
 import { nb } from "../data/format";
+import {
+  AGENTS_URL,
+  CHANGELOG_URL,
+  GUIDE_URL,
+  REPO_URL,
+  REQUEST_ADE_URL,
+  SHARE_RESULTS_URL,
+  WRONG_NUMBER_URL,
+} from "../data/links";
 
 type Block =
   | { p: string }
@@ -37,7 +46,7 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
     title: "The short version",
     blocks: [
       {
-        p: "We have worked on ADEMark every day since we announced it on 18 October. The numbers on this page all come from the last complete run, which ended on 12 November 2026, because runs from different days are never mixed. All 16 ADEs went through the same tests on one Mac mini M4 with 16 GB. Next to them ran a control called the Bare CLI. It is plain Claude Code in the Ghostty terminal and shows what each app adds to the agent it wraps.",
+        p: "We have worked on ADEMark every day since we announced it on 18 October. The numbers on this page all come from the last complete run, which ended on 12 November 2026, because runs from different days are never mixed. Every ADE was put through the same set of tests on one Mac mini M4 with 16 GB, though not every test could measure every app. Next to them ran a control called the Bare CLI. It is plain Claude Code in the Ghostty terminal and shows what each app adds to the agent it wraps.",
       },
       {
         p: "The apps ran the way their makers ship them. We added no skills, plugins, MCP servers or instructions. The few settings that had to match are listed in the Method.",
@@ -72,6 +81,9 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
       {
         p: "Ranks order the medians. The method calls two apps tied when a bootstrap interval on their paired runs includes zero. Those intervals come with the full release, so two neighbours with close medians may still swap places.",
       },
+      {
+        p: "The overview table opens in one fixed order. Apps that lead the most tests come first, then the ones with the most results in the top third. That order makes the table easier to scan and is not a score, and any column can be sorted on its own. Apps measured in fewer than 9 of the 12 tests sit below a line with no position, because a missing test would push them down for a reason that has nothing to do with the app.",
+      },
       { table: "tests" },
       { h: "The technical detail" },
       {
@@ -95,7 +107,7 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
         p: "In First Word a replay server on the Mac answers at once, so the whole wait belongs to the app. Diri shows the first word 256 ms after Enter, close to the Bare CLI's 220 ms. T3 Code takes 1,148 ms and spends 1,002 of them before its request leaves the app. Most apps lose their time in that same step, since drawing the answer once it arrives takes between 70 and 223 ms in all of them.",
       },
       {
-        p: "Typing Lag is measured while 5 agents stream. At the 95th percentile T3 Code shows a keystroke in 48 ms, with Traycer and Synara right behind at 50 and 51 ms. Emdash takes 83 ms and Conductor 92. A keystroke with no echo within 2 s counts as missed, which happened 8 times out of 60 in super.engineering and 6 times in Zeron.",
+        p: "Typing Lag is measured while 5 agents stream. At the 95th percentile T3 Code shows a keystroke in 48 ms, with Traycer and Synara right behind at 50 and 51 ms. Emdash takes 83 ms, slower than the Bare CLI's 79. A keystroke with no echo within 2 s counts as missed, which happened 8 times out of 60 in super.engineering and 6 times in Zeron.",
       },
       {
         p: "Each app builds its own long thread of about 2,000 messages. Zeron opens it in 77 ms and six other apps stay under 105 ms. bb takes 352 ms. Paseo, Synara, MonoCode and super.engineering scroll it without a single frame gap over 33 ms.",
@@ -114,7 +126,7 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
         p: "Weigh-in counts the app and every agent process it started, at rest with 5 threads open. super.engineering, MonoCode and Capy keep no agent process alive while idle. That explains most of their lead at 134, 419 and 593 MB. Of the apps that do keep agents alive, Zeron is the lightest at 951 MB against the Bare CLI's 1,013 MB.",
       },
       {
-        p: "Idle with its window in front, super.engineering uses 0.18% CPU. Conductor uses 16.4% and Traycer 15.8%, and covering their windows only brings them down to 5.07% and 2.43%. At rest they draw 32.7 mW and 25.3 mW of power, against 0.23 mW for the Bare CLI.",
+        p: "Idle with its window in front, super.engineering uses 0.18% CPU. Traycer uses 15.8% and MonoCode 9.03%, and covering their windows brings them down to 2.43% and 1.77%. At rest Traycer draws 25.3 mW of power, against 0.23 mW for the Bare CLI.",
       },
       {
         p: "With 5 agents streaming for 3 minutes, super.engineering holds 969 MB in total and stays below the Bare CLI's 1,905 MB. Part of the reason is that it ran 5 agent processes where most apps ran 10. Emdash reaches 3,531 MB.",
@@ -133,10 +145,10 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
     blocks: [
       { figure: "22.2K", caption: "tokens Paseo sends when you type “hi”. Emdash sends 77.0K." },
       {
-        p: "Hello Tax counts all the tokens an app sends after you type “hi” in a new thread. Side calls such as title generation count too. Paseo sends the least with 22.2K, followed by Conductor with 24.3K and bb with 24.5K. At the top are Traycer with 68.4K, Claude desktop with 75.5K and Emdash with 77.0K. The Bare CLI sends 38.2K. Emdash's side calls swung from 9 to 83.8K tokens between runs.",
+        p: "Hello Tax counts all the tokens an app sends after you type “hi” in a new thread. Side calls such as title generation count too. Paseo sends the least with 22.2K, followed by bb with 24.5K and super.engineering with 29.6K. At the top are Traycer with 68.4K, Claude desktop with 75.5K and Emdash with 77.0K. The Bare CLI sends 38.2K. Emdash's side calls swung from 9 to 83.8K tokens between runs.",
       },
       {
-        p: "Cost depends on the prompt cache as much as on size. Six apps wrote nothing new to the cache in 2 of 3 runs: bb, Cloudroom, MonoCode, Paseo, Synara and super.engineering. Their “hi” cost under 2 cents at API prices. The other apps and the Bare CLI wrote at least 8.6K tokens of cache on every run and paid 8 to 14 cents.",
+        p: "Cost depends on the prompt cache as much as on size. Six apps wrote nothing new to the cache in 2 of 3 runs: bb, Cloudroom, MonoCode, Paseo, Synara and super.engineering. Their “hi” cost under 2 cents at API prices. The other apps and the Bare CLI wrote at least 8.6K tokens of cache on every run and paid 9 to 14 cents.",
       },
       {
         p: "The first request explains most of the size. Five apps send the same 7,976 tokens of tool definitions: bb, Cloudroom, MonoCode, Paseo and Synara. The Claude Code CLI sends 17,282. Traycer adds 19.1K tokens of MCP tools. Claude desktop adds 11.7K of MCP tools and an 8.4K system prompt, so its first request reaches 54.8K before you have typed a word.",
@@ -145,7 +157,7 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
         p: "For one real question answered by reading code, Paseo sends 73.2K tokens and Traycer 357K. Claude desktop with 294K and Orca with 208K also send more than the Bare CLI's 168K.",
       },
       {
-        p: "All 14 apps with token data put the repo's AGENTS.md into the request. The 12 we could check followed its canary instruction. T3 Code and Conductor keep no session log we can read, so we don't know whether they followed it.",
+        p: "All 13 apps with token data put the repo's AGENTS.md into the request. The 12 we could check followed its canary instruction. T3 Code keeps no session log we can read, so we don't know whether it followed it.",
       },
     ],
   },
@@ -183,9 +195,9 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
       {
         p: "Capy updated itself to 0.8.0 during the pass. Our step that picks Opus 5.5 in its model menu stopped working and no prompt was sent.",
       },
-      { h: "The other 10 apps" },
+      { h: "The other 9 apps" },
       {
-        p: "We only run C1 when we can start an app's own orchestration the way its makers intend. Emdash and Conductor don't have orchestration. The other eight do, but we haven't proven the command or setting that starts it yet. A run started the wrong way would measure our guess instead of the app.",
+        p: "We only run C1 when we can start an app's own orchestration the way its makers intend. Emdash doesn't have orchestration. The other eight do, but we haven't proven the command or setting that starts it yet. A run started the wrong way would measure our guess instead of the app.",
       },
       { table: "orchestration" },
     ],
@@ -202,6 +214,9 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
       },
       {
         p: "The harness reads each app's build hash before it adds runs to a test. When the build has changed, new runs are never mixed with old ones and the app is measured again from the start. This is why Cloudroom's token numbers come from 129.0.0 and its build test from 150.0.0.",
+      },
+      {
+        p: "Conductor was in the field and was measured, but it is not on this page. Meta bought its maker, Melty Labs, and since 4 November new users can no longer download the app. Our rule is that every app must be publicly available, so Conductor no longer qualifies.",
       },
       {
         p: "Releases after 12 November are not in these numbers. The next pass measures whatever is current then. Results older than 60 days will be marked stale, and any maker can ask for a re-run on a new release.",
@@ -224,10 +239,10 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
     title: "A note on this pass",
     blocks: [
       {
-        p: "This has been much harder than I expected when I announced it on 18 October. I have worked on it every day since, and even so the results don't cover every app yet. Getting 16 apps to launch, open a thread, take typing and quit on their own took far more work than measuring them. It had to happen the same way every time, and some apps updated themselves in the middle of a pass. That is why there are empty cells. Several of the failures listed above are failures of my harness.",
+        p: "This has been much harder than I expected when I announced it on 18 October. I have worked on it every day since, and even so the results don't cover every app yet. Getting 15 apps to launch, open a thread, take typing and quit on their own took far more work than measuring them. It had to happen the same way every time, and some apps updated themselves in the middle of a pass. That is why there are empty cells. Several of the failures listed above are failures of my harness.",
       },
       {
-        p: "I'll keep working on it as much as I can, and I'm looking for better resources so the harness can measure more apps more often. What is here is real and already useful for choosing an ADE. The goal is a real number in each cell, measured correctly, and this page will be updated as they come in.",
+        p: "I'll keep working on it as much as I can, and I'm looking for better resources so the harness can measure more apps more often. The goal is still to measure everything, with every cell filled. After this much time, though, it made more sense to publish a solid result now than to keep waiting. What is here is real and already useful for choosing an ADE. The goal is a real number in each cell, measured correctly, and this page will be updated as they come in.",
       },
     ],
   },
@@ -240,7 +255,31 @@ const chapters: { id: string; title: string; blocks: Block[] }[] = [
       },
       { p: "After that comes a GPT pass with the Codex app and the Codex side of every app that supports it." },
       {
-        p: "Some fixes are ours to make. Cloudroom's speed block needs one and so does Capy's model step on 0.8.0. Conductor's cold start and streams need work too, along with the process count behind memory after quit. The 8 apps whose orchestration we could not start still need a proven start command.",
+        p: "I also want to run ADEMark on Linux and Windows. That needs more machines than the one Mac it runs on today, and getting them is a big part of the resources I mentioned above.",
+      },
+      {
+        p: "Some fixes are ours to make. Cloudroom's speed block needs one and so does Capy's model step on 0.8.0, along with the process count behind memory after quit. The 8 apps whose orchestration we could not start still need a proven start command.",
+      },
+    ],
+  },
+  {
+    id: "report-contribute",
+    title: "Contributing",
+    blocks: [
+      {
+        p: `Everything lives in one <a href="${REPO_URL}">public repository</a>: the harness, the tests, the rows of this pass and this site. To measure an ADE on your own Mac, hand the repository to your coding agent and ask it to. <a href="${AGENTS_URL}">AGENTS.md</a> tells the agent what to run and what only you can do, such as creating the test user and granting permissions. <a href="${GUIDE_URL}">GUIDE.md</a> is the full procedure, from the machine setup to a first valid result.`,
+      },
+      {
+        p: `Each ADE is driven by a small adapter and a profile, a JSON file that says how to launch the app, open a project, send a prompt, wait for the answer and quit. To add one, write both, register it, pass its calibration gate and open a pull request. If you would rather we add it, <a href="${REQUEST_ADE_URL}">request it</a> and vote with a thumbs up: the most requested ADEs that meet the inclusion rule go into the next pass.`,
+      },
+      {
+        p: `If a number looks wrong, open a <a href="${WRONG_NUMBER_URL}">wrong-number issue</a> with the test, the app and what you saw. If you think we measure the wrong thing, say so too, and bring the test you would run instead. Corrections land in the repository, and every change is listed in the <a href="${CHANGELOG_URL}">changelog</a>.`,
+      },
+      {
+        p: `Results from your own Mac go in the <a href="${SHARE_RESULTS_URL}">share-results form</a>. Share only the rows, the summary and the manifest of a run, never its raw folder: it holds your account email and recordings of the app's window.`,
+      },
+      {
+        p: "Linux and Windows support means new implementations of the probes and samplers behind the platform layer, with the tests left as they are. That work is open to anyone.",
       },
     ],
   },
@@ -376,11 +415,11 @@ const withGaps = ADES.filter((a) => gapsOf(a.id).length > 0);
 <style>
   .report {
     display: grid;
-    grid-template-columns: 220px minmax(0, 720px);
-    justify-content: center;
-    gap: 64px;
+    grid-template-columns: var(--cols);
+    column-gap: var(--col-gap);
   }
   .toc {
+    grid-column: 1 / 4;
     position: sticky;
     top: 32px;
     align-self: start;
@@ -408,6 +447,7 @@ const withGaps = ADES.filter((a) => gapsOf(a.id).length > 0);
   }
 
   .prose {
+    grid-column: 4 / 11;
     min-width: 0;
   }
   .chapter {
@@ -429,6 +469,16 @@ const withGaps = ADES.filter((a) => gapsOf(a.id).length > 0);
     margin: 0 0 20px;
     font: 400 18px/30px var(--font-sans);
     color: var(--color-text);
+  }
+  .prose :global(a) {
+    text-decoration: underline;
+    text-decoration-color: var(--color-ash);
+    text-underline-offset: 3px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .prose :global(a:hover) {
+      text-decoration-color: var(--color-text);
+    }
   }
   .prose :global(code) {
     padding: 1px 6px;
@@ -547,8 +597,9 @@ const withGaps = ADES.filter((a) => gapsOf(a.id).length > 0);
   }
 
   @media (max-width: 1024px) {
-    .report {
-      grid-template-columns: minmax(0, 720px);
+    .prose {
+      grid-column: 1 / -1;
+      max-width: 690px;
     }
     .toc {
       display: none;

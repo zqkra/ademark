@@ -1,3 +1,4 @@
+// Conductor left the field on 12 Nov 2026: Meta bought its maker and it can no longer be downloaded (inclusion rule).
 // The first results: run control-2026-11-10T08-31-19Z, the last complete run, which ended on 12 November 2026.
 // Numbers come only from results.json (scripts/results.ts) and orchestration.json (scripts/orchestration.ts).
 // This file adds names, families, chart titles and the reason for every missing number. Nothing here is a measurement.
@@ -32,7 +33,6 @@ export const APPS: App[] = [
   { id: "capy", name: "Capy", mark: "/marks/capy.svg", family: "own", version: "0.8.0" },
   { id: "claude-desktop", name: "Claude desktop", mark: "/marks/claude.svg", family: "first", version: "4.23118.0" },
   { id: "cloudroom", name: "Cloudroom", mark: "/marks/cloudroom.png", family: "sdk", version: "129.0.0 for tokens, 150.0.0 for C1" },
-  { id: "conductor", name: "Conductor", mark: "/marks/conductor.svg", family: "native", version: "0.91.2" },
   { id: "diri", name: "Diri", mark: "/marks/diri.png", family: "native", version: "0.11.2" },
   { id: "emdash", name: "Emdash", mark: "/marks/emdash.svg", family: "pty", version: "1.2.10" },
   { id: "monocode", name: "MonoCode", mark: "/marks/monocode.png", family: "native", version: "0.16.0" },
@@ -50,7 +50,7 @@ export const ADES = APPS.filter((a) => a.id !== BARE);
 export const app = (id: string) => APPS.find((a) => a.id === id)!;
 
 export const FAMILIES: { id: string; label: string }[] = [
-  { id: "all", label: `All ${ADES.length}` },
+  { id: "all", label: "All" },
   { id: "sdk", label: `Electron, SDK (${ADES.filter((a) => a.family === "sdk").length})` },
   { id: "pty", label: `Electron, terminal (${ADES.filter((a) => a.family === "pty").length})` },
   { id: "native", label: `Native (${ADES.filter((a) => a.family === "native").length})` },
@@ -99,13 +99,6 @@ const GAPS: Record<string, Record<string, Gap>> = {
   },
   zeron: { A9: nm("our count of the processes left after quit is under review") },
   traycer: { A9: nm("our count of the processes left after quit is under review") },
-  conductor: {
-    A1: nm("timed out in 3 runs, cause not found yet"),
-    A2: nm("1 valid run, fewer than the test needs"),
-    ...each(["A3", "A4", "A11"], nm("version 0.91.2 drew no chat messages, so the text this test waits for never showed")),
-    A7: nm("the 5 streams never reached our replay server"),
-    "B4/obeyed": nm("it keeps no session log we can read"),
-  },
   capy: {
     A2: dnf("still running 45 s after quit, in every run"),
     ...each(NO_REPLAY, REPLAY_GAP),
@@ -316,7 +309,6 @@ export const ORCHESTRATION: { id: string; offers: string; pass: string }[] = [
   { id: "capy", offers: "Subagents, and Captains (experimental)", pass: "Not measured: our model step broke on 0.8.0" },
   { id: "claude-desktop", offers: "Subagents and messages between sessions", pass: "No start command decided yet" },
   { id: "cloudroom", offers: "A lead agent that spawns subagents", pass: "Ran with /cloudroom: 0 of 5" },
-  { id: "conductor", offers: "None (its MCP is opt-in)", pass: "Not supported" },
   { id: "diri", offers: "The dirijor MCP, when configured", pass: "No start command proven yet" },
   { id: "emdash", offers: "None", pass: "Not supported" },
   { id: "monocode", offers: "/orchestrator, a lead with workers", pass: "Waits for a Confirm & start click we have not calibrated" },

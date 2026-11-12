@@ -47,6 +47,26 @@ function cell(appId: string, key: string, test: string) {
   return { text: plain(s.m, METRICS.find((m) => m.key === key)!.unit), tier, v: String(s.m) };
 }
 const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", USD: "USD" } as const;
+
+// Default order of the grid, like a medal table: most tests led, then most in the top third, then in the middle
+// third. It helps scanning and is not a score; any column can still be sorted on its own.
+const tally = (id: string) => {
+  const tiers = METRICS.map((m) => cell(id, m.key, m.test).tier);
+  return ["t1", "t2", "t3"].map((t) => tiers.filter((x) => x === t).length);
+};
+// Apps measured in fewer than 9 of the 12 tests sit below a line without a position: a missing test would push
+// them down for a reason that says nothing about the app.
+const MIN_MEASURED = 9;
+const measured = (id: string) => METRICS.filter((m) => stat(id, m.key) !== null).length;
+const ordered = ADES.filter((a) => measured(a.id) >= MIN_MEASURED)
+  .map((a) => ({ a, t: tally(a.id) }))
+  .sort((x, y) => y.t[0] - x.t[0] || y.t[1] - x.t[1] || y.t[2] - x.t[2] || x.a.name.localeCompare(y.a.name));
+const position = ordered.map((o) => ordered.findIndex((p) => p.t.join() === o.t.join()) + 1);
+const partial = ADES.filter((a) => measured(a.id) < MIN_MEASURED).sort(
+  (x, y) => measured(y.id) - measured(x.id) || x.name.localeCompare(y.name),
+);
+// The first column of each group gets a vertical rule that runs through the whole table.
+const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].category !== m.category).map((m) => m.key));
 ---
 <section id="results" class="section" data-show="all">
   <div class="wrap">
@@ -87,15 +107,17 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
             <thead>
               <tr class="groups">
                 <th colspan="2"></th>
-                {groups.map((g) => <th colspan={g.span}>{g.name}</th>)}
+                {groups.map((g) => <th class="gs" colspan={g.span}>{g.name}</th>)}
               </tr>
               <tr class="heads">
-                <th class="pos" aria-label="Position"></th>
-                <th class="who" aria-sort="ascending">
+                <th class="pos" aria-sort="ascending">
+                  <button data-sort="overview" aria-label="Order by tests led">#</button>
+                </th>
+                <th class="who" aria-sort="none">
                   <button data-sort="name" aria-label="Sort by name">ADE</button>
                 </th>
                 {METRICS.map((m) => (
-                  <th aria-sort="none">
+                  <th class:list={{ gs: groupStart.has(m.key) }} aria-sort="none">
                     <button data-sort={m.key} aria-label={`Sort by ${m.short}`}>
                       <span>{m.short}</span>
                       <em>{unitLabel[m.unit]}</em>
@@ -109,16 +131,32 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
                 <tr class="ref" data-family="control">
                   <td class="pos"></td>
                   <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
-                  {METRICS.map((m) => <td class="ref">{cell(a.id, m.key, m.test).text}</td>)}
+                  {METRICS.map((m) => <td class:list={["ref", { gs: groupStart.has(m.key) }]}>{cell(a.id, m.key, m.test).text}</td>)}
                 </tr>
               ))}
-              {ADES.map((a) => (
-                <tr data-family={a.family} data-name={a.name.toLowerCase()}>
+              {ordered.map(({ a }, i) => (
+                <tr data-family={a.family} data-name={a.name.toLowerCase()} data-order={i} data-pos={position[i]}>
+                  <td class="pos">{position[i]}</td>
+                  <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
+                  {METRICS.map((m) => {
+                    const c = cell(a.id, m.key, m.test);
+                    return <td class:list={[c.tier, { gs: groupStart.has(m.key) }]} data-key={m.key} data-v={c.v}>{c.text}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+            <tbody class="partial">
+              <tr class="sep">
+                <td class="pos"></td>
+                <th colspan={METRICS.length + 1} scope="rowgroup">Measured in part</th>
+              </tr>
+              {partial.map((a, i) => (
+                <tr data-family={a.family} data-name={a.name.toLowerCase()} data-order={i}>
                   <td class="pos"></td>
                   <th class="who" scope="row"><span class="app"><Mark app={a} /><span>{a.name}</span></span></th>
                   {METRICS.map((m) => {
                     const c = cell(a.id, m.key, m.test);
-                    return <td class={c.tier} data-key={m.key} data-v={c.v}>{c.text}</td>;
+                    return <td class:list={[c.tier, { gs: groupStart.has(m.key) }]} data-key={m.key} data-v={c.v}>{c.text}</td>;
                   })}
                 </tr>
               ))}
@@ -126,6 +164,7 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
           </table>
         </div>
         <div class="grid-legend small">
+          <span class="order">Ordered by tests led, then tests in the top third. Not a score. Apps measured in fewer than {MIN_MEASURED} tests sit below the line without a position.</span>
           <span><i class="sq signal"></i>First</span>
           <span><i class="sq dim"></i>Top third</span>
           <span><i class="sq bar"></i>Middle third</span>
@@ -212,13 +251,18 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
     // Overview grid: sort by a column. The Bare CLI row stays on top, missing values go last.
     const grid = root.querySelector<HTMLTableElement>("[data-grid]");
     const body = grid?.tBodies[0];
-    let sortKey = "name";
+    const rest = grid?.tBodies[1];
+    let sortKey = "overview";
     const renumber = () => {
       if (!body) return;
       let n = 0;
       for (const row of body.querySelectorAll<HTMLTableRowElement>("tr:not(.ref)")) {
         const pos = row.querySelector(".pos")!;
         const visible = getComputedStyle(row).display !== "none";
+        if (sortKey === "overview") {
+          pos.textContent = row.dataset.pos ?? "";
+          continue;
+        }
         const has = sortKey !== "name" && row.querySelector<HTMLElement>(`td[data-key="${sortKey}"]`)?.dataset.v;
         pos.textContent = visible && has ? String(++n) : "";
       }
@@ -233,14 +277,29 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
           return v ? Number(v) : Infinity;
         };
         rows.sort((a, b) =>
-          sortKey === "name" ? a.dataset.name!.localeCompare(b.dataset.name!) : val(a) - val(b) || a.dataset.name!.localeCompare(b.dataset.name!),
+          sortKey === "overview"
+            ? Number(a.dataset.order) - Number(b.dataset.order)
+            : sortKey === "name"
+              ? a.dataset.name!.localeCompare(b.dataset.name!)
+              : val(a) - val(b) || a.dataset.name!.localeCompare(b.dataset.name!),
         );
         body.append(...rows);
+        if (rest) {
+          const more = [...rest.querySelectorAll<HTMLTableRowElement>("tr:not(.sep)")];
+          more.sort((a, b) =>
+            sortKey === "overview" || sortKey === "name"
+              ? sortKey === "name"
+                ? a.dataset.name!.localeCompare(b.dataset.name!)
+                : Number(a.dataset.order) - Number(b.dataset.order)
+              : val(a) - val(b) || a.dataset.name!.localeCompare(b.dataset.name!),
+          );
+          rest.append(...more);
+        }
         grid.querySelectorAll("th[aria-sort]").forEach((th) => th.setAttribute("aria-sort", "none"));
         btn.closest("th")!.setAttribute("aria-sort", "ascending");
         const col = [...btn.closest("tr")!.children].indexOf(btn.closest("th")!);
         grid.querySelectorAll(".sorted").forEach((el) => el.classList.remove("sorted"));
-        if (sortKey !== "name") grid.querySelectorAll(`tr > :nth-child(${col + 1})`).forEach((el) => {
+        if (sortKey !== "name" && sortKey !== "overview") grid.querySelectorAll(`tr > :nth-child(${col + 1})`).forEach((el) => {
           if (!el.closest(".groups")) el.classList.add("sorted");
         });
         renumber();
@@ -361,12 +420,8 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
     padding-left: 0;
     padding-right: 0;
   }
-  .overview .grid-legend {
-    margin-left: 40px;
-    margin-right: 40px;
-  }
   .overview {
-    padding-top: 28px;
+    padding: 24px 24px 28px;
   }
   .why {
     margin: 28px 0 0;
@@ -401,17 +456,24 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
     white-space: nowrap;
   }
   .grid .groups th {
-    padding: 0 12px 8px;
+    padding: 0 12px 6px;
     text-align: left;
     font: 600 13px/16px var(--font-sans);
     color: var(--color-text);
+  }
+  .grid .gs {
+    border-left: 1px solid var(--color-hairline);
+  }
+  .grid .sep td,
+  .grid .sep th {
     border-bottom: 1px solid var(--color-hairline);
   }
-  .grid .groups th:first-child {
-    border-bottom: 0;
-  }
-  .grid .groups th + th {
-    border-left: 1px solid var(--color-hairline);
+  .grid .sep th {
+    padding: 22px 0 8px 10px;
+    text-align: left;
+    font: 600 13px/16px var(--font-sans);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-hairline);
   }
   .grid .heads th {
     width: 64px;
@@ -456,8 +518,8 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
     background: var(--color-bar);
   }
   .grid .pos {
-    width: 32px;
-    padding-left: 20px;
+    width: 28px;
+    padding-left: 0;
     color: var(--color-text-muted);
     font: 500 13px/16px var(--font-sans);
     text-align: right;
@@ -523,6 +585,9 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
     gap: 8px 22px;
     margin-top: 20px;
   }
+  .grid-legend .order {
+    flex-basis: 100%;
+  }
   .grid-legend span {
     display: inline-flex;
     align-items: center;
@@ -558,13 +623,11 @@ const unitLabel = { s: "s", ms: "ms", MB: "MB", "%": "% CPU", tokens: "tokens", 
   }
 
   @media (max-width: 720px) {
-    .overview .grid-legend {
-      margin-left: 20px;
-      margin-right: 20px;
+    .overview {
+      padding: 20px 16px 24px;
     }
     .grid .pos {
-      padding-left: 8px;
-      width: 28px;
+      width: 24px;
     }
     .row {
       grid-template-columns: 1fr;

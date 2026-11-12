@@ -1,12 +1,12 @@
 ---
 import { REQUEST_ADE_URL } from "../data/links";
-import { ADES, PASS } from "../data/results";
+import { PASS } from "../data/results";
 ---
 <section class="hero" data-hero>
   <canvas class="field" aria-hidden="true"></canvas>
   <div class="wrap content">
     <h1>Every ADE, measured.</h1>
-    <p class="lede">{ADES.length} ADEs, measured side by side. Pick yours.</p>
+    <p class="lede">Test by test on one Mac, so you can pick the one that fits how you work.</p>
     <div class="actions">
       <a class="btn btn--primary" href="#results">
         See results
@@ -57,6 +57,7 @@ import { ADES, PASS } from "../data/results";
     letter-spacing: -0.035em;
   }
   .lede {
+    max-width: 588px;
     margin: 32px 0 0;
     font: 400 24px/32px var(--font-sans);
   }

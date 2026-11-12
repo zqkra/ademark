@@ -32,6 +32,8 @@
   --radius-tile: 12px; /* cards and the segmented track */
   --page: 1200px;
   --gutter: 24px;
+  --cols: repeat(12, minmax(0, 1fr));
+  --col-gap: 24px;
 }
 
 /* Dark follows the system setting. There is no switch on the page. */

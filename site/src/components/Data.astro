@@ -1,5 +1,5 @@
 ---
-import { REPO_URL, DATA_URL } from "../data/links";
+import { DATA_URL, GUIDE_URL } from "../data/links";
 
 const rows = [
   {
@@ -16,10 +16,10 @@ const rows = [
   },
   {
     name: "Harness",
-    code: "ademark run --ade <id> --tracks A,B,C",
+    code: "bun bench/cli.ts run --ade <id>",
     text: "runs the same tests on your Mac",
-    link: REPO_URL,
-    status: "GitHub",
+    link: GUIDE_URL,
+    status: "Guide",
   },
 ];
 ---
@@ -53,8 +53,8 @@ const rows = [
   }
   .row {
     display: grid;
-    grid-template-columns: 200px 1fr auto;
-    gap: 16px;
+    grid-template-columns: var(--cols);
+    column-gap: var(--col-gap);
     align-items: center;
     min-height: 64px;
     padding: 12px 0;
@@ -64,9 +64,11 @@ const rows = [
     border-bottom: 0;
   }
   b {
+    grid-column: 1 / 4;
     font: 600 16px/24px var(--font-sans);
   }
   .text {
+    grid-column: 4 / 11;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -74,6 +76,11 @@ const rows = [
     font: 400 16px/24px var(--font-sans);
     color: var(--color-text-muted);
     min-width: 0;
+  }
+  .status,
+  .get {
+    grid-column: 11 / 13;
+    justify-self: end;
   }
   .status {
     font: 400 14px/18px var(--font-sans);
@@ -90,6 +97,13 @@ const rows = [
       grid-template-columns: 1fr;
       gap: 4px;
       justify-items: start;
+    }
+    b,
+    .text,
+    .status,
+    .get {
+      grid-column: 1 / -1;
+      justify-self: start;
     }
   }
 </style>

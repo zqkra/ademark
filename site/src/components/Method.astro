@@ -56,15 +56,17 @@ const rows = [
   }
   .row {
     display: grid;
-    grid-template-columns: 200px minmax(0, 780px);
-    gap: 16px;
+    grid-template-columns: var(--cols);
+    column-gap: var(--col-gap);
     padding: 16px 0;
     border-bottom: 1px solid var(--color-hairline);
   }
   dt {
+    grid-column: 1 / 4;
     font: 600 16px/24px var(--font-sans);
   }
   dd {
+    grid-column: 4 / 11;
     margin: 0;
     font: 400 16px/24px var(--font-sans);
   }
@@ -73,6 +75,10 @@ const rows = [
     .row {
       grid-template-columns: 1fr;
       gap: 4px;
+    }
+    dt,
+    dd {
+      grid-column: 1 / -1;
     }
   }
 </style>
