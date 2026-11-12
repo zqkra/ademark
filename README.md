@@ -10,9 +10,13 @@
   &nbsp;·&nbsp;
   <a href="data/">Data</a>
   &nbsp;·&nbsp;
+  <a href="GUIDE.md">Guide</a>
+  &nbsp;·&nbsp;
   <a href="METHODOLOGY.md">Method</a>
   &nbsp;·&nbsp;
   <a href="FAIRNESS.md">Fairness</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/zqkra/ademark/releases/latest">Download</a>
   &nbsp;·&nbsp;
   <a href="https://github.com/zqkra/ademark/issues/new?template=ade-request.yml">Request an ADE</a>
 </p>
@@ -93,6 +97,15 @@ There is no overall winner. Each test is ranked on its own. Tie intervals are no
 Screen recordings, screenshots and network captures are not published, because they show the reference machine and its account.
 
 ## Run the harness
+
+Get the code:
+
+```sh
+git clone https://github.com/zqkra/ademark.git ~/ADEMark
+cd ~/ADEMark
+```
+
+Or download the ZIP of the [latest release](https://github.com/zqkra/ademark/releases/latest). The release also has `ademark-v1-data.zip`, with only the data of v1.
 
 [GUIDE.md](GUIDE.md) is the full procedure: machine setup, measuring an ADE in the field, adding a new one, reading and sharing results. If you hand this repo to a coding agent, it reads [AGENTS.md](AGENTS.md).
 

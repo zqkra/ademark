@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 (2026-11-12)
+
+- v1 publishes 15 ADEs: Conductor left the field before publication. The docs and the release say so.
+- The overview shows what each app is built with (Electron, Rust, Tauri).
+- The site's Contributing section links GUIDE.md, AGENTS.md and the issue forms.
+- `ademark-v1-data.zip` in the release holds `data/` and `results.json` alone.
+
 ## 1.0.0 (2026-11-12)
 
 First public release.
