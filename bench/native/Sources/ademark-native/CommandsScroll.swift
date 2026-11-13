@@ -17,6 +17,8 @@ enum ScrollWheel {
     static func post(lines: Int) {
         guard let event = CGEvent(scrollWheelEvent2Source: source, units: .line, wheelCount: 1,
                                   wheel1: Int32(clamping: lines), wheel2: 0, wheel3: 0) else { return }
+        // The HID source keeps the modifiers of the last posted key combo, such as cmd+alt+right in A11.
+        event.flags = []
         event.post(tap: .cghidEventTap)
     }
 }
