@@ -10,5 +10,5 @@ export const GUIDE_URL = `${REPO_URL}/blob/main/GUIDE.md`;
 export const AGENTS_URL = `${REPO_URL}/blob/main/AGENTS.md`;
 export const CHANGELOG_URL = `${REPO_URL}/blob/main/CHANGELOG.md`;
 export const DATA_URL = `${REPO_URL}/tree/main/data`;
-// Empty until the Ko-fi page exists: the footer hides the donate button while it is empty.
-export const KOFI_URL = "";
+// The footer shows the donate button only while this is set.
+export const KOFI_URL = "https://ko-fi.com/zqkra";

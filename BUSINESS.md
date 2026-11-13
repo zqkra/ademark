@@ -7,8 +7,8 @@ ADEMark sells nothing to vendors. It accepts donations to cover its costs. No do
 ## 1. Donations
 
 - **Who can donate:** anyone.
-- **Where:** one "Donate" link to Ko-fi in the site footer, shown once the Ko-fi page exists (v1.0.0 has none). It
-  does not appear on charts, result pages or ADE cards.
+- **Where:** [ko-fi.com/zqkra](https://ko-fi.com/zqkra), linked once in the site footer and from the Sponsor button
+  of this repository. It does not appear on charts, result pages or ADE cards.
 - **Supporters page:** a donor can show a name, a photo and a link, or stay anonymous. Anonymous donations show
   as a monthly count and total.
 
