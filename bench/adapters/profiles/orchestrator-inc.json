@@ -14,7 +14,10 @@
       "ao"
     ]
   },
-  "window": { "w": 1600, "h": 1000 },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
   "calibration": {
     "appName": "Agent Orchestrator",
     "bundleId": "dev.agent-orchestrator.desktop",
@@ -23,10 +26,16 @@
     "focusClick": null,
     "masks": [],
     "drive": "cli",
-    "dataDirs": ["~/.ao"],
+    "dataDirs": [
+      "~/.ao"
+    ],
     "launchAgents": []
   },
-  "login": { "kind": "agent-cli", "files": [], "signIn": null },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
   "reset": {
     "seeds": [
       ".ao/app-state.json",
@@ -37,64 +46,78 @@
     "jsonKeys": []
   },
   "steps": {
-    "afterLaunch": [{ "kind": "wait", "ms": 3000 }],
-    "openProject": [
+    "afterLaunch": [
       {
-        "kind": "run",
-        "argv": [
-          "/Applications/Agent Orchestrator.app/Contents/Resources/daemon/ao", "project", "add",
-          "--path", "${worktree}", "--id", "arena", "--name", "arena",
-          "--worker-agent", "claude-code", "--orchestrator-agent", "claude-code"
-        ],
-        "timeoutMs": 60000
-      },
-      { "kind": "wait", "ms": 1500 },
-      {
-        "kind": "goal",
-        "maxActions": 6,
-        "goal": "The window shows Orchestrator's home page or a project. Open the project named 'arena' (the folder ${worktree}) by clicking it in the sidebar or the project list, so the project's board is in front. Do not start a session and do not type anything."
-      },
-      { "kind": "wait", "ms": 1000 }
+        "kind": "wait",
+        "ms": 3000
+      }
     ],
-    "configure": { "claude": [], "codex": [] },
-    "quit": [
-      { "kind": "keys", "combo": "cmd+q" },
-      { "kind": "wait", "ms": 500 },
-      { "kind": "keys", "combo": "cmd+q" }
-    ]
+    "openProject": [],
+    "configure": {
+      "claude": [],
+      "codex": []
+    },
+    "quit": []
   },
   "timed": {
-    "launch": [{ "kind": "open", "bundleId": "dev.agent-orchestrator.desktop" }],
-    "newThread": [{ "kind": "keys", "combo": "cmd+n" }],
-    "send": [{ "kind": "enter" }]
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "dev.agent-orchestrator.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ]
   },
-  "waitDone": { "cwd": "any", "idleFallback": false },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
   "processes": {
-    "vendorDirs": ["~/.ao"],
+    "vendorDirs": [
+      "~/.ao"
+    ],
     "launchAgentLabels": [],
     "teamId": "X9LNSP8MC2",
-    "agentExecutables": ["claude", "codex", "/Users/ademark/.local/share/claude/versions/"]
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
   },
   "orchestrationTrigger": {
-    "notCalibrated": "Orchestrator's orchestrator session (Cmd+Shift+O on a project) spawns worker sessions, each in its own worktree, with ao spawn. C1 has to be sent in that session, not in a New Task worker, and no trigger line is proven by a C1 run yet"
+    "notCalibrated": "Orchestrator's orchestrator session spawns worker sessions, each in its own worktree, with ao spawn; orchestrator-inc.ts sends the C1 prompt there (Cmd+Shift+O). Candidate trigger line, to prove with one C1 run before it goes in: 'Orchestrate this: spawn one Orchestrator worker per work item with ao spawn, then have one worker merge their branches into main in the project checkout, write REPORT.md there and run npm test.'"
   },
-  "orchestration": { "workers": "sessions" },
+  "orchestration": {
+    "workers": "sessions"
+  },
   "notes": [
     "Draft from the Orchestrator source (github.com/OrchestratorInc/agent-orchestrator, tag v0.15.1, commit 07145885bd) and the released v0.15.1 build. Download: https://github.com/OrchestratorInc/agent-orchestrator/releases/download/v0.15.1/Orchestrator-darwin-arm64.dmg, SHA-256 34aa670a5057ce640d6e5db678a7f5738a9df64c7a20abe0b229efa2fa22d0ee (the same value as the release asset digest). app.bundleSha256 is the SHA-256 of Contents/MacOS/agent-orchestrator in that DMG's Agent Orchestrator.app (Developer ID, Team X9LNSP8MC2, notarized, Electron 44.7.0, minimum macOS 13.0). Nothing is calibrated on the screen yet.",
     "Not measured yet, so left out: calibration.composerRect and calibration.threadRect (profile check fails on them until calibrated), focusClick, masks, timed.longThread and timed.shortThread (A11), steps.returnToThread (C6). Measure them as the ademark user per CALIBRATE.md.",
     "Data: the packaged app moves its Electron userData to ~/.ao/electron (frontend/src/main.ts). The daemon's data is ~/.ao/data (SQLite ao.db, worktrees/, harnesses/, skills/using-ao/, telemetry files), and ~/.ao also holds app-state.json, update-settings.json and running.json. Moving ~/.ao aside resets everything. No login is kept there: Claude and Codex use their own CLI logins, and the Orchestrator account is only for Cloud features.",
+    "openArena (orchestrator-inc.ts), once per arena and after every launch: `ao project add --path <arena> --id <folder name>` (an explicit id registered for another path is refused, and Track C makes a new arena per task), then `ao project set-config <id> --config-json` with worker and orchestrator agent claude-code (or codex), agentConfig model ${model}, effort ${effort} and permissions bypass-permissions, then a goal step that opens the project in the window. Without a saved permission a new Chat session starts in Claude Code's auto mode (session_manager/manager.go), which is not full access. Workers that the orchestrator spawns inherit its permissions. steps.openProject is empty because the id must be computed.",
+    "C1: a New Task session is a worker, and the worker prompt says not to fan out on its own (session_manager/prompt.go: 'Do not use the agent runtime's built-in subagent or task-delegation tools'; ask the orchestrator for more workers). Orchestrator's orchestration is the orchestrator session (Cmd+Shift+O, created on first use per project, always Chat), whose prompt is coordination only and tells it to spawn workers with ao spawn. orchestrator-inc.ts sends the C1 prompt there when it starts with the trigger line. Worker reports (ao report --done) are delivered into the orchestrator chat and start a new turn (service/report/coordinator.go), so the lead comes back to merge. The C1 prompt asks for the merge into main; main is checked out in the arena itself, so the merge has to run in the arena checkout, not in a worker's worktree. Fan-out reads git worktree list of the arena, which lists Orchestrator's worktrees.",
     "Processes: the app starts the Go daemon as a child, Contents/Resources/daemon/ao daemon (detached, cwd ~/.ao, port 3001 or the port in ~/.ao/running.json). The daemon stops about 5 s after the app quits, through a socket link to the app (main/daemon-owner.ts). TUI sessions run under `ao pty-host`, started with setsid, so it can outlive the daemon: A9 should see it. Chat sessions run under `ao chat-host`, which starts the bundled Node (Contents/Resources/acp-runtime/node/bin/node) with @agentclientprotocol/claude-agent-acp 0.70.0. No launch agent: the only launchctl use is the opt-in closed-lid wake helper (com.aoagents.mobile-wake).",
     "Default thread: Chat. Migration 0105_default_session_mode_chat.sql sets default_session_mode to chat, and orchestrator sessions always start in Chat (session_manager/chat_spawn.go). Chat runs the system claude found on PATH (or /opt/homebrew/bin, /usr/local/bin, ~/.claude/local/claude) through claude-agent-acp with CLAUDE_CODE_EXECUTABLE set to it; Orchestrator does not bundle Claude Code. Per model, claude-opus-5-5 needs Claude Code 2.1.280 or newer (claudecode/model_versions.go), so the v1 pin 2.1.303 is accepted.",
-    "Worktrees: every session in a git project runs in its own worktree under ~/.ao/data/worktrees/arena/<session-id> on a branch ao/<session-id>/root. There is no option to run a session in the project checkout itself. So waitDone.cwd is any, as for Conductor and Superset. Branches made in those worktrees share the arena repository's refs, so a C1 build is visible from the arena checkout; check that in the first C1 run.",
-    "New thread (A3): Cmd+N is the new-session shortcut (frontend/src/shared/shortcuts.ts). It opens the New Task composer for the project in scope (routes/_shell.tsx), and Enter sends, which spawns a worker: a new worktree, the hooks file and the agent start all happen after A4's Enter, as in Conductor. openProject opens the arena project so Cmd+N is scoped to it; outside a project a new session goes to the scratchpad. Whether the composer has focus after Cmd+N is a calibration check.",
+    "Worktrees: every session in a git project runs in its own worktree under ~/.ao/data/worktrees/<project>/<session-id> on a branch ao/<session-id>/root (orchestrators under <project>/orchestrator/). There is no option to run a session in the project checkout itself (checked in 0.15.1: no flag or config). So waitDone.cwd is any,, as for the other ADEs that run every thread in a worktree. The grader reads the arena checkout: C1 asks for the merge into main, which is checked out there, but C2 to C6 ask one agent to work alone, and its edits stay on its branch in its own worktree, so the arena shows an empty diff. That is a harness question for every ADE that always uses a worktree, raised in the pull request, not a profile change.",
+    "New thread (A3): Cmd+N is the new-session shortcut (frontend/src/shared/shortcuts.ts). It opens the New Task composer for the project in front (routes/_shell.tsx), and Enter sends it, which spawns a worker: a new worktree, the hooks file and the agent start all happen after A4's Enter. Outside a project a new session goes to the scratchpad, so the arena project is opened first (see openArena). Whether the composer has focus after Cmd+N is a calibration check.",
     "A1 and A2, from the source and not yet checked on the screen: a launch opens a loader and then the home page (project list), and a relaunch does not restore the last route or session (no code saves it). There is no deep link to a project or session (ao-app:// handles only callback, share and billing). A folder in the launch arguments opens a create-project flow, not a composer. So no launch trigger reaches a composer, and both tests are in excludeTests. Remove them if the screen shows a composer at launch.",
-    "Quit: Cmd+Q shows a Quit confirmation (main/quit-confirm.ts); a second Cmd+Q quits. steps.quit sends Cmd+Q twice. Closing the window does not quit the app on macOS. Check on the screen that the second Cmd+Q quits and the daemon is gone 10 s later.",
+    "Quit: only the Cmd+Q shortcut asks 'Quit AO?'; a second Cmd+Q, or Quit from the menu, quits at once (frontend/src/main/quit-confirm.ts). The default quit (AppleScript quit) is not the shortcut, so it quits without the dialog and steps.quit is empty. Closing the window does not quit the app on macOS. The daemon exits about 5 s after the app.",
     "Telemetry: packaged builds send PostHog events by default (AO_TELEMETRY_EVENTS=on, AO_TELEMETRY_REMOTE=posthog, main.ts). Settings > 'Share usage analytics' off writes the marker ~/.ao/data/telemetry_opt_out, which covers the app, the daemon and paired phones. 'Share error events' (Sentry) is events_enabled in ~/.ao/data/telemetry_policy.json, true by default; turn it off. The seed holds both files. DO_NOT_TRACK is not read. Record both in Track F.",
     "Updates: ~/.ao/update-settings.json enabled defaults to false, so no update downloads, but the updater still checks the feed. Agent CLI updates that Orchestrator manages are off only through daemon env vars (AO_HARNESS_UPDATE_CHECKS=off, AO_MANAGED_HARNESS_INSTALLS=off), which a profile cannot set. Orchestrator installs a harness copy under ~/.ao/data/harnesses only when asked, so the system claude is used. No login item is ever set.",
     "Adds to context: an appended system prompt for workers (task, git and PR rules) and a larger one for orchestrator sessions (coordination only, with ao spawn, ao send and ao status), sent as the claude_code preset with append (session_manager/prompt.go, claudeacp/driver.go). Chat sessions also get a stdio MCP server named ao (preview, render and computer-use tools). Each worktree gets .claude/settings.local.json with hooks to ao hooks; this file is in the worktree, not the arena checkout.",
     "Writes global config: ~/.claude.json projects.<worktree>.hasTrustDialogAccepted true before each launch, and possibly the auto-mode prompt flag (claudecode/claudecode.go). Nothing in ~/.claude/settings.json, ~/.claude/skills, CLAUDE.md, ~/.codex or ~/.agents, and no shell rc file (login-shell wrappers live under ~/.ao/data/runtime). The using-ao skill is written to ~/.ao/data/skills, not to ~/.claude.",
     "Side calls (B1): for a worker spawned with a prompt and no branch, Orchestrator makes one background call through the same harness and model to name the task and branch (session_manager/task_naming.go, 20 s timeout). After every finished Chat turn the window asks the session's harness for a suggested next message (hooks/useConversationPromptSuggestion.ts); there is no setting for it. Both are factory behaviour and count in B.",
-    "Model, effort and permissions: the TUI path passes --model, --effort and --permission-mode only when set, and otherwise follows ~/.claude/settings.json from the snapshot. Whether a new Chat session shows Opus 5.5, high effort and bypass permissions with the snapshot is a calibration check; if not, set the project's worker and orchestrator agent config with ao project set-config before the seed is saved.",
+    "Model, effort and permissions: openArena saves them in the project config, so every session of the project (New Task workers, the orchestrator and its workers) starts with ${model}, ${effort} and bypass-permissions. Check on the screen that a new Chat shows Opus 5.5, high effort and full access.",
     "Window: the default window is 1320 x 860 points with a 960 x 640 minimum (main.ts), and no code saves its size, so the harness sets 1600 x 1000 after each launch.",
     "Local only: Cloud, remote hosts and the phone link need sign-in or Developer mode and are off on a fresh install. Check: ao session ls --json --all shows every session's worktree under /Users/ademark/.ao/data/worktrees."
   ],
@@ -102,5 +125,5 @@
     "A1": "Orchestrator 0.15.1 opens on its home page, which has no composer, and does not restore the last session; no deep link opens a project or session (from the source, 15 Nov)",
     "A2": "Orchestrator 0.15.1 opens on its home page after a normal quit, with no composer, and does not restore the last session (from the source, 15 Nov)"
   },
-  "agentGuide": "Orchestrator opens on a home page with a project list. Open the project named arena from the sidebar. Cmd+N opens the New Task box for that project, where you type the prompt. The Orchestrator button (Cmd+Shift+O) opens the orchestrator session, which starts worker sessions itself."
+  "agentGuide": "Orchestrator opens on a home page with a project list. The arena is a project named after its folder. Cmd+N opens the New Task box for the project in front, where you type the prompt. The Orchestrator button (Cmd+Shift+O) opens the orchestrator session, which starts worker sessions itself."
 }

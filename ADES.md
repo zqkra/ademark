@@ -833,13 +833,13 @@ Adapter `codex-app`:
 | Codex runs via | Chat or TUI with the system `codex` (find the entry point in pilot) |
 | Adds to context | an appended system prompt for workers and a longer one for orchestrator sessions; an `ao` MCP server in Chat; hooks in each worktree's `.claude/settings.local.json` |
 | Writes global config | `~/.claude.json` trust entry for each worktree. Nothing in `~/.claude/settings.json`, skills, `CLAUDE.md`, `~/.codex`, `~/.agents` or shell rc files |
-| Pin | model and effort explicit; permissions from the `~/.claude` snapshot (verify in pilot); usage analytics off and error events off (Settings); app updates off by default |
+| Pin | model, effort and full access saved in the project config (`ao project set-config`, `agentConfig.permissions` `bypass-permissions`); without it a new Chat session starts in Claude Code's auto mode. Usage analytics and error events off (Settings); app updates off by default |
 | Side calls (B1) | one task-naming call per worker spawned with a prompt, and one next-message suggestion after every finished Chat turn, both through the session's own harness and model |
 | New thread (A3) | Cmd+N opens the New Task composer in the open project. Enter spawns a worker in a new worktree, so worktree setup falls in A4 |
-| Orchestration (C1) | orchestrator session (Cmd+Shift+O) spawns worker sessions, each in its own worktree, with `ao spawn`. Trigger line: find in pilot |
-| Drive (setup) | `ao` CLI in the bundle (`Contents/Resources/daemon/ao`): `ao project add`, `ao spawn`, `ao session ls --json`. No CDP needed |
-| Traps | opens on the home page with no composer and does not restore the last session, so A1 and A2 are excluded (from source, to check on screen); every session runs in its own worktree, never in the arena checkout; Cmd+Q asks for confirmation; PostHog analytics on by default |
-| Verify in pilot | composer and thread regions; whether Cmd+N focuses the composer; the seed files; whether a new Chat shows Opus 5.5, high effort and bypass permissions; that the second Cmd+Q quits and the daemon exits |
+| Orchestration (C1) | the orchestrator session (Cmd+Shift+O, one per project, always Chat) spawns worker sessions with `ao spawn`, each in its own worktree, and worker reports wake it to merge. On by default. Workers are told not to fan out themselves, so the adapter sends the C1 prompt to the orchestrator session. Trigger line: prove in pilot |
+| Drive (setup) | `ao` CLI in the bundle (`Contents/Resources/daemon/ao`): `ao project add`, `ao project set-config`, `ao session ls --json`. No CDP or Accessibility needed, except one screen-agent step that opens the project in the window |
+| Traps | opens on the home page with no composer and does not restore the last session, so A1 and A2 are excluded (from source, to check on screen); every session runs in its own worktree, never in the arena checkout, so C2 to C6 graded in the arena see an empty diff; PostHog analytics and error events on by default |
+| Verify in pilot | composer and thread regions; whether Cmd+N focuses the composer; the seed files; whether a new Chat shows Opus 5.5, high effort and full access; the C1 trigger line in one C1 run |
 | Local only | No Cloud, remote hosts or paired phones (off on a fresh install). Check: `ao session ls --json --all` shows every worktree under `~/.ao/data/worktrees` on this Mac |
 
 Adapter `orchestrator-inc`:
@@ -848,12 +848,12 @@ Adapter `orchestrator-inc`:
 |---|---|
 | `installCheck` | version 0.15.1 and the main binary SHA-256 |
 | `reset` | default; `~/.ao` |
-| `configure` | from the seed: usage analytics off, error events off; model, effort and mode in the project config or the chat composer (find in pilot) |
+| `configure` | from the seed: usage analytics off, error events off. Per arena: `ao project add --id <folder name>`, then `ao project set-config` with the role agents, model, effort and `bypass-permissions`, then open the project in the window |
 | `launch` | `open -b dev.agent-orchestrator.desktop` |
-| `newThread` | Cmd+N: the New Task composer in the arena project. Setup registers the arena with `ao project add` and opens it |
-| `send` | default; Enter spawns the worker |
+| `newThread` | Cmd+N: the New Task composer in the arena project |
+| `send` | default; Enter spawns the worker. C1 only: Cmd+Shift+O first, so the prompt goes to the orchestrator session |
 | `waitDone` | the session log, any cwd (each worker runs in its own worktree) |
-| `quit` | Cmd+Q twice: the first shows the Quit confirmation |
+| `quit` | default. Only the Cmd+Q shortcut asks for confirmation; AppleScript `quit` does not |
 | `processes` | Electron set, the `ao` daemon, chat host and pty host, plus the agent CLIs |
 
 ## 4. Summary
@@ -878,4 +878,4 @@ Adapter `orchestrator-inc`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
-| Orchestrator | `orchestrator-inc` | EL-SDK | `ao` CLI | orchestrator session spawns worker sessions (trigger to find) | every session in its own worktree; opens on the home page with no composer |
+| Orchestrator | `orchestrator-inc` | EL-SDK | `ao` CLI | orchestrator session spawns worker sessions (trigger to prove) | every session in its own worktree; new Chat sessions start in auto mode unless the project saves full access |
