@@ -74,7 +74,7 @@ export async function runProbe(
   pauses: readonly ProbePause[] = [],
   stopped: () => boolean = () => false,
 ): Promise<ProbeSample[]> {
-  const region = ctx.adapter.calibration.composerRect;
+  const region = ctx.adapter.calibration.activeComposerRect ?? ctx.adapter.calibration.composerRect;
   const pid = launchPid(ctx);
   if (region === null || pid === null) return recordedProbes(ctx);
   const dryRun = ctx.instruments.dryRun;
