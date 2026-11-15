@@ -82,7 +82,7 @@ Every adapter implements the same nine methods. The defaults below apply unless 
 
 ### 2.2 EL-SDK: Electron app that drives the agent through an SDK or a JSON protocol
 
-Members: T3 Code, bb, Paseo, Synara, Traycer, Cloudroom.
+Members: T3 Code, bb, Paseo, Synara, Traycer, Cloudroom, Orchestrator.
 
 - Processes: the Electron main process, `Helper (Renderer)`, `Helper (GPU)` and other helpers inside the bundle,
   plus a local Node server or daemon. Some daemons detach or run under launchd, so the process tree alone is not enough.
@@ -816,6 +816,46 @@ Adapter `codex-app`:
 | `quit` | default |
 | `processes` | unknown, find in pilot |
 
+### 3.18 Orchestrator
+
+| Field | Value |
+|---|---|
+| Adapter ID | `orchestrator-inc` (`bench/adapters/orchestrator-inc.ts`) |
+| Maker, URL, license | Orchestrator.inc, https://orchestrator.inc, github.com/OrchestratorInc/agent-orchestrator, Apache-2.0 |
+| Version | 0.15.1, released 2026-11-14. Electron 44.7.0 |
+| Download | https://github.com/OrchestratorInc/agent-orchestrator/releases/download/v0.15.1/Orchestrator-darwin-arm64.dmg, SHA-256 `34aa670a5057ce640d6e5db678a7f5738a9df64c7a20abe0b229efa2fa22d0ee`. Main binary `Contents/MacOS/agent-orchestrator` SHA-256 `addbfbaee01cf5edc5bba4a5811395062c9832cd29ed87c188e5242f6528a480` |
+| On bench Mac | no |
+| Family | EL-SDK: a new session runs Claude in Chat through ACP. Any Claude or Codex session can switch to the agent's TUI in a PTY (EL-PTY) |
+| Bundle | `dev.agent-orchestrator.desktop`, app `Agent Orchestrator.app`, executable `agent-orchestrator`, Team ID `X9LNSP8MC2` |
+| Data to move aside | `~/.ao`: Electron userData in `~/.ao/electron`, daemon data in `~/.ao/data` (`ao.db`, `worktrees/`), `app-state.json`, `update-settings.json` |
+| Processes | Electron set (`agent-orchestrator`, `Agent Orchestrator Helper`, GPU, Plugin, Renderer), the Go daemon `ao daemon` (child of the app, port 3001), `ao chat-host` with the bundled Node for Chat, `ao pty-host` for TUI sessions (setsid, may outlive the daemon). No launch agent |
+| Claude runs via | Chat (factory default): the bundled `@agentclientprotocol/claude-agent-acp` 0.70.0 running the system `claude`. TUI: `claude --session-id <id>` with `--model`, `--effort` and `--permission-mode` only when set |
+| Codex runs via | Chat or TUI with the system `codex` (find the entry point in pilot) |
+| Adds to context | an appended system prompt for workers and a longer one for orchestrator sessions; an `ao` MCP server in Chat; hooks in each worktree's `.claude/settings.local.json` |
+| Writes global config | `~/.claude.json` trust entry for each worktree. Nothing in `~/.claude/settings.json`, skills, `CLAUDE.md`, `~/.codex`, `~/.agents` or shell rc files |
+| Pin | model and effort explicit; permissions from the `~/.claude` snapshot (verify in pilot); usage analytics off and error events off (Settings); app updates off by default |
+| Side calls (B1) | one task-naming call per worker spawned with a prompt, and one next-message suggestion after every finished Chat turn, both through the session's own harness and model |
+| New thread (A3) | Cmd+N opens the New Task composer in the open project. Enter spawns a worker in a new worktree, so worktree setup falls in A4 |
+| Orchestration (C1) | orchestrator session (Cmd+Shift+O) spawns worker sessions, each in its own worktree, with `ao spawn`. Trigger line: find in pilot |
+| Drive (setup) | `ao` CLI in the bundle (`Contents/Resources/daemon/ao`): `ao project add`, `ao spawn`, `ao session ls --json`. No CDP needed |
+| Traps | opens on the home page with no composer and does not restore the last session, so A1 and A2 are excluded (from source, to check on screen); every session runs in its own worktree, never in the arena checkout; Cmd+Q asks for confirmation; PostHog analytics on by default |
+| Verify in pilot | composer and thread regions; whether Cmd+N focuses the composer; the seed files; whether a new Chat shows Opus 5.5, high effort and bypass permissions; that the second Cmd+Q quits and the daemon exits |
+| Local only | No Cloud, remote hosts or paired phones (off on a fresh install). Check: `ao session ls --json --all` shows every worktree under `~/.ao/data/worktrees` on this Mac |
+
+Adapter `orchestrator-inc`:
+
+| Method | How |
+|---|---|
+| `installCheck` | version 0.15.1 and the main binary SHA-256 |
+| `reset` | default; `~/.ao` |
+| `configure` | from the seed: usage analytics off, error events off; model, effort and mode in the project config or the chat composer (find in pilot) |
+| `launch` | `open -b dev.agent-orchestrator.desktop` |
+| `newThread` | Cmd+N: the New Task composer in the arena project. Setup registers the arena with `ao project add` and opens it |
+| `send` | default; Enter spawns the worker |
+| `waitDone` | the session log, any cwd (each worker runs in its own worktree) |
+| `quit` | Cmd+Q twice: the first shows the Quit confirmation |
+| `processes` | Electron set, the `ao` daemon, chat host and pty host, plus the agent CLIs |
+
 ## 4. Summary
 
 | ADE | Adapter ID | Family | Drive for setup | C1 trigger | Top fairness traps |
@@ -838,3 +878,4 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+| Orchestrator | `orchestrator-inc` | EL-SDK | `ao` CLI | orchestrator session spawns worker sessions (trigger to find) | every session in its own worktree; opens on the home page with no composer |
