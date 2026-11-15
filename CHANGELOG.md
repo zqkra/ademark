@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Site: a new hero, the bench mark printed as halftone dots over the title "ADEs, measured.", with the marks of the
+  15 measured apps under the sentence that names them.
+- Site: the CSS is inlined and the hero font is preloaded, so the first paint needs no extra request.
+- Site: the sort buttons of the overview table have accessible names that match their labels.
+- Site: a donate link to Ko-fi, also as the repository's Sponsor button.
+- CI runs the harness tests on macOS and builds the site on every push to `main` and every pull request.
+- `SECURITY.md` explains how to report a vulnerability privately.
+
 ## 1.0.1 (2026-11-12)
 
 - v1 publishes 15 ADEs: Conductor left the field before publication. The docs and the release say so.
