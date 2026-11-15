@@ -82,7 +82,8 @@ describe("parseCliVersion", () => {
 });
 
 describe("collectManifest", () => {
-  test("collects this machine without writing anything", async () => {
+  // Reads the real reference Mac (its display, RAM and installed CLIs), so CI's virtual machine skips it.
+  test.skipIf(!!process.env.ADEMARK_HEADLESS_CI)("collects this machine without writing anything", async () => {
     const manifest = await collectManifest({ runId: "check-1", orderSeed: "test", reference: false });
     expect(manifest.run_id).toBe("check-1");
     expect(manifest.machine_id).toBe("ref-mac-mini-m4-16gb");

@@ -89,7 +89,11 @@ export async function collectManifest(options: ManifestOptions): Promise<Manifes
   const hardware = parseHardware(hw[0] ?? "", hw[1] ?? "", hw[2] ?? "");
 
   const macosBuild = run(["sw_vers", "-buildVersion"]);
-  const display = parseDisplay(run(["system_profiler", "SPDisplaysDataType", "-json"]));
+  // GitHub's macOS runners are virtual machines without a display. CI sets ADEMARK_HEADLESS_CI=1 so the tests that
+  // build a manifest can run there; a real run still reads the display and fails without one.
+  const display = process.env.ADEMARK_HEADLESS_CI
+    ? { width: 0, height: 0, scale: 1, refresh_hz: 0 }
+    : parseDisplay(run(["system_profiler", "SPDisplaysDataType", "-json"]));
 
   const cliVersions: Record<string, string> = {};
   const claude = tryRun(["claude", "--version"]);

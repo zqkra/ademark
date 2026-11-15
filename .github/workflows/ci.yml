@@ -18,6 +18,9 @@ jobs:
     name: Harness tests (macOS)
     runs-on: macos-latest
     timeout-minutes: 20
+    env:
+      # The runner has no display: the manifest records none instead of failing (bench/core/manifest.ts).
+      ADEMARK_HEADLESS_CI: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
