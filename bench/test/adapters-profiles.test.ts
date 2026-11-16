@@ -358,7 +358,7 @@ describe("validateProfile", () => {
     expect(validateProfile(json, PROFILE_ID, ["claude", "codex"])).toEqual([]);
   });
 
-  test("only Conductor and Orca set the steps before a quit, the same for A1 and A2", async () => {
+  test("only Conductor, Orca and Supacode set the steps before a quit, the same for A1 and A2", async () => {
     const { readdirSync, readFileSync } = await import("node:fs");
     const folder = join(import.meta.dir, "..", "adapters", "profiles");
     const users: string[] = [];
@@ -377,9 +377,20 @@ describe("validateProfile", () => {
         expect(json.steps.beforeColdQuit).toEqual([{ kind: "keys", combo: "cmd+2" }, { kind: "wait", ms: 1500 }]);
         expect(json.steps.beforeRelaunchQuit).toEqual(json.steps.beforeColdQuit);
       }
+      // 2026-11-12: Supacode keeps its sessions after a quit and loses them on a cold start. One fresh tab before
+      // both quits puts the launch probe on the same shell prompt line in A1 and A2.
+      if (json.ade === "supacode") {
+        expect(json.steps.beforeColdQuit).toEqual([
+          { kind: "keys", combo: "cmd+1" },
+          { kind: "wait", ms: 300 },
+          { kind: "run", argv: ["/Applications/supacode.app/Contents/Resources/bin/supacode", "pane", "close"], timeoutMs: 30000 },
+          { kind: "wait", ms: 2500 },
+        ]);
+        expect(json.steps.beforeRelaunchQuit).toEqual(json.steps.beforeColdQuit);
+      }
     }
     // The folder is not read in a fixed order.
-    expect([...users].sort()).toEqual(["conductor", "orca"]);
+    expect([...users].sort()).toEqual(["conductor", "orca", "supacode"]);
   });
 
   // 2026-11-10 (ADEMARK-53): every Orca A3 video showed the probe in a fresh shell ("command not found: dclaude").

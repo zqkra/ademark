@@ -816,6 +816,45 @@ Adapter `codex-app`:
 | `quit` | default |
 | `processes` | unknown, find in pilot |
 
+### 3.18 Supacode
+
+| Field | Value |
+|---|---|
+| Adapter ID | `supacode` (`bench/adapters/supacode.ts`) |
+| Maker, URL, license | Supabit, https://supacode.sh, github.com/supabitapp/supacode, FSL-1.1-ALv2 (source-available) |
+| Version | 0.11.8 stable, 2026-11-12 (verify at freeze) |
+| On bench Mac | no. Calibrated on 0.11.8 in a macOS 27.2.1 virtual machine, 2026-11-12 to 2026-11-15 |
+| Bundle id | `app.supabit.supacode` (`supacode.app`, executable `supacode`), Team ID `9ZLSJ2GN2B`, macOS 26 or later |
+| Family | NATIVE (Swift, SwiftUI and AppKit; the terminal is libghostty) |
+| Data to move aside | `~/.config/supacode` (`config.json`, `routes.json`, `repos.json`, `config.ghostty`), `~/Library/Preferences/app.supabit.supacode.plist` (tabs and sidebar state), `~/Library/Application Support/app.supabit.supacode`, `~/Library/Caches/app.supabit.supacode`, and `~/.supacode` (worktrees in `~/.supacode/repos/<repo>/<branch>`; absent until a worktree is created). macOS can serve the tabs from its preferences cache after the plist moved, so the profile also closes every restored tab when it opens the project |
+| Processes | the app `supacode`; for each terminal tab one `zmx` session (a client under the app and a daemon, both run from `supacode.app/Contents/Resources/zmx/zmx`), then `login`, the shell and the agent CLI. No launch agent. The sessions stay alive after quit: the daemon moves under launchd |
+| Claude runs via | the official CLI typed in a terminal tab (the TUI in a PTY). The app passes no flags |
+| Codex runs via | the official CLI typed in a terminal tab. Not calibrated |
+| Adds to context | nothing found: no system prompt, no MCP server, no launch flags. The tab's environment has `TERM_PROGRAM=supacode` and `SUPACODE_*` variables (repository, worktree, tab, socket). B2 shows the rest |
+| Writes global config | none by default. "Advanced agent integration" in Settings is opt-in: it installs hooks in `~/.claude/settings.json` and two skills (`supacode-cli`, `supacode-deeplinks`) |
+| Pin | model, effort and full access are flags of the typed `claude` command, as in the Bare CLI; `analyticsEnabled`, `crashReportsEnabled` and `updatesAutomaticallyCheckForUpdates` are `false` in the seed `~/.config/supacode/config.json` (factory: all `true`). The seed also holds `~/.config/supacode/config.ghostty` with one line, `env = PROMPT=%# `: the shell prompt is then `%` with no host name. With the host name in the prompt (`ADEMarks-Virtual-Machine%`), A1 and A2 were invalid: the prompt holds letter pairs of the typing probe, and Ready came from it |
+| Side calls (B1) | none found in the source. Verify in capture |
+| New thread (A3) | ⌘T opens a terminal tab in the project folder, then the `claude` command is typed and Return starts it, as in the Bare CLI. ⌘N creates a new worktree after a dialog and is not timed |
+| Orchestration (C1) | not supported |
+| Drive (setup) | `supacode` CLI in the bundle (`Contents/Resources/bin/supacode`: `repo open`, `pane close`, `tab`, `worktree`), `supacode://` deep links. No CDP |
+| Traps | It reads the account's Ghostty config, so its tabs run the control's `command` (`zsh -f` with the fixed PATH and `CLAUDE_CODE_NO_FLICKER=1`). Sessions outlive the quit and count in Ghost Weight. Tabs past the ninth have no shortcut, so the long thread is reached from the first tab with one step back. Claude Code asks once to trust `~/arena/supacode`, and the answer must be given during setup. The `supacode` CLI starts the app when it is not running. No step selects a repository by its path, so C2 to C6, which open a second arena, are excluded in the profile. The free trial allows 5 new worktrees, and the bench creates none |
+| Verify in pilot | Codex; Track B; whether the app makes any side call; C2 to C6 once a later build selects a repository by path |
+| Local only | Local repositories only. No remote SSH repository. Check: `routes.json` lists the arena under `local`, and `remote` is empty |
+
+Adapter `supacode`:
+
+| Method | How |
+|---|---|
+| `installCheck` | bundle `app.supabit.supacode`, version 0.11.8 |
+| `reset` | default; the data folders above, then the seed (`config.json`, `config.ghostty`). The `zmx` sessions run from the bundle and are killed with the app |
+| `configure` | nothing in the app. The seed turns off analytics, crash reports and update checks. Model, effort and full access are flags of the `claude` command that `newThread` types |
+| `launch` | `open -b app.supabit.supacode` |
+| `newThread` | `⌘T`, then type `claude --model claude-opus-5-5 --effort high --dangerously-skip-permissions` and Return |
+| `send` | default |
+| `waitDone` | the Claude session log, matched by the project folder |
+| `quit` | default; the sessions stay alive (counted in A9). Before A1 and A2, `supacode pane close` closes every tab and leaves one fresh tab with a shell, where the launch probe is read |
+| `processes` | the app, the `zmx` sessions, and the shells and agent CLIs under them |
+
 ## 4. Summary
 
 | ADE | Adapter ID | Family | Drive for setup | C1 trigger | Top fairness traps |
@@ -838,3 +877,4 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+| Supacode | `supacode` | NATIVE | `supacode` CLI, deep links | not supported | reads the control's Ghostty config; sessions outlive the quit |

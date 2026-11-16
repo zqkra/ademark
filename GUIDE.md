@@ -198,7 +198,7 @@ for Capy. On a fresh clone expect these:
 
 ### 4.1 Pick the ADE
 
-`bun bench/cli.ts adapter list` prints these 18 ids. Fifteen are driven by a profile in `bench/adapters/profiles/`;
+`bun bench/cli.ts adapter list` prints these 19 ids. Sixteen are driven by a profile in `bench/adapters/profiles/`;
 `bare-cli`, `t3code` and `zeron` have code adapters.
 
 | id | App | Family | Adapter | Own sign-in | C1 |
@@ -221,6 +221,7 @@ for Capy. On a fresh clone expect these:
 | `capy` | Capy | OWN | profile, screen agent | yes | trigger |
 | `claude-desktop` | Claude desktop (Code tab) | FIRST | profile | yes | not calibrated |
 | `codex-app` | Codex app (in ChatGPT desktop) | FIRST | profile | yes | not calibrated |
+| `supacode` | Supacode | NATIVE | profile | no | not supported |
 
 - **Own sign-in** "no" means the app runs the account's own `claude` login.
 - **C1**: "trigger" runs the orchestrated build. "Not supported" writes valid rows with no value. "Not calibrated"
@@ -403,7 +404,7 @@ the profile's `ade` field. `family` is `EL-SDK`, `EL-PTY`, `NATIVE`, `OWN` or `F
 | File | Change |
 |---|---|
 | `bench/adapters/registry.ts` | Import the adapter and add `"<id>": <export>` to `adapters`. `run`, `profile check` and `calibrate` refuse an id that is not here. |
-| `bench/test/adapters.test.ts` | Add the id to `EXPECTED` and its family to `families`, and raise the count of 18. |
+| `bench/test/adapters.test.ts` | Add the id to `EXPECTED` and its family to `families`, and raise the count of 19. |
 | `ADES.md` §3 | Add a section `### 3.<n> <App>` with a table that has an `Adapter ID` row and an `Orchestration (C1)` row. A test reads them: the cell starts with `not supported` exactly when the profile's `orchestrationTrigger` is `null`. |
 | `bench/control/real.ts` | Only for Control nights: add the id to `MEASURED_ADES`. |
 

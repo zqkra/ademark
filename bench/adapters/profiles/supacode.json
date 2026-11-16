@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "ade": "supacode",
+  "app": {
+    "path": "/Applications/supacode.app",
+    "version": "0.11.8",
+    "bundleSha256": "9198833611f77cf30af5f4da93cbbe8b2e097e033985579fff8f364a30893886",
+    "processNames": [
+      "supacode"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "supacode",
+    "bundleId": "app.supabit.supacode",
+    "composerRect": {
+      "x": 270,
+      "y": 937,
+      "w": 1300,
+      "h": 37
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": {
+      "x": 270,
+      "y": 113,
+      "w": 1300,
+      "h": 22
+    },
+    "clearKeys": [
+      "ctrl+u"
+    ],
+    "threadRect": {
+      "x": 270,
+      "y": 96,
+      "w": 1310,
+      "h": 824
+    },
+    "focusClick": null,
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.supacode",
+      "~/.config/supacode",
+      "~/Library/Preferences/app.supabit.supacode.plist",
+      "~/Library/Application Support/app.supabit.supacode",
+      "~/Library/Caches/app.supabit.supacode"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      ".config/supacode/config.json",
+      ".config/supacode/config.ghostty"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 1500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/supacode.app/Contents/Resources/bin/supacode",
+          "repo",
+          "open",
+          "${worktree}"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 2000
+      },
+      {
+        "kind": "keys",
+        "combo": "ctrl+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/supacode.app/Contents/Resources/bin/supacode",
+          "pane",
+          "close"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      }
+    ],
+    "configure": {
+      "claude": []
+    },
+    "quit": [],
+    "beforeRelaunchQuit": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/supacode.app/Contents/Resources/bin/supacode",
+          "pane",
+          "close"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      }
+    ],
+    "beforeColdQuit": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/supacode.app/Contents/Resources/bin/supacode",
+          "pane",
+          "close"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "wait",
+        "ms": 2500
+      }
+    ]
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "app.supabit.supacode"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+t"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "type",
+        "text": "claude --model claude-opus-5-5 --effort high --dangerously-skip-permissions"
+      },
+      {
+        "kind": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 4000
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 250
+      },
+      {
+        "kind": "keys",
+        "combo": "ctrl+shift+tab"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+2"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.supacode",
+      "~/.config/supacode"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "9ZLSJ2GN2B",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": null,
+  "notes": [
+    "Calibrated 2026-11-12 to 2026-11-15 on Supacode 0.11.8 (build 1794444638, Team 9ZLSJ2GN2B, macOS 26 or later) at 1600 x 1000 points. The Mac was a macOS 27.2.1 virtual machine: VirtualMac2,1 on an Apple M5 Pro host, 8 cores, 16 GB, display 1920 x 1200 at 2x and 60 Hz, user ademark, Claude Code 2.1.303. No number from this machine is comparable with the reference Mac.",
+    "Virtual machine setup, outside this profile. system_profiler lists no display there, so a wrapper on PATH answers SPDisplaysDataType with the mode displayplacer reports. Claude Code has no login there: ANTHROPIC_API_KEY holds a placeholder in launchd. That is enough for Track A, where the replay server answers. Tracks B and C were not run.",
+    "Processes, checked with ademark-native procs and ps. The app is supacode. Each terminal tab is one zmx session: a client under the app and a daemon, both run from supacode.app/Contents/Resources/zmx/zmx. Under the daemon run /usr/bin/login, the shell and the agent CLI. After quit the daemon is a child of launchd and still runs from the bundle path, so the sessions stay attributed. A5 counted the 2 seeded agents and A7 its 5 streams.",
+    "Shell. Supacode reads ~/.config/ghostty/config, so its tabs run the command of the control: zsh -f with the fixed PATH and CLAUDE_CODE_NO_FLICKER=1. claude resolves through that PATH.",
+    "Seed, config.json. It is the factory file with analyticsEnabled, crashReportsEnabled and updatesAutomaticallyCheckForUpdates set to false.",
+    "Seed, config.ghostty. It holds one line, env = PROMPT=%# . Without it zsh -f prints the host name as its prompt, and on the launch tests that text reached Ready before the probe. Smoke run s2 gave 'Ready came from text that is not the probe' on A1 and A2, with the host ADEMarks-Virtual-Machine. A name with Mac in it holds the probe pair 'ma' too. PS1 does not arrive: Supacode starts the shell through a non-interactive bash, which unsets it.",
+    "launchComposerRect is the second line of a fresh tab. It leaves out the 'Last login' line above it, which holds probe pairs in some months (Mar, Dec).",
+    "New thread. Cmd+T opens a terminal tab in the project folder, then the trigger types the claude command and presses Return. The stopwatch of A3 starts at Return, the last action, so Cmd+T and the typing are outside it. The wait of 4 s after Return is setup only.",
+    "Lost input during calibration. It did not come from the app. In 2 of the first 5 complete smoke runs a new tab did not open, and the typed command and the prompt went to the tab before it (A7 'streams never reached the model'). Two causes, both in the helper (issues #35 and #36). One: `keys` exited right after its last event, and the window server drops a key event whose sender has gone ('Sender is prohibited from synthesizing events'). Under load 59 of 105 `keys --enter` arrived whole, and 105 of 105 once `keys` waits for the key state. Two: `click` measured from the first layer-0 window of the app. While a window is captured, that is the 66 x 20 sharing control of its title bar, so a click on the + button of the tab strip landed 16 points off: 0 of 12 clicks during a capture opened a tab. Every request that reached the app opened a tab: 200 of 200 by Cmd+T and 240 of 240 by a click, read with an event tap and a traced build. An earlier revision of this profile clicked +. It went back to Cmd+T, the documented shortcut.",
+    "Open project. supacode repo open adds the repository. ctrl+1 selects its only worktree and opens the first tab. The tab layout is kept in ~/Library/Preferences/app.supabit.supacode.plist, and moving that file aside did not always clear it: s3 started with 4 tabs of an earlier session. So supacode pane close follows. It closes every tab, and the app opens one fresh tab with a shell.",
+    "Tabs. Tab 1 is that shell. The threads follow in the order they were opened. shortThread is cmd+2, the first seeded thread. Tabs past the ninth have no shortcut, so longThread is cmd+1 and then ctrl+shift+tab, which wraps to the last tab, where A11 builds the long thread. The stopwatch of A11 starts at the last key, so cmd+1 and the 250 ms pause are outside the open time. The pause is a precaution and is not proven needed. It came in after s3, A11 rep 1 ('the short thread did not show before the open'), a run that also started with 4 tabs of an earlier session.",
+    "Quit. AppleScript quit, no dialog. The sessions stay alive by design and A9 counts them. Before A1 and A2, supacode pane close leaves one fresh tab. The launch then lands on a shell prompt after a normal quit and after a cold start, where every session is gone. The step starts with a key because the supacode CLI starts the app when it is not running: on a stopped app the key fails first and the CLI is never called.",
+    "Setup, once per Mac. Claude Code 2.1.303 asked whether to trust ~/arena/supacode although ~/arena was trusted. The answer is kept in ~/.claude.json and must be given before the first run. Supacode asks for nothing at first launch and has no sign-in. snapshot diff showed no change in ~/.claude, ~/.codex and ~/.agents after its runs.",
+    "Track C. C1 is not supported: the app has no orchestration. C2 to C6 are excluded because their task opens a second arena, which this profile cannot select. A step that takes a plain path would lift that.",
+    "Not calibrated: Codex, and whether the app makes any model call of its own (none found in its source)."
+  ],
+  "agentGuide": "Each conversation is a terminal tab where Claude Code runs in the project. Cmd+T opens a new tab with a shell, and the claude command is typed there. A tab that shows only a shell prompt is not the agent.",
+  "excludeTests": {
+    "C2": "the test opens a second arena, and 0.11.8 has no step that selects a repository by its path: ctrl+1 selects the first row of the sidebar, and the supacode CLI takes only the percent-encoded worktree id",
+    "C3": "it reads the task of C2, which is excluded",
+    "C4": "the test opens a second arena, and 0.11.8 has no step that selects a repository by its path: ctrl+1 selects the first row of the sidebar, and the supacode CLI takes only the percent-encoded worktree id",
+    "C5": "the test opens a second arena, and 0.11.8 has no step that selects a repository by its path: ctrl+1 selects the first row of the sidebar, and the supacode CLI takes only the percent-encoded worktree id",
+    "C6": "the test opens a second arena, and 0.11.8 has no step that selects a repository by its path: ctrl+1 selects the first row of the sidebar, and the supacode CLI takes only the percent-encoded worktree id"
+  }
+}
