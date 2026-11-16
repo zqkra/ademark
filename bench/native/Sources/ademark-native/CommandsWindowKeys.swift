@@ -61,11 +61,11 @@ enum KeysCommand {
 
         let t = Clock.nowNs()
         if let text {
-            KeyPoster.typeText(text)
+            KeyPoster.typeText(text, settle: true)
         } else if let parsedCombo {
-            KeyPoster.press(parsedCombo)
+            KeyPoster.press(parsedCombo, settle: true)
         } else {
-            KeyPoster.press(KeyCombo(modifiers: [], key: .named(.enter)))
+            KeyPoster.press(KeyCombo(modifiers: [], key: .named(.enter)), settle: true)
         }
         emit(.object([("t_ns", .uint(t))]))
     }

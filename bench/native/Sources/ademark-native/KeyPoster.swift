@@ -11,21 +11,24 @@ enum KeyPoster {
     /// after it does not move t0.
     static let holdNs: UInt64 = 10_000_000
 
-    static func press(_ combo: KeyCombo) {
-        let flags = combo.eventFlags
-        post(keyCode: combo.virtualKeyCode, flags: flags, unicode: nil, keyDown: true)
-        Clock.sleepNs(holdNs)
-        post(keyCode: combo.virtualKeyCode, flags: flags, unicode: nil, keyDown: false)
+    /// `settle` is for a process that exits right after the press (InputSettle).
+    static func press(_ combo: KeyCombo, settle: Bool = false) {
+        press(keyCode: combo.virtualKeyCode, flags: combo.eventFlags, unicode: nil, settle: settle)
     }
 
-    static func typeText(_ text: String) {
+    static func typeText(_ text: String, settle: Bool = false) {
         for character in text {
-            let units = Array(String(character).utf16)
             let (keyCode, flags) = physicalKey(for: character)
-            post(keyCode: keyCode, flags: flags, unicode: units, keyDown: true)
-            Clock.sleepNs(holdNs)
-            post(keyCode: keyCode, flags: flags, unicode: units, keyDown: false)
+            press(keyCode: keyCode, flags: flags, unicode: Array(String(character).utf16), settle: settle)
         }
+    }
+
+    private static func press(keyCode: CGKeyCode, flags: CGEventFlags, unicode: [UniChar]?, settle: Bool) {
+        post(keyCode: keyCode, flags: flags, unicode: unicode, keyDown: true)
+        if settle { InputSettle.wait(for: true) { InputSettle.keyIsDown(keyCode) } }
+        Clock.sleepNs(holdNs)
+        post(keyCode: keyCode, flags: flags, unicode: unicode, keyDown: false)
+        if settle { InputSettle.wait(for: false) { InputSettle.keyIsDown(keyCode) } }
     }
 
     /// The real key for a letter, digit or space, with Shift for a capital, next to the Unicode text. Diri 0.11.2 reads

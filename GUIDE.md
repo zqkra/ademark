@@ -149,7 +149,7 @@ bash bench/native/build.sh
 bench/native/bin/ademark-native selftest
 ```
 
-`selftest` prints `{"passed":249,"failed":0,"failures":[]}`. Then grant these **(person)**:
+`selftest` prints `{"passed":252,"failed":0,"failures":[]}`. Then grant these **(person)**:
 
 | Permission | Where | Give it to |
 |---|---|---|

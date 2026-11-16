@@ -165,6 +165,10 @@ ademark-native keys --pid 1234 --enter
 `right`, `up`, `down`. `--text` types each character with `CGEventKeyboardSetUnicodeString`. Events go to
 `CGEventPost(.cghidEventTap, …)`.
 
+After each key-down and each key-up, `keys` waits until `CGEventSource.keyState` shows the key in that state, for at
+most 250 ms. The window server drops a key event whose sender has already exited (`Sender is prohibited from
+synthesizing events` in the system log), so the process stays until its last event is in.
+
 ### `echo`
 
 Accessibility and Screen Recording: **required**.
@@ -376,7 +380,8 @@ Captures the pid's layer-0 window with `SCScreenshotManager` and writes a PNG.
 
 Runs every pure-logic check without touching permissions, events or the screen: key-combo parsing (13 cases),
 probe matcher and text matcher (12), attribution on a synthetic process table (16), the settle finder (5),
-tick-to-ns conversion (5), median/p95 helpers (7), the frontmost guard (4), frame-time selection (6), the lag miss
+tick-to-ns conversion (5), median/p95 helpers (7), the frontmost guard (4), the one-shot settle wait (3),
+frame-time selection (6), the lag miss
 rule (5), the frames file shape (2), the skipped-trigger decision (4), the frame-gap window (6), CG-to-AppKit
 frame conversion (4), the duration-0 rule (5), the probe region as a settle mask (4), the settle cap (6),
 `dirty_rects` (4), the scroll window (9), the idle math (8), an OCR round trip that renders
@@ -387,7 +392,7 @@ About 250 checks in total (the count changes as checks are added).
 
 ```sh
 ademark-native selftest
-{"passed":249,"failed":0,"failures":[]}
+{"passed":252,"failed":0,"failures":[]}
 ```
 
 Exit code is 0 when `failed` is 0, otherwise 4.
