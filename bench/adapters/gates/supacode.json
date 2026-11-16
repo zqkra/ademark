@@ -1,0 +1,10 @@
+{
+  "ade": "supacode",
+  "runs": 5,
+  "passed": 5,
+  "at": "2026-11-16T06:08:41.426Z",
+  "harnessCommit": "35beae63459d2e83e83f8faaea3188303ca001b4",
+  "version": "0.11.8",
+  "bundleSha256": "9198833611f77cf30af5f4da93cbbe8b2e097e033985579fff8f364a30893886",
+  "failures": []
+}
