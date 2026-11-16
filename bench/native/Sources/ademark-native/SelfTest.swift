@@ -37,6 +37,7 @@ enum SelfTest {
         testStats(&report)
         testCanPost(&report)
         testInputSettle(&report)
+        testFrontmostWindow(&report)
         testFrameTime(&report)
         testLagRule(&report)
         testFramesFile(&report)
@@ -323,6 +324,24 @@ enum SelfTest {
         }
         report.check("settle gives up at the cap for a key that never follows") {
             [true, false].allSatisfy { settle(want: $0, changeAtNs: nil) == (false, 250_000_000) }
+        }
+    }
+
+    private static func testFrontmostWindow(_ report: inout SelfTestReport) {
+        let app = WindowSnapshot(windowID: 1, frame: CGRect(x: 80, y: 60, width: 1600, height: 1000))
+        let sharingControl = WindowSnapshot(windowID: 2, frame: CGRect(x: 96, y: 76, width: 66, height: 20))
+        let dialog = WindowSnapshot(windowID: 3, frame: CGRect(x: 500, y: 300, width: 420, height: 180))
+        report.check("the sharing control in front of the app window is passed over") {
+            WindowFinder.frontmost([sharingControl, app])?.windowID == 1
+        }
+        report.check("a dialog in front of the app window is still the front window") {
+            WindowFinder.frontmost([dialog, app])?.windowID == 3
+        }
+        report.check("a small window alone is the front window") {
+            WindowFinder.frontmost([sharingControl])?.windowID == 2
+        }
+        report.check("no window gives none") {
+            WindowFinder.frontmost([]) == nil
         }
     }
 

@@ -381,7 +381,7 @@ Captures the pid's layer-0 window with `SCScreenshotManager` and writes a PNG.
 Runs every pure-logic check without touching permissions, events or the screen: key-combo parsing (13 cases),
 probe matcher and text matcher (12), attribution on a synthetic process table (16), the settle finder (5),
 tick-to-ns conversion (5), median/p95 helpers (7), the frontmost guard (4), the one-shot settle wait (3),
-frame-time selection (6), the lag miss
+the front window choice (4), frame-time selection (6), the lag miss
 rule (5), the frames file shape (2), the skipped-trigger decision (4), the frame-gap window (6), CG-to-AppKit
 frame conversion (4), the duration-0 rule (5), the probe region as a settle mask (4), the settle cap (6),
 `dirty_rects` (4), the scroll window (9), the idle math (8), an OCR round trip that renders
@@ -392,7 +392,7 @@ About 250 checks in total (the count changes as checks are added).
 
 ```sh
 ademark-native selftest
-{"passed":252,"failed":0,"failures":[]}
+{"passed":256,"failed":0,"failures":[]}
 ```
 
 Exit code is 0 when `failed` is 0, otherwise 4.
@@ -475,6 +475,10 @@ Converts the window point to a screen point, then posts a left mouse down and up
 state set so 2 is a double click and 3 a triple click. Posted only while the pid is frontmost: otherwise exit 4
 `not_frontmost` and nothing is posted. `t_ns` is read just before the first mouse down, and the pointer is put back
 where it was afterwards.
+
+The window is the pid's front layer-0 window that is at least 100 points wide and high. While a window is captured,
+macOS adds a 66 x 20 window for the sharing control of its title bar, in front of it and owned by the same pid. A click
+measured from that one would land 16 points off.
 
 ### `probe-region`
 
