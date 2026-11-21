@@ -143,6 +143,8 @@ async function orchestratedRows(ctx: TestContext, rep: number): Promise<ResultRo
       home: ctx.adapterCtx.home,
       worktree: run.worktree,
       sinceMs: wallClockSince(ctx, run.t0Ns),
+      cwdPrefix: ctx.adapter.sessionLogCwdPrefix?.(ctx.adapterCtx),
+      agents: ["claude", "codex"],
     }),
   );
   const handoff = handoffFrom(run.worktree, codes);

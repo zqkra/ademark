@@ -520,10 +520,11 @@ export function sessionAgentFor(agent: Agent): SessionAgent {
   return agent === "codex" ? "codex" : "claude";
 }
 
-export function claudeSessionIntervals(o: { home: string; worktree: string; sinceMs: number }): Interval[] {
+export function claudeSessionIntervals(o: { home: string; worktree: string; sinceMs: number; cwdPrefix?: string; agents?: readonly SessionAgent[] }): Interval[] {
   const found = new Map<string, Interval>();
-  for (const cwd of worktreePaths(o.worktree)) {
-    for (const log of findSessionLogs({ home: o.home, agent: "claude", cwd, since: o.sinceMs })) {
+  for (const agent of o.agents ?? (["claude"] as const)) {
+    for (const cwd of worktreePaths(o.worktree)) {
+      for (const log of findSessionLogs({ home: o.home, agent, cwd, since: o.sinceMs, cwdPrefix: o.cwdPrefix })) {
       if (found.has(log.path)) continue;
       let startMs = log.mtimeMs;
       try {
@@ -531,7 +532,8 @@ export function claudeSessionIntervals(o: { home: string; worktree: string; sinc
       } catch {
         // A log that vanished keeps its mtime as the interval start.
       }
-      found.set(log.path, { start_ms: startMs, end_ms: log.mtimeMs });
+        found.set(log.path, { start_ms: startMs, end_ms: log.mtimeMs });
+      }
     }
   }
   return [...found.values()];
