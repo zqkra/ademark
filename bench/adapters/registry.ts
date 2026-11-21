@@ -1,4 +1,4 @@
-// The adapter registry: one module per ADE in ADES.md 3.0-3.17 (18 adapter IDs).
+// The adapter registry: one module per ADE in ADES.md 3.0-3.17 (19 adapter IDs).
 import type { Adapter } from "../core/contracts.ts";
 import { bareCli } from "./bare-cli.ts";
 import { t3code } from "./t3code.ts";
@@ -18,6 +18,7 @@ import { conductor } from "./conductor.ts";
 import { capy } from "./capy.ts";
 import { claudeDesktop } from "./claude-desktop.ts";
 import { codexApp } from "./codex-app.ts";
+import { recur } from "./recur.ts";
 
 export const adapters: Record<string, Adapter> = {
   "bare-cli": bareCli,
@@ -38,6 +39,7 @@ export const adapters: Record<string, Adapter> = {
   capy,
   "claude-desktop": claudeDesktop,
   "codex-app": codexApp,
+  recur,
 };
 
 export const ADAPTER_IDS = Object.keys(adapters);

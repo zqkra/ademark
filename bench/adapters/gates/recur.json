@@ -1,0 +1,10 @@
+{
+  "ade": "recur",
+  "runs": 5,
+  "passed": 5,
+  "at": "2026-11-14T11:06:23.016Z",
+  "harnessCommit": "5ab8caa03bcb261a80c6777f25fa5c0f81c78b90",
+  "version": "0.7.2",
+  "bundleSha256": "493c229ce20d43e7d055975eef70282a0fcf4f37f146f676f087db7ec269f69c",
+  "failures": []
+}
