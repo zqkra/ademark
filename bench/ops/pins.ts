@@ -183,6 +183,8 @@ export async function profilesStatus(o: {
   const profileIds = new Set<string>();
   for (const file of readdirSync(profilesDir).filter((name) => name.endsWith(".json")).sort()) {
     const id = file.slice(0, -".json".length);
+    // codex-app runs only OpenAI models and is not measured.
+    if (id === "codex-app") continue;
     profileIds.add(id);
     const profile = JSON.parse(readFileSync(join(profilesDir, file), "utf8")) as { app?: { path?: string; version?: string; bundleSha256?: string | null } };
     const appPath = profile.app?.path;
@@ -239,6 +241,7 @@ export async function writeProfiles(o: {
   const installed = o.installed ?? realInstalled;
   const lines: string[] = [];
   for (const file of readdirSync(profilesDir).filter((name) => name.endsWith(".json")).sort()) {
+    if (file === "codex-app.json") continue;
     const path = join(profilesDir, file);
     const profile = JSON.parse(readFileSync(path, "utf8")) as {
       app?: { path?: string; version?: string; bundleSha256?: string | null };
