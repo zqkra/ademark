@@ -218,7 +218,6 @@ for Capy. On a fresh clone expect these:
 | `diri` | Diri | NATIVE | profile | no | not calibrated |
 | `monocode` | MonoCode | NATIVE | profile | no | not calibrated |
 | `super-engineering` | super.engineering | NATIVE | profile | no | trigger |
-| `conductor` | Conductor | NATIVE | profile | no | not supported |
 | `capy` | Capy | OWN | profile, screen agent | yes | trigger |
 | `claude-desktop` | Claude desktop (Code tab) | FIRST | profile | yes | not calibrated |
 | `codex-app` | Codex app (in ChatGPT desktop) | FIRST | profile | yes | not calibrated |
@@ -228,7 +227,9 @@ for Capy. On a fresh clone expect these:
   writes invalid rows. The Bare CLI runs the single-agent baseline (C1-solo).
 - **Screen agent**: these profiles have `goal` steps, which need the screen agent (§4.3).
 - `--agent` must name an agent the ADE runs: `claude` for most, `own` for Capy, `codex` for the Codex app. Any other
-  value runs nothing and prints `0 rows in 0 block(s)`. v1 measured Claude only; the Codex app is not in v1.
+  value runs nothing and prints `0 rows in 0 block(s)`. v1 measured Claude only; v2 measures Claude and the app's own
+  agent where it has one. Conductor left the field on 12 November 2026; the Codex app runs only OpenAI models, so a
+  Claude-only bench does not measure it.
 
 ### 4.2 Dry run first
 

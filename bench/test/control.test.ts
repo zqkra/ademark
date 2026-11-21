@@ -421,6 +421,15 @@ describe("permission setup is exclusive", () => {
   });
 });
 
+describe("measured field", () => {
+  test("Conductor left the field and the Codex app is not measured", async () => {
+    const { MEASURED_ADES, AGENTS } = await import("../control/real.ts");
+    expect(MEASURED_ADES).not.toContain("conductor");
+    expect(MEASURED_ADES).not.toContain("codex-app");
+    expect(AGENTS).toEqual(["claude", "own"]);
+  });
+});
+
 describe("Claude desktop", () => {
   test("runs on the real model and is in the measured list", async () => {
     const { MEASURED_ADES } = await import("../control/real.ts");
@@ -434,10 +443,10 @@ describe("Claude desktop", () => {
 describe("run order", () => {
   test("healthy apps first, apps that need a person last, random inside a tier", async () => {
     const { healthFirst } = await import("../control/server.ts");
-    const ids = ["conductor", "orca", "bb", "monocode", "cloudroom", "emdash", "diri", "t3code"];
+    const ids = ["orca", "bb", "monocode", "cloudroom", "emdash", "diri", "t3code"];
     const order = healthFirst(ids, "seed-1");
     expect(order.slice(0, 2).sort()).toEqual(["emdash", "monocode"]);
-    expect(order.slice(-2).sort()).toEqual(["cloudroom", "conductor"]);
+    expect(order.at(-1)).toBe("cloudroom");
     expect(order.slice(4, 6).sort()).toEqual(["diri", "orca"]);
     expect([...order].sort()).toEqual([...ids].sort());
   });

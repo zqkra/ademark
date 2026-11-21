@@ -31,9 +31,11 @@ import type { LatePlan, LateStep, StepName, Task } from "./store.ts";
 
 export const MEASURED_ADES = [
   "bare-cli", "t3code", "bb", "paseo", "synara", "traycer", "cloudroom", "orca", "emdash", "zeron", "diri", "monocode",
-  "super-engineering", "conductor", "claude-desktop",
+  "super-engineering", "claude-desktop",
   // 2026-11-11: their profiles come from the app bundle, never from the real screen, so a first measure may stop at a
-  // setup step; its screenshot is what calibrates them. Not codex-app: the bench account has no Codex sign-in.
+  // setup step; its screenshot is what calibrates them. Not codex-app: it runs only OpenAI models, so a Claude-only
+  // bench cannot measure it. Conductor left the field on 12 November 2026 (no public download since 4 November; its
+  // v1 rows stay published).
   "capy", "superset",
 ] as const;
 export const AGENTS: readonly Agent[] = ["claude", "own"];

@@ -175,7 +175,7 @@ Adapter `bare-cli`:
 |---|---|
 | Adapter ID | `t3code` (`bench/adapters/t3code.ts`) |
 | Maker, URL, license | pingdotgg, https://t3.codes, github.com/pingdotgg/t3code, MIT |
-| Version | 0.1.0 stable, 2026-10-15 (verify at freeze). Nightlies daily: use stable only |
+| Version | 0.1.11, 2026-11-21 (verify at freeze). Nightlies daily: use stable only |
 | On bench Mac | yes, 0.1.0 (`T3 Code (Beta).app`), Electron 44.4.5 |
 | Bundle id | `com.t3tools.t3code` |
 | Family | EL-SDK |
@@ -214,7 +214,7 @@ Adapter `t3code`:
 |---|---|
 | Adapter ID | `bb` (`bench/adapters/bb.ts`) |
 | Maker, URL, license | get-bb (main contributors Michael Yong, Sawyer Hood; company unverified), https://getbb.app, github.com/get-bb/bb, MIT |
-| Version | desktop-v0.46.1, 2026-10-15 (verify at freeze) |
+| Version | desktop-v0.50.1, 2026-11-21 (verify at freeze) |
 | On bench Mac | yes, 0.46.1, Electron 44.3.0 |
 | Bundle id | `dev.bb.desktop`; updater job `dev.bb.desktop.ShipIt` |
 | Family | EL-SDK |
@@ -253,7 +253,7 @@ Adapter `bb`:
 |---|---|
 | Adapter ID | `paseo` (`bench/adapters/paseo.ts`) |
 | Maker, URL, license | Mohamed Boudra (solo, sponsor-funded), https://paseo.sh, github.com/getpaseo/paseo, Apache-2.0 (LICENSE file) |
-| Version | 0.11.4 stable, 2026-10-15 (verify at freeze). 0.12.0 is beta: do not use |
+| Version | 0.16.2, 2026-11-21 (verify at freeze). 0.12.0 is beta: do not use |
 | On bench Mac | yes, 0.12.0, Electron 44.2.0 |
 | Family | EL-SDK |
 | Data to move aside | `~/.paseo` (`config.json`, `daemon.log`, worktrees in `~/.paseo/worktrees`) |
@@ -291,7 +291,7 @@ Adapter `paseo`:
 |---|---|
 | Adapter ID | `synara` (`bench/adapters/synara.ts`) |
 | Maker, URL, license | Emanuele Di Pietro, https://trysynara.com, github.com/Emanuele-web04/synara, MIT (LICENSE names T3 Tools Inc.: a fork of T3 Code) |
-| Version | 1.0.7 stable, 2026-10-17 (verify at freeze). Remote prereleases exist: do not use |
+| Version | 1.6.4, 2026-11-21 (verify at freeze). Remote prereleases exist: do not use |
 | On bench Mac | yes, 1.0.7, Electron 43.4.1 |
 | Family | EL-SDK |
 | Data to move aside | `~/.synara/` (`userdata/state.sqlite`, `logs/provider/events.log`, worktrees in `~/.synara/worktrees`); `SYNARA_HOME` overrides it |
@@ -329,7 +329,7 @@ Adapter `synara`:
 |---|---|
 | Adapter ID | `traycer` (`bench/adapters/traycer.ts`) |
 | Maker, URL, license | Traycer, https://traycer.ai, github.com/traycerai/traycer (clients and protocol only), MIT |
-| Version | Desktop, Host and CLI 1.5.1, 2026-10-10 (verify at freeze). The IDE extension retires 2026-10-31: test Desktop |
+| Version | Desktop, Host and CLI 1.5.4, 2026-11-21 (verify at freeze). The IDE extension retires 2026-10-31: test Desktop |
 | On bench Mac | yes, Desktop 1.5.1, Electron 42.11.12 |
 | Family | EL-SDK (Electron app plus a background Host service) |
 | Data to move aside | `~/.traycer/` (chats, credentials, `host/host.log`, `worktrees/`, `epics/<task-id>`) |
@@ -367,7 +367,7 @@ Adapter `traycer`:
 |---|---|
 | Adapter ID | `cloudroom` (`bench/adapters/cloudroom.ts`) |
 | Maker, URL, license | David Ondrej, https://www.cloudroom.dev, github.com/davidondrej/cloudroom-gui and cloudroom-core, Apache-2.0 |
-| Version | desktop v109 and core `core-v0.1.64`, 2026-10-18 (verify at freeze). Eight versions in six days: pin hard |
+| Version | desktop 160, 2026-11-21 (verify at freeze). Eight versions in six days: pin hard |
 | On bench Mac | yes, v104, Electron 44.3.0. The v110 installer is in `pins/` and replaces v104 in the `ademark` account |
 | Family | EL-SDK |
 | Data to move aside | `~/.cloudroom/skills`; thread database path unknown, find in pilot |
@@ -405,7 +405,7 @@ Adapter `cloudroom`:
 |---|---|
 | Adapter ID | `superset` (`bench/adapters/superset.ts`) |
 | Maker, URL, license | Superset (San Francisco), https://superset.sh, github.com/superset-sh/superset, Elastic License 2.0 (source-available) |
-| Version | desktop-v1.38.0, 2026-10-14 (verify at freeze). Canary builds exist: do not use. A rename is announced for this month: publish name and version |
+| Version | desktop-v2.0.11 (Paradev), 2026-11-21 (verify at freeze). Canary builds exist: do not use. The product is renamed Paradev; publish name and version |
 | On bench Mac | yes, 1.39.0, Electron 41.10.7 |
 | Family | EL-PTY |
 | Data to move aside | `~/.superset/` (`worktrees`, `sessions`, `bin`); app database path unknown, find in pilot |
@@ -443,7 +443,7 @@ Adapter `superset`:
 |---|---|
 | Adapter ID | `orca` (`bench/adapters/orca.ts`) |
 | Maker, URL, license | Stably AI (YC), https://www.onorca.dev, github.com/stablyai/orca, MIT |
-| Version | 1.4.229, 2026-10-17 (verify at freeze). Ships almost daily: pin hard |
+| Version | 1.4.267, 2026-11-21 (verify at freeze). Ships almost daily: pin hard |
 | On bench Mac | yes, 1.4.230, Electron 43.7.8 |
 | Family | EL-PTY |
 | Data to move aside | Electron userData folder (path unknown, find in pilot) |
@@ -481,7 +481,7 @@ Adapter `orca`:
 |---|---|
 | Adapter ID | `emdash` (`bench/adapters/emdash.ts`) |
 | Maker, URL, license | General Action (YC W26), https://emdash.com, github.com/generalaction/emdash, Apache-2.0 |
-| Version | 1.2.8, 2026-10-10 (verify at freeze) |
+| Version | 1.2.13, 2026-11-21 (verify at freeze) |
 | On bench Mac | yes, 1.2.8, Electron 40.10.2 |
 | Family | EL-PTY |
 | Data to move aside | local SQLite (path unknown, find in pilot); worktrees in `~/emdash/worktrees` |
@@ -519,7 +519,7 @@ Adapter `emdash`:
 |---|---|
 | Adapter ID | `zeron` (`bench/adapters/zeron.ts`) |
 | Maker, URL, license | 1499487 B.C. LTD, https://zeron.sh, github.com/zeronsh/zeron, MIT. Formerly "Comet" |
-| Version | 0.2.114, 2026-10-18 (verify at freeze). Ships every 1 to 3 days. Test upstream, never the author's fork; publish the binary SHA-256 |
+| Version | 0.3.13, 2026-11-21 (verify at freeze). Ships every 1 to 3 days. Test upstream, never the author's fork; publish the binary SHA-256 |
 | On bench Mac | yes, 0.2.114 (upstream) |
 | Family | NATIVE (Rust, GPUI; it used to be Electron) |
 | Data to move aside | `~/.zeron/profiles/local/` (`ZERON_DATA_DIR` overrides it); worktrees in `~/.zeron/worktrees` |
@@ -557,7 +557,7 @@ Adapter `zeron`:
 |---|---|
 | Adapter ID | `diri` (`bench/adapters/diri.ts`) |
 | Maker, URL, license | Cristian Crețu, https://diri.sh, github.com/cristicretu/diri, AGPL-3.0-only from 0.10.0 (Apache-2.0 before). The engine and CLI are called "Dirijor" |
-| Version | 0.10.0 stable, 2026-10-18 (verify at freeze). A nightly channel exists: do not use |
+| Version | 0.11.6, 2026-11-21 (verify at freeze) |
 | On bench Mac | yes, 0.10.0 (`diri.app`) |
 | Family | NATIVE (Rust, GPUI; macOS 15+) |
 | Data to move aside | `~/Library/Application Support/Dirijor/` (`state.json`, `logs/dirijord.log`) |
@@ -595,7 +595,7 @@ Adapter `diri`:
 |---|---|
 | Adapter ID | `monocode` (`bench/adapters/monocode.ts`) |
 | Maker, URL, license | Nick (hardbeat920), https://usemono.dev, github.com/hardbeat920/monocode, MIT |
-| Version | 0.15.0, 2026-10-18 (verify at freeze) |
+| Version | 0.16.0 stable (Tauri), 2026-11-21 (verify at freeze). The site download is now the native GPUI preview (`dev.usemono.gpui`), a different app: keep the Tauri build |
 | On bench Mac | yes, 0.16.0 |
 | Family | NATIVE (Tauri 2 plus a Node host process) |
 | Data to move aside | `monocode.db` in Tauri's app data folder (path unknown, find in pilot) |
@@ -709,7 +709,7 @@ Adapter `conductor`:
 |---|---|
 | Adapter ID | `capy` (`bench/adapters/capy.ts`) |
 | Maker, URL, license | Scrapybara Inc. (YC), https://capy.ai, closed source |
-| Version | 0.4.7, 2026-10-16 (verify at freeze) |
+| Version | 0.9.2, 2026-11-21 (verify at freeze) |
 | On bench Mac | yes, 0.4.7, Electron 44.3.0 |
 | Bundle id | `ai.capy.desktop` |
 | Family | OWN (own harness, local mode) |
@@ -748,7 +748,7 @@ Adapter `capy`:
 |---|---|
 | Adapter ID | `claude-desktop` (`bench/adapters/claude-desktop.ts`) |
 | Maker, URL | Anthropic, https://code.claude.com/docs/en/desktop |
-| Version | unknown, read from the bundle at freeze |
+| Version | 6.28899.2, 2026-11-21 (verify at freeze; Homebrew cask auto-updates) |
 | On bench Mac | yes, 2.42304.2 (`Claude.app`) |
 | Family | FIRST (Electron 44.7.2) |
 | Data to move aside | unknown, find in pilot. It reads the same settings files as the Claude Code CLI, so the `~/.claude` snapshot applies. Worktrees go to `<project-root>/.claude/worktrees/` by default |
@@ -785,7 +785,7 @@ Adapter `claude-desktop`:
 |---|---|
 | Adapter ID | `codex-app` (`bench/adapters/codex-app.ts`) |
 | Maker, URL | OpenAI, https://learn.chatgpt.com/docs/app. The Codex app now ships inside the ChatGPT desktop app |
-| Version | unknown, read from the bundle at freeze |
+| Version | 26.1117.41037, 2026-11-21 (verify at freeze) |
 | On bench Mac | yes, ChatGPT 26.1007.30912 |
 | Family | FIRST (Electron with renamed parts: `Codex Framework`, Chromium 155, `app.asar`) |
 | Data to move aside | unknown, find in pilot |

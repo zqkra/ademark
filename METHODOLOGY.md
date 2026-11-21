@@ -1,6 +1,6 @@
 # ADEMark methodology
 
-Version: v1.0, 2026-10-19. First results: run `control-2026-11-10T08-31-19Z`, published 2026-11-12.
+Version: v2.0-draft, 2026-11-21. First results: run `control-2026-11-10T08-31-19Z`, published 2026-11-12 (v1.0).
 Reference machine: Mac mini M4, 16 GB, macOS 27.0.1.
 
 This file says **what** ADEMark measures and **why**. The other files say how:
@@ -30,7 +30,7 @@ Each one has its own track:
 
 ## 2. The field
 
-17 ADEs and one control. Versions are frozen when a run starts and published with every result. The first results cover 15 of them. The Codex app was not measured in v1, and Conductor left the field on 12 November 2026: since 4 November new users can no longer download it, so it fails the inclusion rule.
+16 ADEs and one control. Versions are frozen when a run starts and published with every result. The v1 results cover 15 of them. Conductor left the field on 12 November 2026: since 4 November new users can no longer download it, so it fails the inclusion rule; its v1 rows stay published. As in v1, only Claude Opus 5.5 at effort high is measured: the Codex app runs only OpenAI models, so a Claude-only bench cannot measure it.
 
 | ADE | Family | Claude runs via | Codex runs via |
 |---|---|---|---|
@@ -48,7 +48,6 @@ Each one has its own track:
 | Diri | NATIVE (Rust, GPUI) | CLI TUI in a PTY | CLI TUI in a PTY |
 | super.engineering | NATIVE (Rust, GPUI) | CLI or `claude -p` | CLI |
 | MonoCode | NATIVE (Tauri 2 + Node host) | `claude` stream-json | app-server |
-| Conductor | NATIVE (Tauri, Rust) | Agent SDK, bundled CLI | bundled Codex |
 | Capy | OWN (own harness, local mode) | own agent | own agent |
 | Claude desktop (Code tab) | FIRST (Anthropic) | Claude Code engine | not supported |
 | Codex app (in ChatGPT desktop) | FIRST (OpenAI) | not supported | Codex agent |
@@ -111,7 +110,7 @@ when you open a thread and others when you send.
 | C5 | Network Cut | The model API is blocked for 30 s at 90 s. Does the task continue | Survival | 1, a second run if fail |
 | C6 | App Restart | The ADE is quit and reopened at 90 s. Do threads restore and finish | Survival | 1, a second run if fail |
 
-ADEs without orchestration (Emdash, Conductor) show "not supported" in C1, never zero. C2 to C6 apply to all.
+ADEs without orchestration (Emdash) show "not supported" in C1, never zero. C2 to C6 apply to all.
 
 ### Track F. Fit (facts, no score)
 
@@ -296,6 +295,9 @@ ADEMark is built like Terminal-Bench: an open harness that anyone can run, with 
 
 - 2026-11-20: a night measures the reliability tests too: C2 to C6 and A12 run in their own reliability step after
   orchestration, in `<run>-<ade>-reliability-<n>`, cut at 170 minutes (§6).
+- 2026-11-21: v2.0-draft. Conductor left the field (no public download since 4 November; its v1 rows stay
+  published). The Codex app is not measured: it runs only OpenAI models. Track C gains the reliability step
+  (C2 to C6 and A12) after orchestration.
 - 2026-11-21: B3 runs three times per model, like B1, so the real-prompt tax has a median that covers rerun
   variance (Refs #43). The tokens step limit grows to 70 minutes to hold the worst case of the six prompt turns,
   tried twice.

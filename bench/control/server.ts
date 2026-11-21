@@ -60,12 +60,12 @@ function stamp(): string {
 }
 
 // Apps by what their 2026-11-08 gates showed, healthiest first, random inside each tier: useful rows come early, and an
-// app that needs a person (Cloudroom, Conductor) cannot hold up the others. Unknown ids go to the middle tier.
+// app that needs a person (Cloudroom) cannot hold up the others. Unknown ids go to the middle tier.
 const HEALTH_TIERS: readonly (readonly string[])[] = [
   ["monocode", "emdash", "traycer", "zeron", "super-engineering", "claude-desktop", "bare-cli"],
   ["t3code", "synara", "bb", "paseo"],
   ["diri", "orca"],
-  ["cloudroom", "conductor"],
+  ["cloudroom"],
 ];
 
 export function healthFirst(ids: readonly string[], seed: string): string[] {
