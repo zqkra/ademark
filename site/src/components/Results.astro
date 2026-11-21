@@ -317,6 +317,8 @@ const groupStart = new Set(METRICS.filter((m, i) => i === 0 || METRICS[i - 1].ca
   }
   .segments {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 4px;
     padding: 4px;
     border-radius: var(--radius-tile);
