@@ -62,6 +62,7 @@ export interface Pin {
   version?: string;
   binary_sha256?: string;
   bundle_id?: string;
+  team_id?: string;
 }
 
 export interface PinsFile {

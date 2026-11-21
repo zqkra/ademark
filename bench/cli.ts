@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 // The only entry point of the ADEMark harness (TESTS.md 1.1).
 // Track runners (A1-C6) arrive in the next phase; the run core of `ademark run` is in bench/run/.
+import { writeFileSync } from "node:fs";
 import { userInfo } from "node:os";
 import { resolve } from "node:path";
 import { ADAPTER_IDS, getAdapter, listAdapters } from "./adapters/registry.ts";
@@ -52,6 +53,7 @@ Usage:
   ademark machine on|off|status [--apply]
   ademark account check|setup [--apply]
   ademark doctor [--agent claude,codex,own] [--json]
+  ademark pins record [--apply] | pins profiles [--write]
   ademark night [--tracks A] [--agent claude,codex,own] [--ungated] [--skip <id,...>] [--smoke] [--seed <s>] [--until HH:MM] [--no-repair] [--repair-minutes <n>] [--yes] [--dry-run]
   ademark summarize --run <dir>
   ademark settle [--minutes 5]
@@ -441,6 +443,30 @@ async function cmdDoctor(args: string[]): Promise<number> {
     console.error(error instanceof Error ? error.message : String(error));
     return 2;
   }
+}
+
+async function cmdPins(args: string[]): Promise<number> {
+  const sub = args.shift();
+  if (sub === "record") {
+    const { recordPinsCommand } = await import("./ops/pins.ts");
+    const { code, text } = await recordPinsCommand({ apply: has(args, "--apply") });
+    console.log(text);
+    return code;
+  }
+  if (sub === "profiles") {
+    const write = has(args, "--write");
+    const { profilesStatus, formatProfileStatus, writeProfiles } = await import("./ops/pins.ts");
+    if (write) {
+      const { code, text } = await writeProfiles({ write: (path, body) => writeFileSync(path, body) });
+      console.log(text);
+      return code;
+    }
+    const statuses = await profilesStatus();
+    console.log(formatProfileStatus(statuses));
+    return statuses.some((status) => status.differs) ? 1 : 0;
+  }
+  console.error("pins: expected record|profiles");
+  return 2;
 }
 
 function cmdSummarize(args: string[]): number {
@@ -849,6 +875,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       return cmdAccount(args);
     case "doctor":
       return await cmdDoctor(args);
+    case "pins":
+      return await cmdPins(args);
     case "prepare":
       return await cmdPrepare(args);
     case "control":
