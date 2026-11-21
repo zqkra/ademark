@@ -93,5 +93,15 @@ describe("keys to an app that is not in front yet", () => {
     }));
     await expect(press(ctx(), 7, "cmd+n")).rejects.toThrow("process_not_found");
     expect(other).toBe(1);
+    // A dead pid is not retried or re-resolved here either; only quitAndWait tolerates it, on its Enter.
+    let dead = 0;
+    setMacosRunner(fakeRunner("ademark", {
+      keys: async () => {
+        dead += 1;
+        throw new Error("ademark-native keys failed (exit 1): pid 7 is not running");
+      },
+    }));
+    await expect(press(ctx(), 7, "enter")).rejects.toThrow("is not running");
+    expect(dead).toBe(1);
   });
 });

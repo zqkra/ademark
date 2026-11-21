@@ -445,3 +445,50 @@ describe("blankRelaunchMs on a real launch (Conductor, 8 Nov)", () => {
     expect(result.log.join(" ")).toContain("blank check not read");
   });
 });
+
+// 2026-11-12: the app can finish quitting between the pid read and the Enter that confirms a quit dialog.
+// A dead pid there is the wanted end state, so quitAndWait logs it instead of failing the block; every
+// other keys step still throws (adapters-json-path.test.ts).
+describe("quitAndWait and a pid that dies before Enter", () => {
+  const main = { pid: 900, ppid: 1, path: "/Applications/Demo Pro.app/Contents/MacOS/Demo", name: "Demo", responsible_pid: null };
+
+  function realRunner(keys: (options: { pid: number }) => Promise<unknown>) {
+    let now = 0;
+    return fakeRunner("ademark", {
+      now: () => (now += 60_000),
+      run: (argv) => ({
+        code: 0,
+        stdout: argv[0] === "ps" ? "/Applications/Demo Pro.app/Contents/MacOS/Demo\n" : "",
+        stderr: "",
+      }),
+      procs: async () => [main],
+      keys,
+    });
+  }
+
+  test("a gone pid on the quit Enter is logged, not thrown", async () => {
+    writeProfile();
+    const enters: number[] = [];
+    setMacosRunner(
+      realRunner(async (options) => {
+        enters.push(options.pid);
+        throw new Error("ademark-native keys failed (exit 1): pid 900 is not running");
+      }),
+    );
+    const { ctx, lines } = captureContext({ worktree: "/tmp/home/arena/demo", dryRun: false, runDir: dir });
+    await profileAdapter(BASE).quit(ctx);
+    expect(enters).toEqual([900]);
+    expect(lines.some((line) => line.includes("pid 900 was gone before Enter"))).toBe(true);
+  });
+
+  test("any other keys failure still fails the quit", async () => {
+    writeProfile();
+    setMacosRunner(
+      realRunner(async () => {
+        throw new Error("ademark-native keys failed (exit 4): not_frontmost");
+      }),
+    );
+    const { ctx } = captureContext({ worktree: "/tmp/home/arena/demo", dryRun: false, runDir: dir });
+    await expect(profileAdapter(BASE).quit(ctx)).rejects.toThrow("not_frontmost");
+  });
+});

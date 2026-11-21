@@ -218,7 +218,11 @@ function varsFor(ctx: AdapterContext, state: ProfileState): StepVars {
 }
 
 function hintsFor(profile: AdeProfile): PidHints {
-  return { bundlePaths: [profile.app.path], names: profile.app.processNames };
+  return {
+    bundlePaths: [profile.app.path],
+    names: profile.app.processNames,
+    launchAgents: profile.calibration.launchAgents,
+  };
 }
 
 const NEW_THREAD_SETTLE_MS = 1500;
@@ -303,7 +307,13 @@ export function profileAdapter(base: AdapterBase): Adapter {
     let alive = await waitGone(ctx, pids, QUIT_TIMEOUT_MS);
     const main = alive.length === 0 || ctx.dryRun ? null : await mainPid(ctx, hints);
     if (main !== null && alive.includes(main)) {
-      await press(ctx, main, "enter");
+      try {
+        await press(ctx, main, "enter");
+      } catch (error) {
+        // The app can finish quitting between the pid read and the Enter; a gone pid is the wanted end state.
+        if (!(error instanceof Error && error.message.includes("is not running"))) throw error;
+        ctx.log(`quitAndWait: pid ${main} was gone before Enter; nothing left to confirm`);
+      }
       alive = await waitGone(ctx, alive, QUIT_TIMEOUT_MS);
     }
     return alive;

@@ -47,6 +47,30 @@ describe("process tree", () => {
     expect(pickMainProc(procs.slice(0, 2), hints)).toBeNull();
   });
 
+  // 2026-11-12: Cloudroom's preview LaunchAgent runs the same Contents/MacOS binary with ppid 1, so the
+  // newest match was the windowless agent and the next keys failed "pid is not running" (A9 rep 1).
+  test("pickMainProc never returns a LaunchAgent pid, even when it is the newest match", () => {
+    const runner = fakeRunner("ademark", {
+      run: (argv) =>
+        argv[0] === "launchctl" && argv[1] === "list"
+          ? { code: 0, stdout: "900\t0\tdev.cloudroom.preview.86e6d7d7b43e198e\n", stderr: "" }
+          : { code: 0, stdout: "", stderr: "" },
+    });
+    setMacosRunner(runner);
+    const hints = {
+      bundlePaths: ["/Applications/Cloudroom.app"],
+      launchAgents: ["dev.cloudroom.preview.86e6d7d7b43e198e"],
+    };
+    const procs = [
+      proc(800, 1, "/Applications/Cloudroom.app/Contents/MacOS/Cloudroom"),
+      proc(900, 1, "/Applications/Cloudroom.app/Contents/MacOS/Cloudroom"),
+    ];
+    expect(pickMainProc(procs, hints)?.pid).toBe(800);
+    expect(pickMainProc([procs[1]!], hints)).toBeNull();
+    // Without the label the same list still picks the newest match, so only declared agents are filtered.
+    expect(pickMainProc(procs, { bundlePaths: hints.bundlePaths })?.pid).toBe(900);
+  });
+
   test("runsUnder reads a parent the user cannot list (root /usr/bin/login) with ps", async () => {
     const runner = fakeRunner("ademark", {
       procs: async () => [proc(8401, 1, "/Applications/Ghostty.app/Contents/MacOS/ghostty"), proc(8404, 8403, "/bin/zsh"), proc(9000, 8404, "/opt/homebrew/bin/bun")],

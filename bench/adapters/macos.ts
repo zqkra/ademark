@@ -604,6 +604,9 @@ const WINDOW_WAIT_MS = 15_000;
 export interface PidHints {
   bundlePaths?: readonly string[];
   names?: readonly string[];
+  // LaunchAgent labels whose processes share the app's binary (Cloudroom's preview agent runs
+  // Contents/MacOS/Cloudroom under launchd). pickMainProc never returns one of their pids.
+  launchAgents?: readonly string[];
 }
 
 function isInside(path: string, base: string): boolean {
@@ -670,8 +673,20 @@ export async function runsUnder(ctx: AdapterContext, rootPid: number, pid: numbe
 // the app's executable, Traycer's host LaunchAgent lives inside the bundle, and a quitting instance can outlive the
 // relaunch, so the first match was often a process with no window. The main process runs the bundle's
 // Contents/MacOS executable and was started by launchd (ppid 1); the newest one wins.
+// 2026-11-12: Cloudroom's preview LaunchAgent runs the same Contents/MacOS binary with ppid 1, so the newest match
+// could be the agent: it has no window, dies or respawns under KeepAlive, and the next keys failed with
+// "pid is not running" (control-2026-11-10T08-31-19Z-cloudroom-7, A9 rep 1). The labels a profile declares in
+// calibration.launchAgents name those jobs and `launchctl list` gives their current pids.
+const NO_AGENT_PIDS: ReadonlySet<number> = new Set();
+
+function agentPidSet(labels: readonly string[] | undefined): ReadonlySet<number> {
+  if (labels === undefined || labels.length === 0) return NO_AGENT_PIDS;
+  return new Set(launchAgentPids(run(["launchctl", "list"]).stdout, labels));
+}
+
 export function pickMainProc(procs: readonly NativeProc[], hints: PidHints): NativeProc | null {
-  const matching = procs.filter((proc) => matchesHints(proc, hints));
+  const agents = agentPidSet(hints.launchAgents);
+  const matching = procs.filter((proc) => matchesHints(proc, hints) && !agents.has(proc.pid));
   const macosDirs = (hints.bundlePaths ?? []).map((bundle) => join(bundle, "Contents", "MacOS"));
   const launched = matching.filter((proc) => proc.ppid === 1);
   const main = launched.filter((proc) => macosDirs.includes(dirname(proc.path)));
