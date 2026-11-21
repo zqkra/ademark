@@ -30,6 +30,7 @@ reference machine and audited re-runs only (METHODOLOGY.md §8).
 | Track A, speed and weight | about 25 to 30 minutes per ADE | none: a local replay server answers in place of the model |
 | Track B, tokens | about 6 to 8 minutes per agent | B1 ("hi") and B3 three times each. In v1 one "hi" sent 22.2K to 77.0K tokens. |
 | Track C, test C1 | up to 45 minutes per run, and a second run when a graded build is not 5/5 (§7) | In v1 one C1 run sent 1.7 to 4.2 million tokens. One run can use up a 5-hour window of a Claude plan. |
+| Track C, tests C2 to C6 and A12 | up to 15 minutes a test, about 60 at their caps | Control runs them in its own reliability step after orchestration (§6 of METHODOLOGY.md). |
 | Calibrating a new ADE | about 45 minutes, then about 25 minutes for the gate | none from the Claude plan: the gate runs Track A |
 
 ## 2. Prerequisites
@@ -324,6 +325,7 @@ Run each track on its own, as v1 did:
 bun bench/cli.ts run --ade <id> --tracks A --agent claude                # speed and weight
 bun bench/cli.ts run --ade <id> --tracks B --agent claude                # tokens: spends the Claude plan
 bun bench/cli.ts run --ade <id> --tracks C --tests C1 --agent claude     # orchestration: spends the most
+bun bench/cli.ts run --ade <id> --tracks C --tests C2,C3,C4,C5,C6,A12 --agent claude  # reliability
 bun bench/cli.ts machine off --apply                                     # when you are done
 ```
 
@@ -331,7 +333,7 @@ bun bench/cli.ts machine off --apply                                     # when 
 |---|---|---|
 | A | Resets the app, writes a fresh arena to `~/arena/<id>/`, starts the replay server on `127.0.0.1:8787`, seeds 5 threads, then runs A5, A6, A7, A8, A10, A11, A3, A4, A9, A2 and A1. | Do not touch the Mac. Keys go to the app only while it is in front, and a skipped key makes the row invalid. |
 | B | Resets the app, starts `mitmdump` to capture every model request, runs B1 and B3 three times each per agent, then computes B2 and B4 from the captures. | Needs the plan and network. |
-| C | `--tests C1` runs only the orchestrated build of v1: the trigger line, the prompt, the agents, then the grader. | Read §7 first: a clone cannot grade the build. C2 to C6 were not part of v1. |
+| C | `--tests C1` runs only the orchestrated build of v1: the trigger line, the prompt, the agents, then the grader. `--tests C2,C3,C4,C5,C6,A12` runs the reliability tests: message delivery, chat lock, a killed agent, a cut network and an app restart, plus the leak read of the block's sampler. C2 to C6 were not part of v1; a Control night runs them in its own reliability step (METHODOLOGY.md §6). | Read §7 first: a clone cannot grade the C1 build. |
 
 Each run ends with `wrote <folder>`. What it writes in `results/<run-id>/`:
 

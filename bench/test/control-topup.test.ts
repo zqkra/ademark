@@ -208,10 +208,11 @@ describe("engine", () => {
     screen: async () => "on",
     sleep: () => new Promise((done) => setTimeout(done, 0)),
     finishedAttempt: () => null,
-    // ADEMARK-49: these tests plan no tokens or orchestration step; bench/test/control-late.test.ts does.
+    // ADEMARK-49: these tests plan no late step; bench/test/control-late.test.ts does.
     tokens: async () => ({ ok: true, note: "" }),
     orchestration: async () => ({ ok: true, note: "" }),
-    latePlan: () => ({ tokens: [], orchestration: [] }),
+    reliability: async () => ({ ok: true, note: "" }),
+    latePlan: () => ({ tokens: [], orchestration: [], reliability: [] }),
     modelAnswers: async () => true,
     ...over,
   });
@@ -367,12 +368,12 @@ describe("missing", () => {
     };
     expect(missing(RUN, [limited], minimums, []).topUps.map((entry) => entry.ade)).toEqual(["orca"]);
     const approved = ACCEPTED_LIMITS.map((limit) => ({ ...limit, approved: "2026-11-10" }));
-    expect(missing(RUN, [limited], minimums, approved)).toEqual({ measure: [], topUps: [], tokens: [], orchestration: [] });
+    expect(missing(RUN, [limited], minimums, approved)).toEqual({ measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] });
   });
 
   test("a complete night has nothing missing and an empty line", () => {
     const plan = missing(RUN, night().slice(0, 6), minimums, []);
-    expect(plan).toEqual({ measure: [], topUps: [], tokens: [], orchestration: [] });
+    expect(plan).toEqual({ measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] });
     expect(missingLine(plan)).toBe("");
   });
 });

@@ -81,9 +81,10 @@ button { font: 500 15px "Host Grotesk", system-ui, sans-serif; border: 0; border
   <div class="log" id="log"></div>
 </main>
 <script>
-const NAMES = { prove: "Prove", measure: "Measure", "top-up": "Top-up", tokens: "Tokens", orchestration: "Orchestration", rehearse: "Rehearse" };
+const NAMES = { prove: "Prove", measure: "Measure", "top-up": "Top-up", tokens: "Tokens", orchestration: "Orchestration", reliability: "Reliability", rehearse: "Rehearse" };
 // Tokens: the Track B blocks of 6 Nov took 4 to 5 min. Orchestration: C1 has a cap of 45 min (ADEMARK-49).
-const NORMAL = { prove: "10 to 15 min", measure: "about 30 min", "top-up": "5 to 30 min", tokens: "about 5 min", orchestration: "45 min, 90 if C1 runs twice", rehearse: "about 8 min" };
+// Reliability: C2 to C6 have caps of 15 min each (up to about 2 h for the block).
+const NORMAL = { prove: "10 to 15 min", measure: "about 30 min", "top-up": "5 to 30 min", tokens: "about 5 min", orchestration: "45 min, 90 if C1 runs twice", reliability: "up to about 2 h", rehearse: "about 8 min" };
 const STATES = { permissions: "Asking for permissions", idle: "Ready", starting: "Checking", working: "Working", paused: "Paused", stopping: "Stopping", blocked: "Needs you" };
 const el = (id) => document.getElementById(id);
 const post = (path, body) => fetch(path, { method: "POST", headers: { "x-ademark": "1", "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });

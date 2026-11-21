@@ -35,9 +35,12 @@ export interface EngineDeps {
   tokens(ade: string, runId: string, seed: string, attempt: number): Promise<StepResult>;
   /** ADEMARK-49: C1 alone (`run --tracks C --tests C1`) in `<run>-<ade>-orchestration-<n>`. */
   orchestration(ade: string, runId: string, seed: string, attempt: number): Promise<StepResult>;
+  /** C2 to C6 and A12 together (`run --tracks C --tests C2,C3,C4,C5,C6,A12`) in `<run>-<ade>-reliability-<n>`. */
+  reliability(ade: string, runId: string, seed: string, attempt: number): Promise<StepResult>;
   /**
    * The late steps of a night's own first pass: tokens for every app, orchestration for Bare CLI first and each app whose
-   * adapter has a trigger. Read when the pass gets there, because the triggers are filled while nights run.
+   * adapter has a trigger, reliability for each app whose adapter supports those tests. Read when the pass gets there,
+   * because the triggers are filled while nights run.
    */
   latePlan(ades: readonly string[]): LatePlan;
   /** One call of the real model before the first late step of a pass: false when the plan did not answer. */
@@ -158,7 +161,7 @@ export class Engine {
         const night = runKindOf(runId) === "night";
         if (night && (task === null || isLate(task.step))) {
           // After the first pass of every app: a test under its minimum runs again, once, in the same run, before any
-          // tokens or orchestration step (ADEMARK-49).
+          // late step (ADEMARK-49).
           if (await this.planTopUps(runId, planned)) continue;
           if (!lateAdded) {
             lateAdded = true;
@@ -179,8 +182,8 @@ export class Engine {
           if (!(await this.waitForModel())) {
             if (this.stopRequested) break;
             const count = this.store.skipLate(runId, NO_MODEL_NOTE, this.deps.now());
-            this.lateNote = `Tokens and orchestration skipped in this pass: ${NO_MODEL_NOTE}. The next pass runs them.`;
-            this.deps.log(`${count} tokens and orchestration steps skipped: ${NO_MODEL_NOTE}`);
+            this.lateNote = `Tokens, orchestration and reliability skipped in this pass: ${NO_MODEL_NOTE}. The next pass runs them.`;
+            this.deps.log(`${count} late steps skipped: ${NO_MODEL_NOTE}`);
             this.report(runId, false);
             continue;
           }
@@ -260,9 +263,13 @@ export class Engine {
     // finished orchestration steps again. A step that ran, in any state, is the owner's to run again (Store.fill).
     const has = (ade: string, step: string): boolean => tasks.some((task) => task.ade === ade && task.step === step);
     const plan = this.deps.latePlan(ades);
-    const own = { tokens: plan.tokens.filter((ade) => !has(ade, "tokens")), orchestration: plan.orchestration.filter((ade) => !has(ade, "orchestration")) };
+    const own = {
+      tokens: plan.tokens.filter((ade) => !has(ade, "tokens")),
+      orchestration: plan.orchestration.filter((ade) => !has(ade, "orchestration")),
+      reliability: plan.reliability.filter((ade) => !has(ade, "reliability")),
+    };
     const added = this.store.addLateSteps(runId, own, 0);
-    if (added > 0) this.deps.log(`${added} tokens and orchestration steps queued after the measures`);
+    if (added > 0) this.deps.log(`${added} tokens, orchestration and reliability steps queued after the measures`);
     return added > 0;
   }
 
@@ -396,6 +403,7 @@ export class Engine {
       else if (task.step === "rehearse") result = await this.deps.rehearse(task.ade, runId, seed, task.attempts + 1);
       else if (task.step === "tokens") result = await this.deps.tokens(task.ade, runId, seed, task.attempts + 1);
       else if (task.step === "orchestration") result = await this.deps.orchestration(task.ade, runId, seed, task.attempts + 1);
+      else if (task.step === "reliability") result = await this.deps.reliability(task.ade, runId, seed, task.attempts + 1);
       else {
         const tests = (task.tests ?? "").split(",").filter((test) => test.length > 0);
         result = await this.deps.topUp(task.ade, runId, seed, tests, task.attempts + 1, this.measureAttempt(runId, task.ade));
@@ -438,8 +446,8 @@ export class Engine {
       this.store.defer(runId, task.ade);
       return;
     }
-    // A rehearsal lap, a top-up, a tokens and an orchestration step run once: a failure stays with its reason, and it
-    // changes nothing in the app's other steps (ADEMARK-49). The owner's next pass runs it again.
+    // A rehearsal lap, a top-up, a tokens, an orchestration or a reliability step run once: a failure stays with its
+    // reason, and it changes nothing in the app's other steps (ADEMARK-49). The owner's next pass runs it again.
     if (task.step === "prove") this.store.skip(runId, task.ade, ["measure"], "not proven", this.deps.now());
   }
 }

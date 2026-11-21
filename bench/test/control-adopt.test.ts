@@ -89,10 +89,11 @@ function engineDeps(log: string[], over: Partial<EngineDeps> = {}): EngineDeps {
       return { tests: [], note: "" };
     },
     topUp: async () => ({ ok: true, note: "" }),
-    // ADEMARK-49: no tokens or orchestration step in these tests.
+    // ADEMARK-49: no late step in these tests.
     tokens: async () => ({ ok: true, note: "" }),
     orchestration: async () => ({ ok: true, note: "" }),
-    latePlan: () => ({ tokens: [], orchestration: [] }),
+    reliability: async () => ({ ok: true, note: "" }),
+    latePlan: () => ({ tokens: [], orchestration: [], reliability: [] }),
     modelAnswers: async () => true,
     report: () => {},
     abort: () => {},

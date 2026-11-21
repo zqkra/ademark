@@ -2,24 +2,25 @@
 import { Database } from "bun:sqlite";
 
 // `check` stays a name for queues written before 2026-11-10: QA runs by day now (`ademark qa`, ADEMARK-46).
-export type StepName = "prove" | "measure" | "top-up" | "tokens" | "orchestration" | "rehearse" | "check";
+export type StepName = "prove" | "measure" | "top-up" | "tokens" | "orchestration" | "reliability" | "rehearse" | "check";
 export type TaskStatus = "pending" | "running" | "done" | "failed" | "skipped";
 /** The steps of a night. QA left the night on 2026-11-10: it only reads files, and it took up to 2.5 h. */
 export const NIGHT_STEPS: readonly StepName[] = ["prove", "measure"];
 /** The steps the panel shows for each app, in order. A top-up exists only for an app that needs one. */
-export const STEPS: readonly StepName[] = ["prove", "measure", "top-up", "tokens", "orchestration", "rehearse"];
+export const STEPS: readonly StepName[] = ["prove", "measure", "top-up", "tokens", "orchestration", "reliability", "rehearse"];
 /**
  * ADEMARK-49: the steps that run after every measure and top-up of a pass, in this order. A failed one changes nothing
- * in the Track A result of its app. The riskiest goes last, so it can never cost an earlier result. A `reliability`
- * step (C2 to C6) would go after `orchestration` here, with its own folder and limit; it is not built.
+ * in the Track A result of its app. The riskiest goes last, so it can never cost an earlier result. `reliability`
+ * (C2 to C6 and A12) runs after `orchestration`, with its own folder and limit.
  */
-export const LATE_STEPS = ["tokens", "orchestration"] as const;
+export const LATE_STEPS = ["tokens", "orchestration", "reliability"] as const;
 export type LateStep = (typeof LATE_STEPS)[number];
 export const isLate = (step: StepName): step is LateStep => (LATE_STEPS as readonly StepName[]).includes(step);
 /** What `fill` and the engine's own first pass add: the apps of each late step, in queue order. */
 export interface LatePlan {
   tokens: readonly string[];
   orchestration: readonly string[];
+  reliability: readonly string[];
 }
 export type RunKind = "night" | "rehearsal";
 export const runKindOf = (id: string): RunKind => (id.startsWith("rehearsal-") ? "rehearsal" : "night");
@@ -150,7 +151,7 @@ export class Store {
    * proof of it comes back too), or for the first time when the run has no step of it, and each app of `topUps` gets a top-up of the next pass. An app whose top-up still waits
    * in the queue gets no second one. Returns the pass number.
    */
-  fill(runId: string, measure: readonly string[], topUps: readonly { ade: string; tests: readonly string[] }[], late: LatePlan = { tokens: [], orchestration: [] }): number {
+  fill(runId: string, measure: readonly string[], topUps: readonly { ade: string; tests: readonly string[] }[], late: LatePlan = { tokens: [], orchestration: [], reliability: [] }): number {
     let pass = 0;
     this.db.transaction(() => {
       pass = (this.db.query<{ top: number | null }, [string]>("SELECT MAX(pass) AS top FROM tasks WHERE run_id = ?").get(runId)?.top ?? 0) + 1;
@@ -177,10 +178,11 @@ export class Store {
   }
 
   /**
-   * ADEMARK-49: one tokens or orchestration step per app and pass, as a new row; the UNIQUE key makes a second one in the
-   * same pass impossible, so the engine's own first pass may call this again after a restart. An app whose step still
-   * waits gets no second one. The attempt count starts where the app's last step of that kind stopped, so its folder takes
-   * the next number (`tokens-<n>`, `orchestration-<n>`). Returns how many steps it added.
+   * ADEMARK-49: one tokens, orchestration or reliability step per app and pass, as a new row; the UNIQUE key makes a
+   * second one in the same pass impossible, so the engine's own first pass may call this again after a restart. An app
+   * whose step still waits gets no second one. The attempt count starts where the app's last step of that kind stopped,
+   * so its folder takes the next number (`tokens-<n>`, `orchestration-<n>`, `reliability-<n>`). Returns how many steps
+   * it added.
    */
   addLateSteps(runId: string, late: LatePlan, pass: number): number {
     let added = 0;
@@ -199,7 +201,7 @@ export class Store {
 
   /** The late steps that wait, skipped with the reason. They never ran: no attempt is counted. */
   skipLate(runId: string, note: string, now: string): number {
-    return this.db.run(`UPDATE tasks SET status = 'skipped', note = ?, ended_at = ? WHERE run_id = ? AND status = 'pending' AND step IN ('tokens', 'orchestration')`,
+    return this.db.run(`UPDATE tasks SET status = 'skipped', note = ?, ended_at = ? WHERE run_id = ? AND status = 'pending' AND step IN ('tokens', 'orchestration', 'reliability')`,
       [note, now, runId]).changes;
   }
 
@@ -208,13 +210,13 @@ export class Store {
   }
 
   /**
-   * Proofs, measures and top-ups first, by position; then every tokens step, then every orchestration step (ADEMARK-49).
-   * A measure deferred to the end of the queue still runs before any late step. Checks of an old queue come last; the
-   * engine skips them, because QA runs by day.
+   * Proofs, measures and top-ups first, by position; then every tokens step, then every orchestration step, then every
+   * reliability step (ADEMARK-49). A measure deferred to the end of the queue still runs before any late step. Checks of
+   * an old queue come last; the engine skips them, because QA runs by day.
    */
   next(runId: string): Task | null {
     return this.db.query<Task, [string]>(`SELECT * FROM tasks WHERE run_id = ? AND status = 'pending'
-      ORDER BY CASE step WHEN 'tokens' THEN 1 WHEN 'orchestration' THEN 2 WHEN 'check' THEN 3 ELSE 0 END, position LIMIT 1`).get(runId);
+      ORDER BY CASE step WHEN 'tokens' THEN 1 WHEN 'orchestration' THEN 2 WHEN 'reliability' THEN 3 WHEN 'check' THEN 4 ELSE 0 END, position LIMIT 1`).get(runId);
   }
 
   /** A task that was running when the process died starts again: its half-done work is never counted. */
@@ -254,7 +256,7 @@ export class Store {
   /** Healthy apps get measured first: this one comes back at the end, when Claude may repair it. */
   defer(runId: string, ade: string): void {
     const last = this.db.query<{ top: number }, [string]>("SELECT MAX(position) AS top FROM tasks WHERE run_id = ?").get(runId)?.top ?? 0;
-    // A tokens or orchestration step keeps its place and status: a failed measure must not send a done one back (ADEMARK-49).
+    // A late step keeps its place and status: a failed measure must not send a done one back (ADEMARK-49).
     const mine = this.tasks(runId).filter((task) => task.ade === ade && !isLate(task.step));
     mine.forEach((task, index) => {
       this.db.run("UPDATE tasks SET position = ?, status = 'pending', started_at = NULL, ended_at = NULL WHERE id = ?", [last + 1 + index, task.id]);
@@ -263,12 +265,12 @@ export class Store {
 
   /**
    * A retry sends this ADE's failed and skipped steps back. A QA verdict never starts a measurement (ADEMARK-46), and a
-   * top-up, a tokens or an orchestration step never comes back: a later one exists only through the owner's pass
-   * (ADEMARK-47, ADEMARK-51, ADEMARK-49).
+   * top-up, a tokens, an orchestration or a reliability step never comes back: a later one exists only through the
+   * owner's pass (ADEMARK-47, ADEMARK-51, ADEMARK-49).
    */
   retry(runId: string, ade: string): void {
     this.db.run(`UPDATE tasks SET status = 'pending', note = '', started_at = NULL, ended_at = NULL
-      WHERE run_id = ? AND ade = ? AND status IN ('failed', 'skipped') AND step NOT IN ('check', 'top-up', 'tokens', 'orchestration')`, [runId, ade]);
+      WHERE run_id = ? AND ade = ? AND status IN ('failed', 'skipped') AND step NOT IN ('check', 'top-up', 'tokens', 'orchestration', 'reliability')`, [runId, ade]);
   }
 
   endRun(id: string, now: string): void {

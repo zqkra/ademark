@@ -68,6 +68,14 @@ export const TOKENS_TIMEOUT_MS = 70 * 60_000;
 // agent was quiet for 5 minutes (QUIET_MS in bench/tracks/c/shared.ts), and that wait may end after the cap: up to 131.
 // 140 gives the block a few minutes more. A cut at this limit loses the whole attempt, so it must not be tight.
 export const ORCHESTRATION_TIMEOUT_MS = 140 * 60_000;
+// The reliability step runs C2 to C6 and A12 in one Track C block. C2, C4, C5 and C6 have a cap of 900 s each
+// (their task.toml), so the tests take up to 60 minutes at their caps a try; C3 reads the block's probes and A12 its
+// sampler, so neither has a cap of its own. Each test adds its grade and arena copy, the block its reset, launch and
+// settle, and the run tries a stopped block once more: two tries fit in 154 minutes, and 170 leaves room. A cut at
+// this limit loses the whole attempt, so it must not be tight.
+export const RELIABILITY_TIMEOUT_MS = 170 * 60_000;
+/** The tests of the reliability step, in TRACK_ORDER C order without C1. A12 needs the block's sampler, so it rides along. */
+export const RELIABILITY_TESTS = ["C2", "C3", "C4", "C5", "C6", "A12"] as const;
 export const SETTLE_MINUTES = 10;
 const DOCTOR_TIMEOUT_MS = 120_000;
 /**
@@ -78,6 +86,7 @@ export function stepLimitMs(step: StepName): number | null {
   if (step === "measure" || step === "top-up") return (SETTLE_MINUTES + 1) * 60_000 + MEASURE_TIMEOUT_MS;
   if (step === "tokens") return (SETTLE_MINUTES + 1) * 60_000 + TOKENS_TIMEOUT_MS;
   if (step === "orchestration") return (SETTLE_MINUTES + 1) * 60_000 + ORCHESTRATION_TIMEOUT_MS;
+  if (step === "reliability") return (SETTLE_MINUTES + 1) * 60_000 + RELIABILITY_TIMEOUT_MS;
   if (step === "rehearse") return (SETTLE_MINUTES + 1) * 60_000 + REHEARSE_TIMEOUT_MS;
   if (step === "check") return QA_TIMEOUT_MS;
   return null;
@@ -176,9 +185,30 @@ export function orchestrationApps(ades: readonly string[], triggerOf: (ade: stri
   return [...ades.filter((ade) => ade === "bare-cli"), ...ades.filter((ade) => ade !== "bare-cli" && typeof triggerOf(ade) === "string")];
 }
 
-/** Every app gets a tokens step; the orchestration apps come from their adapters. */
-export function latePlanOf(ades: readonly string[], triggerOf: (ade: string) => string | null | undefined = adapterTrigger): LatePlan {
-  return { tokens: [...ades], orchestration: orchestrationApps(ades, triggerOf) };
+/** The tests an adapter sets aside, by id. An adapter that cannot be read excludes nothing: the queue lists measured apps only. */
+export function adapterExcludedTests(ade: string): Readonly<Record<string, string>> {
+  try {
+    return getAdapter(ade).excludedTests ?? {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * The apps that get a reliability step: every app whose adapter does not set aside all of C2 to C6 and A12. An app with
+ * every reliability test excluded has nothing the step could measure, so it gets no step and no folder.
+ */
+export function reliabilityApps(ades: readonly string[], excludedOf: (ade: string) => Readonly<Record<string, string>> = adapterExcludedTests): string[] {
+  return ades.filter((ade) => RELIABILITY_TESTS.some((test) => excludedOf(ade)[test] === undefined));
+}
+
+/** Every app gets a tokens step; the orchestration and reliability apps come from their adapters. */
+export function latePlanOf(
+  ades: readonly string[],
+  triggerOf: (ade: string) => string | null | undefined = adapterTrigger,
+  excludedOf: (ade: string) => Readonly<Record<string, string>> = adapterExcludedTests,
+): LatePlan {
+  return { tokens: [...ades], orchestration: orchestrationApps(ades, triggerOf), reliability: reliabilityApps(ades, excludedOf) };
 }
 
 /**
@@ -287,7 +317,11 @@ export function missingNow(root: string, runId: string, tasks: readonly Task[], 
     return folder !== null && (dry || rowsOf(folder.dir).some((entry) => entry.valid));
   };
   const lateOf = (ade: string): MissingApp["late"] => plan === undefined ? undefined
-    : { tokens: !plan.tokens.includes(ade) || finished(ade, "tokens"), orchestration: plan.orchestration.includes(ade) ? finished(ade, "orchestration") : null };
+    : {
+      tokens: !plan.tokens.includes(ade) || finished(ade, "tokens"),
+      orchestration: plan.orchestration.includes(ade) ? finished(ade, "orchestration") : null,
+      reliability: plan.reliability.includes(ade) ? finished(ade, "reliability") : null,
+    };
   for (const ade of ades) {
     const measure = tasks.find((task) => task.ade === ade && task.step === "measure");
     const folders = runFolders(root, runId, tasks, ade, dry);
@@ -419,6 +453,11 @@ export function realEngineDeps(log: (line: string) => void, dry: boolean): Engin
       const orchestration: LatePart = orchestrationFolder !== null ? { folder: orchestrationFolder, note: "" }
         : queued || orchestrationApps([ade]).length > 0 ? { folder: null, note: `no finished orchestration attempt. ${lateNote("orchestration")}`.trim() }
         : { folder: null, note: noOrchestrationReason(adapterTrigger(ade), profileNotCalibrated(ade)) };
+      const reliabilityFolder = lateFolder(root, runId, tasks, ade, "reliability", dry);
+      const reliabilityQueued = tasks.some((task) => task.ade === ade && task.step === "reliability");
+      const reliability: LatePart = reliabilityFolder !== null ? { folder: reliabilityFolder, note: "" }
+        : reliabilityQueued || reliabilityApps([ade]).length > 0 ? { folder: null, note: `no finished reliability attempt. ${lateNote("reliability")}`.trim() }
+        : { folder: null, note: "no reliability step: the adapter sets aside every reliability test" };
       return {
         ade,
         label: adeLabel(ade),
@@ -429,6 +468,8 @@ export function realEngineDeps(log: (line: string) => void, dry: boolean): Engin
         tokens,
         tokensExpected: expectedTests(ade, ["B"], loadedRunners),
         orchestration,
+        reliability,
+        reliabilityExpected: expectedTests(ade, ["C"], loadedRunners).filter((test) => (RELIABILITY_TESTS as readonly string[]).includes(test)),
       };
     });
     const text = buildRunReport({ runId, ended, apps, minimums: minimumsOf(loadedRunners), root });
@@ -443,9 +484,12 @@ export function realEngineDeps(log: (line: string) => void, dry: boolean): Engin
     if (cancelled) return { ok: false, note: "stopped" };
     const dir = lateDir(resultsRoot(), runId, ade, step, attempt, dry);
     moveAside(dir, ade);
-    const what = step === "tokens" ? ["--tracks", "B"] : ["--tracks", "C", "--tests", "C1"];
+    const what = step === "tokens" ? ["--tracks", "B"]
+      : step === "orchestration" ? ["--tracks", "C", "--tests", "C1"]
+      : ["--tracks", "C", "--tests", RELIABILITY_TESTS.join(",")];
     const args = ["bun", "bench/cli.ts", "run", "--ade", ade, ...what, "--agent", AGENTS.join(","), "--run-id", lateRunId(runId, ade, step, attempt), "--seed", seed];
-    const code = await supervised(dry ? [...args, "--dry-run"] : args, step === "tokens" ? TOKENS_TIMEOUT_MS : ORCHESTRATION_TIMEOUT_MS, repoRoot);
+    const limit = step === "tokens" ? TOKENS_TIMEOUT_MS : step === "orchestration" ? ORCHESTRATION_TIMEOUT_MS : RELIABILITY_TIMEOUT_MS;
+    const code = await supervised(dry ? [...args, "--dry-run"] : args, limit, repoRoot);
     if (cancelled) return { ok: false, note: "stopped" };
     if (!dry) await pruneAsideInChild(log);
     const rows = rowsOf(dir);
@@ -615,6 +659,7 @@ export function realEngineDeps(log: (line: string) => void, dry: boolean): Engin
     },
     tokens: (ade, runId, seed, attempt) => lateRun(ade, runId, seed, "tokens", attempt),
     orchestration: (ade, runId, seed, attempt) => lateRun(ade, runId, seed, "orchestration", attempt),
+    reliability: (ade, runId, seed, attempt) => lateRun(ade, runId, seed, "reliability", attempt),
     latePlan: (ades) => latePlanOf(ades),
     // A dry run calls no model.
     modelAnswers: async () => (dry ? true : await claudeAnswers()),

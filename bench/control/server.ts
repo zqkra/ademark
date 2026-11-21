@@ -226,7 +226,7 @@ export function startControl(options: ControlOptions = {}): { url: string; stop(
       steps: shownSteps.map((step) => {
         // The newest top-up of an app stands for its step: a later pass adds a new one (ADEMARK-51).
         const task = tasks.filter((entry) => entry.ade === id && entry.step === step).at(-1);
-        return { step, status: task?.status ?? (step === "top-up" || step === "tokens" || step === "orchestration" ? "none" : "pending"), note: task?.note ?? "" };
+        return { step, status: task?.status ?? (step === "top-up" || step === "tokens" || step === "orchestration" || step === "reliability" ? "none" : "pending"), note: task?.note ?? "" };
       }),
       marks: run === null ? { fresh: 0, accepted: 0, setAside: [] } : marksOf(id, run.id, foldersFor(run.id, tasks, id), minimums),
     }));
@@ -237,9 +237,9 @@ export function startControl(options: ControlOptions = {}): { url: string; stop(
     const passOver = night && firstPassOver(run!, tasks);
     const stale = kind === "night" && run !== null && run.ended_at === null && engine.state === "idle" && cannotGoOn(run.id);
     const read = passOver && !stale && free() ? missingOf(run!, tasks) : null;
-    const missing = read === null ? null : "error" in read ? { line: "", error: read.error, measure: [], topUps: [], tokens: [], orchestration: [] }
+    const missing = read === null ? null : "error" in read ? { line: "", error: read.error, measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] }
       : { line: read.line, error: null, measure: read.plan.measure, topUps: read.plan.topUps.map((entry) => ({ ade: entry.ade, tests: entry.short })),
-        tokens: read.plan.tokens, orchestration: read.plan.orchestration };
+        tokens: read.plan.tokens, orchestration: read.plan.orchestration, reliability: read.plan.reliability };
     const currentSteps = engine.current === null ? [] : STEPS.filter((step) => tasks.some((task) => task.ade === engine.current!.ade && task.step === step));
     return {
       kind,
@@ -405,7 +405,7 @@ export function startControl(options: ControlOptions = {}): { url: string; stop(
       log(`Measure what is missing: nothing is missing in ${latest.id}; the night is complete`);
       return;
     }
-    const pass = store.fill(latest.id, read.plan.measure, read.plan.topUps, { tokens: read.plan.tokens, orchestration: read.plan.orchestration });
+    const pass = store.fill(latest.id, read.plan.measure, read.plan.topUps, { tokens: read.plan.tokens, orchestration: read.plan.orchestration, reliability: read.plan.reliability });
     log(`Measure what is missing, pass ${pass} of ${latest.id}: ${read.line}`);
     work(latest.id, latest.seed);
   };

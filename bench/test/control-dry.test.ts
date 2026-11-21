@@ -140,15 +140,16 @@ describe("night, dry", () => {
     await c.post("/api/start");
     const night = await c.finished();
     expect(night.qa).toBe("QA: run by day");
-    expect(night.ades[0]!.steps.map((step) => `${step.step} ${step.status}`)).toEqual(["prove done", "measure done", "top-up done", "tokens done", "orchestration done"]);
+    expect(night.ades[0]!.steps.map((step) => `${step.step} ${step.status}`)).toEqual(["prove done", "measure done", "top-up done", "tokens done", "orchestration done", "reliability done"]);
     const { Store } = await import("../control/store.ts");
     const { controlFiles } = await import("../control/files.ts");
     await c.handle.stop();
     const store = new Store(controlFiles(true, dir).database);
     const tasks = store.tasks(night.run_id!);
     store.close();
-    // ADEMARK-49: Orca has an orchestration trigger, so it gets both late steps, after its top-up.
-    expect(tasks.map((task) => task.step)).toEqual(["prove", "measure", "top-up", "tokens", "orchestration"]);
+    // ADEMARK-49: Orca has an orchestration trigger and no reliability exclusion, so it gets all three late steps,
+    // after its top-up.
+    expect(tasks.map((task) => task.step)).toEqual(["prove", "measure", "top-up", "tokens", "orchestration", "reliability"]);
     // Dry A4 has no replay request; every other test is valid in a dry run.
     expect(tasks.find((task) => task.step === "top-up")?.tests).toBe("A4");
     const topUp = rowsOf(join(dir, `${night.run_id}-orca-topup-1-dry`));
@@ -157,13 +158,15 @@ describe("night, dry", () => {
     // Dry instruments capture no model request, so the dry B rows are invalid with that reason (ADEMARK-49): 9 rows of
     // Track A and 49 of Track B (B3 runs three times since 2026-11-21). One of the 49 is B4 `obeyed`, invalid
     // with `no session log` since b0fae10 (a dry run writes no session log; before that fix the row was valid with no
-    // value). The dry C1 rows of Orca are valid.
-    expect(report.split("\n")[0]).toBe("58 invalid rows that are not accepted limits (NEW)");
+    // value). The dry C1 rows of Orca are valid. The reliability block writes 14 rows: 11 valid, and C6's 3 invalid
+    // with `not calibrated: returnToThread` (Orca's profile has no returnToThread steps yet).
+    expect(report.split("\n")[0]).toBe("61 invalid rows that are not accepted limits (NEW)");
     expect(report).toContain("| B4 | tokens 1 | invalid (NEW): no session log |");
     expect(report).toContain("| A4 | top-up 1 | invalid (NEW): no replay request |");
     expect(report).toContain(`### Track B (tokens)\n\n- tokens 1: ${night.run_id}-orca-tokens-1-dry`);
     expect(report).toContain("| B1 | tokens 1 | invalid (NEW): no main-thread request captured |");
     expect(report).toContain(`### Track C (orchestration, C1)\n\n- orchestration 1: ${night.run_id}-orca-orchestration-1-dry`);
+    expect(report).toContain(`### Track C (reliability, C2 to C6, A12)\n\n- reliability 1: ${night.run_id}-orca-reliability-1-dry`);
     expect(report).toContain("| A5 | attempt 1 | valid |");
     expect(night.ades[0]!.marks).toEqual({ fresh: 9, accepted: 0, setAside: [] });
   }, 60_000);
@@ -210,7 +213,7 @@ describe("measure what is missing, dry", () => {
       await Bun.sleep(50);
       now = await c.state();
     }
-    expect(now.missing).toEqual({ line: "", error: null, measure: [], topUps: [], tokens: [], orchestration: [] } as never);
+    expect(now.missing).toEqual({ line: "", error: null, measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] } as never);
     expect(now.complete).toBe(true);
     const { Store } = await import("../control/store.ts");
     const { controlFiles } = await import("../control/files.ts");
@@ -225,20 +228,21 @@ describe("measure what is missing, dry", () => {
     store.close();
     expect(run?.ended_at).not.toBeNull();
     // ADEMARK-49: Paseo's tokens ran in the night's own first pass although its measure failed: Track B is apart from A.
-    // Paseo has no orchestration (a null trigger), so it gets no orchestration step.
-    expect(tasks.filter((task) => task.ade === "paseo").map((task) => `${task.step} ${task.status} ${task.attempts}`)).toEqual(["prove done 2", "measure done 3", "tokens done 1"]);
+    // Paseo has no orchestration (a null trigger), so it gets no orchestration step, but its adapter excludes no
+    // reliability test, so it gets the reliability step.
+    expect(tasks.filter((task) => task.ade === "paseo").map((task) => `${task.step} ${task.status} ${task.attempts}`)).toEqual(["prove done 2", "measure done 3", "tokens done 1", "reliability done 1"]);
     expect(tasks.filter((task) => task.ade === "bare-cli").map((task) => `${task.step} ${task.pass} ${task.status}`))
-      .toEqual(["prove 0 done", "measure 0 done", "top-up 0 failed", "tokens 0 done", "orchestration 0 done", "top-up 1 done"]);
+      .toEqual(["prove 0 done", "measure 0 done", "top-up 0 failed", "tokens 0 done", "orchestration 0 done", "reliability 0 done", "top-up 1 done"]);
     // In the first pass every late step started after its top-up, which ran after every measure of that pass. (Paseo's
     // measure row ran again in pass 1, in place, so its times are of pass 1.)
     const firstPass = tasks.filter((task) => task.pass === 0);
     const lastEarly = Date.parse(firstPass.find((task) => task.step === "top-up")!.ended_at!);
-    const firstLate = Math.min(...firstPass.filter((task) => task.step === "tokens" || task.step === "orchestration").map((task) => Date.parse(task.started_at!)));
+    const firstLate = Math.min(...firstPass.filter((task) => task.step === "tokens" || task.step === "orchestration" || task.step === "reliability").map((task) => Date.parse(task.started_at!)));
     expect(firstLate).toBeGreaterThanOrEqual(lastEarly);
-    const order = firstPass.filter((task) => task.step === "tokens" || task.step === "orchestration").sort((a, b) => Date.parse(a.started_at!) - Date.parse(b.started_at!))
+    const order = firstPass.filter((task) => task.step === "tokens" || task.step === "orchestration" || task.step === "reliability").sort((a, b) => Date.parse(a.started_at!) - Date.parse(b.started_at!))
       .map((task) => `${task.step} ${task.ade}`);
     expect(order.slice(0, 2).every((entry) => entry.startsWith("tokens"))).toBe(true);
-    expect(order.at(-1)).toBe("orchestration bare-cli");
+    expect(order.slice(-2)).toEqual(["reliability bare-cli", "reliability paseo"]);
     expect(tasks.filter((task) => task.ade === "bare-cli" && task.step === "top-up").map((task) => `${task.pass} ${task.status} ${task.attempts} ${task.tests}`))
       .toEqual(["0 failed 1 A5", "1 done 2 A5"]);
     const report = readFileSync(join(dir, `${now.run_id}-dry`, "report.md"), "utf8");

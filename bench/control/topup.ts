@@ -224,9 +224,10 @@ export interface MissingApp {
   expected: readonly string[];
   /**
    * ADEMARK-49: whether each late step has a finished (done) attempt. `orchestration` is null for an app that gets no
-   * such step (no trigger: its C1 is not supported). Absent for an app the caller does not plan late steps for.
+   * such step (no trigger: its C1 is not supported). `reliability` is null for an app whose adapter excludes every
+   * reliability test. Absent for an app the caller does not plan late steps for.
    */
-  late?: { tokens: boolean; orchestration: boolean | null };
+  late?: { tokens: boolean; orchestration: boolean | null; reliability?: boolean | null };
 }
 
 export interface Missing {
@@ -238,6 +239,8 @@ export interface Missing {
   tokens: string[];
   /** Apps that need an orchestration step and have no finished attempt: one each, after every tokens step. */
   orchestration: string[];
+  /** Apps that need a reliability step and have no finished attempt: one each, after every orchestration step. */
+  reliability: string[];
 }
 
 /**
@@ -246,11 +249,12 @@ export interface Missing {
  * and companions through RUNS_WITH. Throws when rows of another run are in a folder (as the merge does).
  */
 export function missing(runId: string, apps: readonly MissingApp[], minimums: ReadonlyMap<string, Minimum>, limits: readonly AcceptedLimit[] = ACCEPTED_LIMITS): Missing {
-  const out: Missing = { measure: [], topUps: [], tokens: [], orchestration: [] };
+  const out: Missing = { measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] };
   for (const app of apps) {
     // A late step is independent of Track A: an app measured again in full still needs its tokens.
     if (app.late !== undefined && !app.late.tokens) out.tokens.push(app.ade);
     if (app.late !== undefined && app.late.orchestration === false) out.orchestration.push(app.ade);
+    if (app.late !== undefined && app.late.reliability === false) out.reliability.push(app.ade);
     const [first, ...topUps] = app.attempts;
     if (!app.measured || first === undefined) {
       out.measure.push(app.ade);
@@ -273,5 +277,6 @@ export function missingLine(plan: Missing, label: (ade: string) => string = (ade
   for (const entry of plan.topUps) parts.push(`${label(entry.ade)}: ${entry.short.join(", ")}.`);
   if ((plan.tokens ?? []).length > 0) parts.push(`Tokens: ${plan.tokens.map(label).join(", ")}.`);
   if ((plan.orchestration ?? []).length > 0) parts.push(`Orchestration: ${plan.orchestration.map(label).join(", ")}.`);
+  if ((plan.reliability ?? []).length > 0) parts.push(`Reliability: ${plan.reliability.map(label).join(", ")}.`);
   return parts.join(" ");
 }

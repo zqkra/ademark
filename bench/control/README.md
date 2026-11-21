@@ -26,16 +26,19 @@ Each step of each ADE is one row in `results/control.sqlite`. Two buttons run th
      missing the panel says the night is complete and shows no button. **Close this night** (`POST /api/close`, under
      More) ends the night and starts nothing. A test takes the rows of a later attempt only if it was under its
      minimum before that attempt ran; a complete test keeps its attempt.
-  5. **Tokens** and **Orchestration** (ADEMARK-49). After every measure and top-up of a pass, each app gets a tokens
-     step (`run --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 70 minutes, `TOKENS_TIMEOUT_MS`), then Bare CLI and
-     each app whose adapter has an orchestration trigger get an orchestration step (`run --tracks C --tests C1` in
-     `<run>-<ade>-orchestration-<n>`, cut at 140 minutes, `ORCHESTRATION_TIMEOUT_MS`). The first pass adds them by itself, after its top-ups; a
+  5. **Tokens**, **Orchestration** and **Reliability** (ADEMARK-49). After every measure and top-up of a pass, each app
+     gets a tokens step (`run --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 70 minutes, `TOKENS_TIMEOUT_MS`), then Bare
+     CLI and each app whose adapter has an orchestration trigger get an orchestration step (`run --tracks C --tests C1`
+     in `<run>-<ade>-orchestration-<n>`, cut at 140 minutes, `ORCHESTRATION_TIMEOUT_MS`), then each app whose adapter does
+     not set aside every reliability test gets a reliability step (`run --tracks C --tests C2,C3,C4,C5,C6,A12` in
+     `<run>-<ade>-reliability-<n>`, cut at 170 minutes, `RELIABILITY_TIMEOUT_MS`; C3 reads the block's chat-lock probes
+     and A12 its sampler, so both ride in the same block). The first pass adds them by itself, after its top-ups; a
      later pass adds them for each app with no done attempt, or whose done attempt has no valid row, and the line under
-     the button ends with `Tokens: <apps>. Orchestration: <apps>.` A failed late step changes no other step of its app
-     and is not tried again in that pass. Before each one, Control calls the model once: with no answer it waits and asks
-     again every 10 minutes for up to 6 hours (`PLAN_POLL_MS`, `PLAN_WAIT_MS`), and the panel says so; after that, every
-     late step left in the pass is skipped with `the Claude plan did not answer`. `report.md` has a Track B and a Track C part for each app,
-     with their attempt. A `reliability` step (C2 to C6) would go after orchestration (`LATE_STEPS` in `store.ts`).
+     the button ends with `Tokens: <apps>. Orchestration: <apps>. Reliability: <apps>.` A failed late step changes no
+     other step of its app and is not tried again in that pass. Before each one, Control calls the model once: with no
+     answer it waits and asks again every 10 minutes for up to 6 hours (`PLAN_POLL_MS`, `PLAN_WAIT_MS`), and the panel
+     says so; after that, every late step left in the pass is skipped with `the Claude plan did not answer`. `report.md`
+     has a Track B part and two Track C parts for each app, with their attempts.
 
 QA left the night on 2026-11-10 (ADEMARK-46): it only reads files, and 15 checks took up to 2.5 h. Run it by day, from
 any account: `bun bench/cli.ts qa --run <run id> [--ade a,b] [--out <dir>]`. It reads the adopted attempt of each app and its

@@ -223,10 +223,10 @@ After the first pass of every app, Control runs a test again when it has fewer v
 
 Smoke rows (the rehearsal, `rehearsal-<time>`) never count as a measurement: the report refuses a rehearsal folder.
 
-### Tokens and orchestration apart from the measure (since 2026-11-12)
+### Tokens, orchestration and reliability apart from the measure (since 2026-11-12)
 
-A Control night measures Track A in its measure and top-up steps, whatever `~/.config/ademark/tracks` says. Track B and
-C1 run in steps of their own, after every measure and top-up of a pass:
+A Control night measures Track A in its measure and top-up steps, whatever `~/.config/ademark/tracks` says. Track B, C1
+and the reliability tests run in steps of their own, after every measure and top-up of a pass:
 
 1. **Tokens.** `run --ade <id> --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 70 minutes. A healthy block takes about
    7 minutes since B3 runs three times; the limit holds a block where every turn runs to its cap, tried twice. Every
@@ -236,22 +236,25 @@ C1 run in steps of their own, after every measure and top-up of a pass:
    baseline of `orchestration-tax`. Then each app whose adapter has a trigger line, read when the step is planned. An
    app with a null trigger has no orchestration (C1 not supported) and an app with no trigger yet is not calibrated:
    neither gets a step, and the report says which from the adapter.
-3. Why apart: on 6 Nov a stopped Track B block made Control measure the whole app again. Track B and C spend the
+3. **Reliability.** `run --ade <id> --tracks C --tests C2,C3,C4,C5,C6,A12` in `<run>-<ade>-reliability-<n>`, cut at 170
+   minutes (two tries of a block whose four capped tests take up to 60 minutes at their caps, with the grade, the arena
+   copies and the block's own reset and launch). C3 reads the block's chat-lock probes and A12 its memory sampler, so
+   both ride in the same block; A12 is a Track C test that needs that sampler. Every app whose adapter does not set
+   aside all six tests gets one, read when the step is planned; an app that sets aside every one of them gets no step.
+4. Why apart: on 6 Nov a stopped Track B block made Control measure the whole app again. Track B and C spend the
    Claude plan, and C1 is the longest and riskiest test. Run last and alone, neither can cost a Track A result.
-4. A failed or stopped late step changes nothing in the app's other steps: no retry of the measure, no defer, no
+5. A failed or stopped late step changes nothing in the app's other steps: no retry of the measure, no defer, no
    top-up. It shows as failed with its note, and the owner's next pass (**Measure what is missing**) runs it again in
    the next folder number. The report reads only the newest attempt of each kind that ran to its end, whole: a late
    step has no top-up and no merge.
-5. Before every late step, Control calls the real model once. If it does not answer (a plan at its limit), Control
+6. Before every late step, Control calls the real model once. If it does not answer (a plan at its limit), Control
    waits and asks again every 10 minutes, for up to 6 hours: a 5-hour window of the plan opens again within that time,
    and one C1 can use up a window. If it still does not answer, every late step left in the pass is skipped with the
    reason `the Claude plan did not answer`. They are not failed attempts, and the next pass runs them.
    A late step that ran to its end with no valid row measured nothing: the next pass runs it again too.
-6. A set-aside entry (`attempt: "tokens-1"`) and an approved accepted limit work for B and C1 rows as for A rows.
-   `orchestration-tax` is the app's C1 tokens and $ over those of Bare CLI's solo run (its lowest repetition with a
-   valid value); without valid rows on both sides the report gives no number, with the reason.
-
-The other Track C tests (C2 to C6, reliability) are not part of a night yet.
+7. A set-aside entry (`attempt: "tokens-1"`) and an approved accepted limit work for B, C1 and the reliability rows as
+   for A rows. `orchestration-tax` is the app's C1 tokens and $ over those of Bare CLI's solo run (its lowest
+   repetition with a valid value); without valid rows on both sides the report gives no number, with the reason.
 
 ## 7. Transparency
 
@@ -291,6 +294,8 @@ ADEMark is built like Terminal-Bench: an open harness that anyone can run, with 
 
 ## Changelog
 
+- 2026-11-20: a night measures the reliability tests too: C2 to C6 and A12 run in their own reliability step after
+  orchestration, in `<run>-<ade>-reliability-<n>`, cut at 170 minutes (§6).
 - 2026-11-21: B3 runs three times per model, like B1, so the real-prompt tax has a median that covers rerun
   variance (Refs #43). The tokens step limit grows to 70 minutes to hold the worst case of the six prompt turns,
   tried twice.

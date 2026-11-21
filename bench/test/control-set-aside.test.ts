@@ -41,7 +41,7 @@ describe("the reviewed list", () => {
     const named = SET_ASIDE.map((entry) => `${entry.run} ${entry.ade} ${entry.test} ${entry.attempt}`);
     for (const key of ["t3code A1", "t3code A2", "t3code A3", "emdash A3", "synara A9"]) expect(named).toContain(`${RUN} ${key.split(" ")[0]} ${key.split(" ")[1]} 1`);
     for (const entry of SET_ASIDE) {
-      expect(entry.attempt).toMatch(/^(\d+|topup-\d+|tokens-\d+|orchestration-\d+)$/);
+      expect(entry.attempt).toMatch(/^(\d+|topup-\d+|tokens-\d+|orchestration-\d+|reliability-\d+)$/);
       expect(entry.date).toMatch(/^\d{4}-\d\d-\d\d$/);
       expect(entry.reason.length).toBeGreaterThan(10);
       expect(entry.evidence.startsWith(`${folderOf(entry)}/`)).toBe(true);

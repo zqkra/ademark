@@ -51,10 +51,11 @@ function deps(over: Partial<EngineDeps> = {}): EngineDeps {
     screen: async () => "on",
     sleep: () => new Promise((done) => setTimeout(done, 0)),
     finishedAttempt: () => null,
-    // ADEMARK-49: these tests plan no tokens or orchestration step; bench/test/control-late.test.ts does.
+    // ADEMARK-49: these tests plan no late step; bench/test/control-late.test.ts does.
     tokens: async () => ({ ok: true, note: "" }),
     orchestration: async () => ({ ok: true, note: "" }),
-    latePlan: () => ({ tokens: [], orchestration: [] }),
+    reliability: async () => ({ ok: true, note: "" }),
+    latePlan: () => ({ tokens: [], orchestration: [], reliability: [] }),
     modelAnswers: async () => true,
     ...over,
   };

@@ -12,8 +12,8 @@ export function isRehearsalId(runId: string): boolean {
 
 export const adeRunId = (runId: string, ade: string, attempt: number): string => `${runId}-${ade}-${attempt}`;
 export const topUpRunId = (runId: string, ade: string, attempt: number): string => `${runId}-${ade}-topup-${attempt}`;
-/** ADEMARK-49: `<run>-<ade>-tokens-<n>` and `<run>-<ade>-orchestration-<n>`, apart from the measure. */
-export const lateRunId = (runId: string, ade: string, step: "tokens" | "orchestration", attempt: number): string => `${runId}-${ade}-${step}-${attempt}`;
+/** ADEMARK-49: `<run>-<ade>-tokens-<n>`, `<run>-<ade>-orchestration-<n>` and `<run>-<ade>-reliability-<n>`, apart from the measure. */
+export const lateRunId = (runId: string, ade: string, step: "tokens" | "orchestration" | "reliability", attempt: number): string => `${runId}-${ade}-${step}-${attempt}`;
 
 /** The measure folder of one attempt. A dry run adds `-dry`, as `run --dry-run` does. */
 export function attemptDir(root: string, runId: string, ade: string, attempt: number, dry: boolean): string {
@@ -26,7 +26,7 @@ export function topUpDir(root: string, runId: string, ade: string, attempt: numb
   return join(root, dry ? `${id}-dry` : id);
 }
 
-export function lateDir(root: string, runId: string, ade: string, step: "tokens" | "orchestration", attempt: number, dry: boolean): string {
+export function lateDir(root: string, runId: string, ade: string, step: "tokens" | "orchestration" | "reliability", attempt: number, dry: boolean): string {
   const id = lateRunId(runId, ade, step, attempt);
   return join(root, dry ? `${id}-dry` : id);
 }

@@ -54,6 +54,10 @@ export interface ReportApp {
   tokensExpected?: readonly string[];
   /** Track C1, from its own orchestration step. */
   orchestration?: LatePart;
+  /** Track C reliability (C2 to C6, A12), from its own step. */
+  reliability?: LatePart;
+  /** The reliability tests this app runs, so one with no row shows as missing. */
+  reliabilityExpected?: readonly string[];
 }
 
 type Rows = ReturnType<typeof rowsIn>;
@@ -135,26 +139,42 @@ export function buildRunReport(o: {
       body.push("### Track C (orchestration, C1)", "");
       if (app.orchestration.folder === null) {
         body.push(`${app.orchestration.note || "No orchestration attempt finished."}`, "");
-        return;
-      }
-      const label = `orchestration ${app.orchestration.folder.attempt}`;
-      const rows = rowsOf(app.orchestration.folder.dir);
-      const lines = testLines(app.ade, rows.filter((row) => row.test_id === "C1"), ["C1"]);
-      fresh += freshCount(lines);
-      body.push(`- ${label}: ${basename(app.orchestration.folder.dir)}`, ...asideLines(label, app.orchestration.folder.dir, rows));
-      for (const line of lines) body.push(`- C1${line.rowAde === app.ade ? "" : ` (${line.rowAde})`}: ${lineText(line)}`);
-      body.push("", "| rep | value | result |", "| --- | --- | --- |");
-      const own = rows.filter((row) => row.test_id === "C1" && row.ade === app.ade);
-      for (const rep of [...new Set(own.map((row) => row.rep))].sort((a, b) => a - b)) {
-        for (const variant of C1_SHOWN) {
-          const row = own.find((entry) => entry.rep === rep && entry.variant === variant);
-          const result = row === undefined ? "no row" : !row.valid ? `invalid: ${row.invalid_reason ?? ""}` : row.value === null ? `no value${row.notes ? `: ${row.notes}` : ""}` : `${row.value} ${row.unit}`;
-          body.push(`| ${rep} | ${variant} | ${escape(result)} |`);
+      } else {
+        const label = `orchestration ${app.orchestration.folder.attempt}`;
+        const rows = rowsOf(app.orchestration.folder.dir);
+        const lines = testLines(app.ade, rows.filter((row) => row.test_id === "C1"), ["C1"]);
+        fresh += freshCount(lines);
+        body.push(`- ${label}: ${basename(app.orchestration.folder.dir)}`, ...asideLines(label, app.orchestration.folder.dir, rows));
+        for (const line of lines) body.push(`- C1${line.rowAde === app.ade ? "" : ` (${line.rowAde})`}: ${lineText(line)}`);
+        body.push("", "| rep | value | result |", "| --- | --- | --- |");
+        const own = rows.filter((row) => row.test_id === "C1" && row.ade === app.ade);
+        for (const rep of [...new Set(own.map((row) => row.rep))].sort((a, b) => a - b)) {
+          for (const variant of C1_SHOWN) {
+            const row = own.find((entry) => entry.rep === rep && entry.variant === variant);
+            const result = row === undefined ? "no row" : !row.valid ? `invalid: ${row.invalid_reason ?? ""}` : row.value === null ? `no value${row.notes ? `: ${row.notes}` : ""}` : `${row.value} ${row.unit}`;
+            body.push(`| ${rep} | ${variant} | ${escape(result)} |`);
+          }
+          const tax = orchestrationTax(own, rep, solo);
+          body.push(`| ${rep} | orchestration-tax (tokens) | ${escape(tax.tokens)} |`, `| ${rep} | orchestration-tax ($) | ${escape(tax.usd)} |`);
         }
-        const tax = orchestrationTax(own, rep, solo);
-        body.push(`| ${rep} | orchestration-tax (tokens) | ${escape(tax.tokens)} |`, `| ${rep} | orchestration-tax ($) | ${escape(tax.usd)} |`);
+        body.push("");
       }
-      body.push("");
+    }
+    if (app.reliability !== undefined) {
+      body.push("### Track C (reliability, C2 to C6, A12)", "");
+      if (app.reliability.folder === null) {
+        const lines = testLines(app.ade, [], app.reliabilityExpected ?? []);
+        if ((app.reliabilityExpected ?? []).length > 0) fresh += freshCount(lines);
+        body.push(`${app.reliability.note || "No reliability attempt finished."}`.trim(), "");
+      } else {
+        const label = `reliability ${app.reliability.folder.attempt}`;
+        const rows = rowsOf(app.reliability.folder.dir);
+        const lines = testLines(app.ade, rows, app.reliabilityExpected ?? []);
+        fresh += freshCount(lines);
+        body.push(`- ${label}: ${basename(app.reliability.folder.dir)}`, ...asideLines(label, app.reliability.folder.dir, rows), "", "| test | attempt | result |", "| --- | --- | --- |");
+        for (const line of lines) body.push(`| ${line.rowAde === app.ade ? line.test : `${line.test} (${line.rowAde})`} | ${label} | ${escape(lineText(line))} |`);
+        body.push("");
+      }
     }
   };
   for (const app of o.apps) {
@@ -195,7 +215,7 @@ export function buildRunReport(o: {
     `- status: ${o.ended ? "finished" : "running"}`,
     "- every repetition of one test comes from one attempt: a later one only for a test that was short before it; the attempt column names it (METHODOLOGY.md, top-up).",
     "- a QA verdict is a finding for this report: it never starts a measurement.",
-    "- Track B and C1 come from their own steps (tokens, orchestration), after every measure: a failed one never changes a Track A result (METHODOLOGY.md).",
+    "- Track B, C1 and the reliability tests come from their own steps (tokens, orchestration, reliability), after every measure: a failed one never changes a Track A result (METHODOLOGY.md).",
     "- a test set aside after review (bench/night/set-aside.ts) is not valid in that attempt and is measured again; its rows on disk stay as they are.",
     ...unusedEntries({ runId: o.runId, read, root: o.root, entries })
       .map(({ entry, why }) => `- set-aside entry ${entry.run} ${entry.ade} ${entry.test} attempt ${entry.attempt} changed nothing: ${why}.`),

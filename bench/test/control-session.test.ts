@@ -111,10 +111,11 @@ function harness(o: { start?: Screen[]; during?: Screen[]; after?: Screen[] } = 
     screen,
     sleep: () => new Promise((done) => setTimeout(done, 1)),
     finishedAttempt: () => null,
-    // ADEMARK-49: these tests plan no tokens or orchestration step; bench/test/control-late.test.ts does.
+    // ADEMARK-49: these tests plan no late step; bench/test/control-late.test.ts does.
     tokens: async () => ({ ok: true, note: "" }),
     orchestration: async () => ({ ok: true, note: "" }),
-    latePlan: () => ({ tokens: [], orchestration: [] }),
+    reliability: async () => ({ ok: true, note: "" }),
+    latePlan: () => ({ tokens: [], orchestration: [], reliability: [] }),
     modelAnswers: async () => true,
   };
   return { deps, log, panel };

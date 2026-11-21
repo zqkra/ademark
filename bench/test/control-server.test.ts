@@ -48,10 +48,11 @@ function fakeDeps(measured: string[], hold?: Promise<void>): (log: (line: string
     screen: async () => "on",
     sleep: (ms) => new Promise((done) => setTimeout(done, Math.min(ms, 5))),
     finishedAttempt: () => null,
-    // ADEMARK-49: these tests plan no tokens or orchestration step; bench/test/control-late.test.ts does.
+    // ADEMARK-49: these tests plan no late step; bench/test/control-late.test.ts does.
     tokens: async () => ({ ok: true, note: "" }),
     orchestration: async () => ({ ok: true, note: "" }),
-    latePlan: () => ({ tokens: [], orchestration: [] }),
+    reliability: async () => ({ ok: true, note: "" }),
+    latePlan: () => ({ tokens: [], orchestration: [], reliability: [] }),
     modelAnswers: async () => true,
   });
 }

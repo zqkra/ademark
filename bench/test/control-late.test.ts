@@ -7,7 +7,7 @@ import { join } from "node:path";
 import type { ResultRow } from "../core/contracts.ts";
 import { Engine, MIN_FREE_DISK_BYTES, NO_MODEL_NOTE, PLAN_POLL_MS, PLAN_WAIT_MS, SESSION_POLL_MS, type EngineDeps } from "../control/engine.ts";
 import { lateDir } from "../control/folders.ts";
-import { lateFolder, latePlanOf, MEASURED_ADES, missingNow, noOrchestrationReason, ORCHESTRATION_TIMEOUT_MS, orchestrationApps, profileNotCalibrated, stepLimitMs, TOKENS_TIMEOUT_MS } from "../control/real.ts";
+import { lateFolder, latePlanOf, MEASURED_ADES, missingNow, noOrchestrationReason, ORCHESTRATION_TIMEOUT_MS, orchestrationApps, profileNotCalibrated, reliabilityApps, RELIABILITY_TESTS, RELIABILITY_TIMEOUT_MS, stepLimitMs, TOKENS_TIMEOUT_MS } from "../control/real.ts";
 import { buildRunReport, orchestrationTax, type ReportApp } from "../control/report.ts";
 import { Store, type LatePlan } from "../control/store.ts";
 import { missing, missingLine, type MissingApp } from "../control/topup.ts";
@@ -64,6 +64,10 @@ function deps(seen: string[], over: Partial<EngineDeps> = {}): EngineDeps {
       seen.push(`orchestration ${ade} ${attempt}`);
       return { ok: true, note: "" };
     },
+    reliability: async (ade, _run, _seed, attempt) => {
+      seen.push(`reliability ${ade} ${attempt}`);
+      return { ok: true, note: "" };
+    },
     latePlan: plan,
     modelAnswers: async () => {
       seen.push("model check");
@@ -86,7 +90,10 @@ describe("the apps of each late step", () => {
   test("Bare CLI first, then each app whose adapter has a trigger; a null or missing trigger gets no step", () => {
     expect(orchestrationApps(["orch", "none", "later", "bare-cli"], (ade) => TRIGGERS[ade])).toEqual(["bare-cli", "orch"]);
     expect(orchestrationApps(["none", "later"], (ade) => TRIGGERS[ade])).toEqual([]);
-    expect(plan(["orch", "none", "bare-cli"])).toEqual({ tokens: ["orch", "none", "bare-cli"], orchestration: ["bare-cli", "orch"] });
+    // Every app gets a reliability step unless its adapter sets aside all of C2 to C6 and A12.
+    expect(plan(["orch", "none", "bare-cli"])).toEqual({ tokens: ["orch", "none", "bare-cli"], orchestration: ["bare-cli", "orch"], reliability: ["orch", "none", "bare-cli"] });
+    expect(reliabilityApps(["orch", "none"], () => ({ C2: "no", C3: "no", C4: "no", C5: "no", C6: "no", A12: "no" }))).toEqual([]);
+    expect(reliabilityApps(["orch", "none"], (ade) => (ade === "none" ? { C4: "x", C6: "x" } : {}))).toEqual(["orch", "none"]);
     expect(noOrchestrationReason(null)).toContain("not supported");
     expect(noOrchestrationReason(undefined)).toContain("not calibrated");
     expect(noOrchestrationReason(undefined, "no trigger line proven yet")).toBe("C1 not calibrated: no trigger line proven yet");
@@ -104,10 +111,23 @@ describe("the apps of each late step", () => {
   test("each has its own folder and its own limit, after up to 11 minutes of calm", () => {
     expect(lateDir("/r", RUN, "orca", "tokens", 2, false)).toBe(`/r/${RUN}-orca-tokens-2`);
     expect(lateDir("/r", RUN, "orca", "orchestration", 1, true)).toBe(`/r/${RUN}-orca-orchestration-1-dry`);
+    expect(lateDir("/r", RUN, "orca", "reliability", 1, true)).toBe(`/r/${RUN}-orca-reliability-1-dry`);
     expect(TOKENS_TIMEOUT_MS).toBe(70 * 60_000);
     expect(ORCHESTRATION_TIMEOUT_MS).toBe(140 * 60_000);
+    expect(RELIABILITY_TIMEOUT_MS).toBe(170 * 60_000);
     expect(stepLimitMs("tokens")).toBe(81 * 60_000);
     expect(stepLimitMs("orchestration")).toBe(151 * 60_000);
+    expect(stepLimitMs("reliability")).toBe(181 * 60_000);
+    // C2, C4, C5 and C6 have a cap of 900 s each; C3 reads the block's probes and A12 reads its sampler. A12 rides
+    // along because it needs the block's sampler, so the step runs them in one Track C block.
+    expect(RELIABILITY_TESTS).toEqual(["C2", "C3", "C4", "C5", "C6", "A12"]);
+  });
+
+  test("the reliability limit holds the tests at their caps, twice (the run tries a stopped block once more)", () => {
+    const cap = ["C2-message-delivery", "C4-agent-killed", "C5-network-cut", "C6-app-restart"].reduce((sum, name) => sum + loadTask(name).time_cap_s * 1000, 0);
+    // Two tries of the block: the caps, then the grade and arena copy of each test, the block's own reset and launch,
+    // and the settle the step limit adds on top.
+    expect(RELIABILITY_TIMEOUT_MS).toBeGreaterThanOrEqual(2 * (cap + 4 * 3 * 60_000 + 5 * 60_000));
   });
 
   test("the orchestration limit holds two runs at the cap, each with its wait for quiet and its grade", () => {
@@ -132,7 +152,7 @@ describe("the apps of each late step", () => {
 });
 
 describe("engine", () => {
-  test("a pass runs measures, top-ups, every tokens step, then every orchestration step", async () => {
+  test("a pass runs measures, top-ups, every tokens step, every orchestration step, then every reliability step", async () => {
     store.createRun(RUN, "s", ["orch", "none", "bare-cli"], false, "2026-11-12T00:00:00.000Z");
     const seen: string[] = [];
     await new Engine(store, deps(seen)).run(RUN, "s");
@@ -141,6 +161,7 @@ describe("engine", () => {
       // The model is asked before every late step: the step before it may have used up the plan.
       "model check", "tokens orch 1", "model check", "tokens none 1", "model check", "tokens bare-cli 1",
       "model check", "orchestration bare-cli 1", "model check", "orchestration orch 1",
+      "model check", "reliability orch 1", "model check", "reliability none 1", "model check", "reliability bare-cli 1",
     ]);
     expect(store.latestRunById(RUN)?.first_pass_at).not.toBeNull();
     // Continue adds no second late step to the first pass.
@@ -167,9 +188,10 @@ describe("engine", () => {
     expect(store.latestRunById(RUN)?.first_pass_at).toBeNull();
     const seen: string[] = [];
     await new Engine(store, deps(seen, { topUpTests: async () => ({ tests: [], note: "" }) })).run(RUN, "s");
-    expect(seen).toEqual(["model check", "orchestration orch 1"]);
-    expect(view().filter((line) => line.includes("tokens") || line.includes("orchestration"))).toEqual([
+    expect(seen).toEqual(["model check", "orchestration orch 1", "model check", "reliability orch 1", "model check", "reliability bare-cli 1"]);
+    expect(view().filter((line) => line.includes("tokens") || line.includes("orchestration") || line.includes("reliability"))).toEqual([
       "orch tokens done 1", "bare-cli tokens failed 1", "bare-cli orchestration done 1", "orch orchestration done 1",
+      "orch reliability done 1", "bare-cli reliability done 1",
     ]);
   });
 
@@ -201,10 +223,10 @@ describe("engine", () => {
       },
     })).run(RUN, "s");
     // Each late step ran once: a failure is not deferred and does not run again in the same pass.
-    expect(seen).toEqual(["measure orch", "measure none", "model check", "tokens orch", "model check", "tokens none", "model check", "orchestration orch"]);
+    expect(seen).toEqual(["measure orch", "measure none", "model check", "tokens orch", "model check", "tokens none", "model check", "orchestration orch", "model check", "reliability orch 1", "model check", "reliability none 1"]);
     expect(view()).toEqual([
       "orch prove done 1", "orch measure done 1", "none prove done 1", "none measure done 1",
-      "orch tokens failed 1", "none tokens failed 1", "orch orchestration failed 1",
+      "orch tokens failed 1", "none tokens failed 1", "orch orchestration failed 1", "orch reliability done 1", "none reliability done 1",
     ]);
     expect(store.tasks(RUN).find((task) => task.ade === "orch" && task.step === "orchestration")?.note).toBe("exit 143, 0 rows");
     // Retry brings back measures and proofs only.
@@ -232,9 +254,10 @@ describe("engine", () => {
     // It waited for the plan's window first: asked every 10 minutes for 6 hours, then gave up once for the whole pass.
     expect(slept).toBe(PLAN_WAIT_MS);
     expect(asked).toBe(PLAN_WAIT_MS / PLAN_POLL_MS + 1);
-    const late = store.tasks(RUN).filter((task) => task.step === "tokens" || task.step === "orchestration");
+    const late = store.tasks(RUN).filter((task) => task.step === "tokens" || task.step === "orchestration" || task.step === "reliability");
     expect(late.map((task) => `${task.ade} ${task.step} ${task.status} ${task.attempts} ${task.note}`)).toEqual([
       `orch tokens skipped 0 ${NO_MODEL_NOTE}`, `none tokens skipped 0 ${NO_MODEL_NOTE}`, `orch orchestration skipped 0 ${NO_MODEL_NOTE}`,
+      `orch reliability skipped 0 ${NO_MODEL_NOTE}`, `none reliability skipped 0 ${NO_MODEL_NOTE}`,
     ]);
     expect(engine.lateNote).toContain(NO_MODEL_NOTE);
     expect(engine.problems).toEqual([]);
@@ -270,7 +293,7 @@ describe("engine", () => {
       },
     }));
     await engine.run(RUN, "s");
-    expect(seen).toEqual(["measure orch", "measure bare-cli", "tokens orch 1", "tokens bare-cli 1", "orchestration bare-cli 1", "orchestration orch 1"]);
+    expect(seen).toEqual(["measure orch", "measure bare-cli", "tokens orch 1", "tokens bare-cli 1", "orchestration bare-cli 1", "orchestration orch 1", "reliability orch 1", "reliability bare-cli 1"]);
     expect(slept).toBe(3 * PLAN_POLL_MS);
     expect(view().filter((line) => line.includes("skipped") || line.includes("failed"))).toEqual([]);
     // While it waits the panel says so; after it, the note is gone.
@@ -299,13 +322,13 @@ describe("engine", () => {
     expect(engine.problems[0]).toContain("Only 3.0 GB free on the disk");
     expect(engine.problems[0]).toContain("before none tokens");
     // The steps left wait as they were: no failure, no attempt counted.
-    expect(view().filter((line) => line.includes("pending"))).toEqual(["none tokens pending 0", "orch orchestration pending 0"]);
+    expect(view().filter((line) => line.includes("pending"))).toEqual(["none tokens pending 0", "orch orchestration pending 0", "orch reliability pending 0", "none reliability pending 0"]);
     expect(MIN_FREE_DISK_BYTES).toBe(5 * 1024 ** 3);
     // With space again, the same run goes on where it stopped.
     free = 20 * 1024 ** 3;
     seen.length = 0;
     await new Engine(store, deps(seen, { topUpTests: async () => ({ tests: [], note: "" }), diskFreeBytes: () => free })).run(RUN, "s");
-    expect(seen).toEqual(["model check", "tokens none 1", "model check", "orchestration orch 1"]);
+    expect(seen).toEqual(["model check", "tokens none 1", "model check", "orchestration orch 1", "model check", "reliability orch 1", "model check", "reliability none 1"]);
     // A disk that cannot be read stops nothing.
     expect(new Engine(store, deps([], { diskFreeBytes: () => null })).problems).toEqual([]);
   });
@@ -331,11 +354,16 @@ describe("missing and the owner's pass", () => {
   const app = (ade: string, late: MissingApp["late"]): MissingApp => ({ ade, measured: false, attempts: [], expected: [], late });
 
   test("names the apps with no finished tokens attempt, then those with no orchestration attempt, at the end of the line", () => {
-    const plan = missing(RUN, [app("a", { tokens: false, orchestration: false }), app("b", { tokens: true, orchestration: null }), app("c", { tokens: false, orchestration: true })], new Map());
+    const plan = missing(RUN, [
+      app("a", { tokens: false, orchestration: false, reliability: false }),
+      app("b", { tokens: true, orchestration: null, reliability: null }),
+      app("c", { tokens: false, orchestration: true, reliability: true }),
+    ], new Map());
     expect(plan.tokens).toEqual(["a", "c"]);
     expect(plan.orchestration).toEqual(["a"]);
-    expect(missingLine(plan, (ade) => ade.toUpperCase())).toBe("A, B, C: all tests. Tokens: A, C. Orchestration: A.");
-    expect(missingLine({ measure: [], topUps: [], tokens: [], orchestration: [] })).toBe("");
+    expect(plan.reliability).toEqual(["a"]);
+    expect(missingLine(plan, (ade) => ade.toUpperCase())).toBe("A, B, C: all tests. Tokens: A, C. Orchestration: A. Reliability: A.");
+    expect(missingLine({ measure: [], topUps: [], tokens: [], orchestration: [], reliability: [] })).toBe("");
   });
 
   test("from the queue: a failed or skipped tokens step is missing, a done one is not, and the pass adds the next folder number", async () => {
@@ -360,15 +388,16 @@ describe("missing and the owner's pass", () => {
       },
     })).run(RUN, "s");
     const now = () => missingNow(dir, RUN, store.tasks(RUN), false, new Map(), [], plan);
-    // The fake measures wrote no folder, so both apps are missing in full too.
-    expect(now()).toMatchObject({ tokens: ["orch"], orchestration: [] });
+    // The fake measures wrote no folder, so both apps are missing in full too. The reliability steps ran but wrote no
+    // rows, so both apps are missing there as well.
+    expect(now()).toMatchObject({ tokens: ["orch"], orchestration: [], reliability: ["orch", "none"] });
     // Without a late plan nothing late is named (the callers of ADEMARK-51).
-    expect(missingNow(dir, RUN, store.tasks(RUN), false, new Map())).toMatchObject({ tokens: [], orchestration: [] });
-    const pass = store.fill(RUN, [], [], { tokens: now().tokens, orchestration: now().orchestration });
+    expect(missingNow(dir, RUN, store.tasks(RUN), false, new Map())).toMatchObject({ tokens: [], orchestration: [], reliability: [] });
+    const pass = store.fill(RUN, [], [], { tokens: now().tokens, orchestration: now().orchestration, reliability: now().reliability });
     expect(store.tasks(RUN).filter((task) => task.ade === "orch" && task.step === "tokens").map((task) => `${task.pass} ${task.status} ${task.attempts}`))
       .toEqual(["0 failed 1", `${pass} pending 1`]);
     // A second fill of the same pass adds nothing while one waits.
-    expect(store.addLateSteps(RUN, { tokens: ["orch"], orchestration: [] }, pass + 1)).toBe(0);
+    expect(store.addLateSteps(RUN, { tokens: ["orch"], orchestration: [], reliability: [] }, pass + 1)).toBe(0);
     tokensOk = true;
     const seen: string[] = [];
     await new Engine(store, deps(seen, { topUpTests: async () => ({ tests: [], note: "" }), tokens: async (ade, _run, _seed, attempt) => {
@@ -376,7 +405,7 @@ describe("missing and the owner's pass", () => {
       rowsOfStep(ade, attempt, false);
       return { ok: true, note: "" };
     } })).run(RUN, "s");
-    expect(seen).toEqual(["model check", "tokens orch 2"]);
+    expect(seen).toEqual(["model check", "tokens orch 2", "model check", "reliability orch 2", "model check", "reliability none 2"]);
     expect(lateFolder(dir, RUN, store.tasks(RUN), "orch", "tokens", false)).toEqual({ attempt: 2, dir: join(dir, `${RUN}-orch-tokens-2`) });
     // 2026-11-11: the step is done, but no row of it is valid (the prompt never reached the model): it measured nothing,
     // so it is still missing and the next pass runs it again. A dry run has no valid B row at all, so there done counts.
@@ -390,13 +419,13 @@ describe("missing and the owner's pass", () => {
     store.createRun(RUN, "s", ["orch", "bare-cli"], false, "2026-11-12T00:00:00.000Z");
     const plan2 = missingNow(dir, RUN, store.tasks(RUN), false, new Map(), [], plan);
     expect(plan2.orchestration).toEqual(["bare-cli", "orch"]);
-    store.fill(RUN, [], [], { tokens: [], orchestration: plan2.orchestration });
+    store.fill(RUN, [], [], { tokens: [], orchestration: plan2.orchestration, reliability: plan2.reliability });
     expect(store.tasks(RUN).filter((task) => task.step === "orchestration").map((task) => task.ade)).toEqual(["bare-cli", "orch"]);
   });
 
   test("a measure that fails at its first attempt in a later pass leaves a done tokens step as it is", () => {
     store.createRun(RUN, "s", ["orch"], false, "2026-11-12T00:00:00.000Z");
-    store.addLateSteps(RUN, { tokens: ["orch"], orchestration: [] }, 0);
+    store.addLateSteps(RUN, { tokens: ["orch"], orchestration: [], reliability: [] }, 0);
     const tokens = store.tasks(RUN).find((task) => task.step === "tokens")!;
     store.start(tokens.id, "t");
     store.finish(tokens.id, "done", "", "t");
@@ -467,6 +496,29 @@ describe("report", () => {
     expect(text).toContain("| 1 | orchestration-tax (tokens) | no value: no valid tokens-total row |");
     // NEW: Orca's B2 (missing) and B3 (invalid), and one each for Bare CLI and Paseo, which have no measured folder.
     expect(text.split("\n")[0]).toBe("4 invalid rows that are not accepted limits (NEW)");
+  });
+
+  test("a reliability attempt reports each of C2 to C6 and A12 with its attempt, and a missing one as NEW", () => {
+    const rel = write(`${RUN}-orca-reliability-1`, [
+      row({ run_id: `${RUN}-orca-reliability-1`, ade: "orca", test_id: "C2" as never, variant: "main", valid: true, invalid_reason: null, unit: "x", value: 1 }),
+      row({ run_id: `${RUN}-orca-reliability-1`, ade: "orca", test_id: "C4" as never, variant: "main", valid: false, invalid_reason: "the app was killed", unit: "x", value: null }),
+    ]);
+    const app: ReportApp = {
+      ade: "orca", label: "Orca", first: null, topUps: [], expected: [], note: "",
+      reliability: { folder: { attempt: 1, dir: rel }, note: "" }, reliabilityExpected: ["C2", "C3", "C4", "C5", "C6", "A12"],
+    };
+    const text = buildRunReport({ runId: RUN, ended: false, apps: [app], minimums: new Map(), setAside: [] });
+    expect(text).toContain("### Track C (reliability, C2 to C6, A12)");
+    expect(text).toContain(`- reliability 1: ${RUN}-orca-reliability-1`);
+    expect(text).toContain("| C2 | reliability 1 | valid |");
+    expect(text).toContain("| C4 | reliability 1 | invalid (NEW): the app was killed |");
+    expect(text).toContain("| C3 | reliability 1 | invalid (NEW): no row: the block stopped before it |");
+    // An app whose adapter sets aside every reliability test gets no step and no section rows.
+    const none: ReportApp = { ade: "paseo", label: "Paseo", first: null, topUps: [], expected: [], note: "", reliability: { folder: null, note: "no reliability step: the adapter sets aside every reliability test" }, reliabilityExpected: [] };
+    const quiet = buildRunReport({ runId: RUN, ended: false, apps: [none], minimums: new Map(), setAside: [] });
+    expect(quiet).toContain("no reliability step: the adapter sets aside every reliability test");
+    // The one NEW row is the app's own "no rows" line for its missing measure, not a reliability test.
+    expect(quiet.split("\n")[0]).toBe("1 invalid rows that are not accepted limits (NEW)");
   });
 
   test("a set-aside entry of a tokens attempt makes its B test not valid, with the reason", () => {
