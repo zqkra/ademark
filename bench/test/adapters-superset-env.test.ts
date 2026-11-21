@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync }
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AdapterContext } from "../core/contracts.ts";
-import { resetMacosRunner, setMacosRunner, syncClaudeSettingsEnv, trustClaudeTree } from "../adapters/macos.ts";
+import { CLAUDE_SETTINGS_ENV_KEYS, resetMacosRunner, setMacosRunner, syncClaudeSettingsEnv, trustClaudeTree } from "../adapters/macos.ts";
 import { validateProfile } from "../adapters/profile-validate.ts";
 import { fakeRunner } from "./adapters-fake.ts";
 import { PROFILE_ID, validProfile } from "./adapters-profile-fixture.ts";
@@ -58,18 +58,49 @@ describe("syncClaudeSettingsEnv", () => {
     expect(settingsJson()).toEqual({ env: { DISABLE_AUTOUPDATER: "1" }, theme: "dark" });
   });
 
-  test("creates settings.json when the account has none, and writes no empty env", () => {
+  test("creates settings.json when the account has none, and an empty cleanup never creates it", () => {
     syncClaudeSettingsEnv(ctx(), MANAGED, { ANTHROPIC_BASE_URL: "http://127.0.0.1:8787" });
     expect(settingsJson()).toEqual({ env: { ANTHROPIC_BASE_URL: "http://127.0.0.1:8787" } });
     rmSync(join(home, ".claude"), { recursive: true, force: true });
+    // A crashed block's cleanup must not leave a settings.json behind for the next ADE.
     syncClaudeSettingsEnv(ctx(), MANAGED, {});
-    expect(settingsJson()).toEqual({});
+    expect(() => settingsJson()).toThrow();
+  });
+
+  test("an empty cleanup on a file without the managed keys writes nothing", () => {
+    mkdirSync(join(home, ".claude"), { recursive: true });
+    writeFileSync(join(home, ".claude", "settings.json"), JSON.stringify({ env: { DISABLE_AUTOUPDATER: "1" } }));
+    syncClaudeSettingsEnv(ctx(), MANAGED, {});
+    expect(settingsJson()).toEqual({ env: { DISABLE_AUTOUPDATER: "1" } });
+    expect(lines).toEqual([]);
+    // The same values again are a no-op too: the file is not rewritten on every send.
+    syncClaudeSettingsEnv(ctx(), MANAGED, { ANTHROPIC_BASE_URL: "http://127.0.0.1:8787" });
+    syncClaudeSettingsEnv(ctx(), MANAGED, { ANTHROPIC_BASE_URL: "http://127.0.0.1:8787" });
+    expect(lines).toHaveLength(1);
+  });
+
+  test("the next ADE's block clears the keys a crashed Superset block left behind", () => {
+    // What Superset's launch does on a Track A block, then the block dies before quit.
+    syncClaudeSettingsEnv(ctx(), CLAUDE_SETTINGS_ENV_KEYS, {
+      ANTHROPIC_BASE_URL: "http://127.0.0.1:8787",
+      OPENAI_BASE_URL: "http://127.0.0.1:8787/v1",
+    });
+    // The run loop calls this with an empty map before every block's reset, for every ADE.
+    const bareCli = { ...ctx(), runDir: join(home, "bare-cli") };
+    syncClaudeSettingsEnv(bareCli, CLAUDE_SETTINGS_ENV_KEYS, {});
+    expect(settingsJson()).toEqual({ env: {} });
   });
 
   test("a dry run plans it and writes nothing; another account writes nothing", () => {
     syncClaudeSettingsEnv(ctx(true), MANAGED, { ANTHROPIC_BASE_URL: "http://127.0.0.1:8787" });
     expect(lines).toEqual([
       `plan: syncClaudeSettingsEnv ${join(home, ".claude", "settings.json")} ANTHROPIC_BASE_URL=http://127.0.0.1:8787 OPENAI_BASE_URL=<unset>`,
+    ]);
+    // The per-block cleanup plans its own line too.
+    lines.length = 0;
+    syncClaudeSettingsEnv(ctx(true), CLAUDE_SETTINGS_ENV_KEYS, {});
+    expect(lines).toEqual([
+      `plan: syncClaudeSettingsEnv ${join(home, ".claude", "settings.json")} ANTHROPIC_BASE_URL=<unset> OPENAI_BASE_URL=<unset>`,
     ]);
     expect(() => syncClaudeSettingsEnv(ctx(), MANAGED, {})).not.toThrow();
     setMacosRunner(fakeRunner("owner"));

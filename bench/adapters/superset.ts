@@ -1,6 +1,6 @@
 // EL-PTY: official CLI in node-pty, plus a persistent pty-daemon (ADES.md 3.7).
 import type { AdapterContext, AdeProfile } from "../core/contracts.ts";
-import { syncClaudeSettingsEnv, trustClaudeFolder, trustClaudeTree } from "./macos.ts";
+import { CLAUDE_SETTINGS_ENV_KEYS, syncClaudeSettingsEnv, trustClaudeFolder, trustClaudeTree } from "./macos.ts";
 import { loadProfile, profileAdapter } from "./profile.ts";
 
 const adapter = profileAdapter({
@@ -26,17 +26,15 @@ const adapter = profileAdapter({
 
 // 2.0.8 filters the terminal environment (ALLOWED_ENV_VARS plus the SUPERSET_ and LC_ prefixes), so the launchd
 // ANTHROPIC_BASE_URL of a Track A block never reaches the workspace's claude. Claude Code applies the "env" object of
-// ~/.claude/settings.json to every session it starts, so the replay URL goes there instead, and the next block's sync
-// removes it for the live tracks.
-const CLAUDE_ENV_KEYS = ["ANTHROPIC_BASE_URL", "OPENAI_BASE_URL"] as const;
-
+// ~/.claude/settings.json to every session it starts, so the replay URL goes there instead, and the next block's
+// sync removes it for the live tracks.
 function syncClaudeEnv(ctx: AdapterContext): void {
   const values: Record<string, string> = {};
-  for (const key of CLAUDE_ENV_KEYS) {
+  for (const key of CLAUDE_SETTINGS_ENV_KEYS) {
     const value = ctx.env[key];
     if (value !== undefined) values[key] = value;
   }
-  syncClaudeSettingsEnv(ctx, CLAUDE_ENV_KEYS, values);
+  syncClaudeSettingsEnv(ctx, CLAUDE_SETTINGS_ENV_KEYS, values);
 }
 
 // Every workspace is a new git worktree and Claude Code asks trust for each new repo root, so the worktrees under the
@@ -112,6 +110,8 @@ const quitApp = adapter.quit;
 adapter.quit = async (ctx) => {
   stopTrustScan();
   await quitApp(ctx);
+  // ctx.env still holds this block's replay URL on Track A: the cleanup passes an empty map on purpose.
+  syncClaudeSettingsEnv(ctx, CLAUDE_SETTINGS_ENV_KEYS, {});
 };
 
 export { adapter as superset };

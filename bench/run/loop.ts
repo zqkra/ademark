@@ -2,7 +2,7 @@
 // launch, per-agent blocks, seeding (Track A), the sampler (Track C) and a .done marker per block.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { bootout, killPids, orphanAgentPids, pidsFor, unsetenv } from "../adapters/macos.ts";
+import { bootout, CLAUDE_SETTINGS_ENV_KEYS, killPids, orphanAgentPids, pidsFor, syncClaudeSettingsEnv, unsetenv } from "../adapters/macos.ts";
 import { getAdapter } from "../adapters/registry.ts";
 import type {
   Adapter,
@@ -452,6 +452,9 @@ export async function runBlock(o: RunBlockOptions): Promise<BlockResult> {
     if (!o.instruments.dryRun) {
       for (const name of HARNESS_ENV) unsetenv(adapterCtx, name);
     }
+    // An adapter may leave managed keys in ~/.claude/settings.json (Superset's replay URL); a crashed block must not
+    // leak them into the next ADE's Claude sessions. The call is a no-op when the file has nothing to remove.
+    syncClaudeSettingsEnv(adapterCtx, CLAUDE_SETTINGS_ENV_KEYS, {});
     await adapter.reset(adapterCtx);
     await adapter.configure(adapterCtx, o.options);
     // Track C only, and after the reset: the reset restores the vendor's own settings, with orchestration off where
