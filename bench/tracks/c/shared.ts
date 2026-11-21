@@ -520,11 +520,13 @@ export function sessionAgentFor(agent: Agent): SessionAgent {
   return agent === "codex" ? "codex" : "claude";
 }
 
-export function claudeSessionIntervals(o: { home: string; worktree: string; sinceMs: number; cwdPrefix?: string; agents?: readonly SessionAgent[] }): Interval[] {
+export function claudeSessionIntervals(o: { home: string; worktree: string; sinceMs: number; cwdPrefixes?: readonly string[]; agents?: readonly SessionAgent[] }): Interval[] {
   const found = new Map<string, Interval>();
+  const roots: { cwd: string; cwdPrefix?: string }[] = worktreePaths(o.worktree).map((cwd) => ({ cwd }));
+  for (const prefix of o.cwdPrefixes ?? []) roots.push({ cwd: prefix, cwdPrefix: prefix });
   for (const agent of o.agents ?? (["claude"] as const)) {
-    for (const cwd of worktreePaths(o.worktree)) {
-      for (const log of findSessionLogs({ home: o.home, agent, cwd, since: o.sinceMs, cwdPrefix: o.cwdPrefix })) {
+    for (const root of roots) {
+      for (const log of findSessionLogs({ home: o.home, agent, cwd: root.cwd, since: o.sinceMs, cwdPrefix: root.cwdPrefix })) {
       if (found.has(log.path)) continue;
       let startMs = log.mtimeMs;
       try {

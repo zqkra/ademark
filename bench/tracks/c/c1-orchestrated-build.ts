@@ -143,7 +143,10 @@ async function orchestratedRows(ctx: TestContext, rep: number): Promise<ResultRo
       home: ctx.adapterCtx.home,
       worktree: run.worktree,
       sinceMs: wallClockSince(ctx, run.t0Ns),
-      cwdPrefix: ctx.adapter.sessionLogCwdPrefix?.(ctx.adapterCtx),
+      cwdPrefixes: [
+        ctx.adapter.sessionLogCwdPrefix?.(ctx.adapterCtx),
+        ...(ctx.adapter.c1WorkerCwdPrefixes?.(ctx.adapterCtx) ?? []),
+      ].filter((prefix): prefix is string => prefix !== undefined),
       agents: ["claude", "codex"],
     }),
   );

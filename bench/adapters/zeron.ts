@@ -1,5 +1,5 @@
 // NATIVE: Rust, GPUI; `claude -p` stream-json and `codex app-server` (ADES.md 3.10).
-import { relative, sep } from "node:path";
+import { join, relative, sep } from "node:path";
 import type { Adapter, AdapterContext, RunOptions, Trigger } from "../core/contracts.ts";
 import { restore } from "../core/snapshot.ts";
 import {
@@ -216,6 +216,9 @@ export const zeron: Adapter = {
       idleFallback: false,
     });
   },
+  // ADES.md 3.10: worktrees in ~/.zeron/worktrees. A lead chat runs in the project folder itself (pilot note in
+  // waitDone), but create_chats workers can get their own worktrees there, outside ctx.worktree.
+  c1WorkerCwdPrefixes: (ctx: AdapterContext) => [join(ctx.home, ".zeron", "worktrees")],
   async quit(ctx: AdapterContext): Promise<void> {
     isRealRun(ctx);
     const appPids = await pidsFor(ctx, APP_HINTS);

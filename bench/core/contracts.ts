@@ -208,6 +208,10 @@ export interface Adapter {
   // worktree folders declares the prefix those session cwds live under here, the same one its waitDone
   // passes to waitForEndOfTurn. Missing: only the exact worktree cwd matches.
   sessionLogCwdPrefix?(ctx: AdapterContext): string | undefined;
+  // Track C fan-out only: extra folders whose session logs count as this ADE's own orchestration workers, on top
+  // of sessionLogCwdPrefix, for ADEs whose orchestrated workers get app-managed worktrees (Paseo
+  // ~/.paseo/worktrees, Zeron ~/.zeron/worktrees). Missing or empty: only sessionLogCwdPrefix applies.
+  c1WorkerCwdPrefixes?(ctx: AdapterContext): string[];
   quit(ctx: AdapterContext): Promise<void>;
   // Untimed, before the quit of an A2 relaunch ("relaunch") or an A1 cold start ("cold"): leave a known state for the
   // app to restore. Missing: nothing to do.
@@ -478,6 +482,9 @@ export interface AdeProfile {
   // must exist in the file, so a renamed setting stops the block instead of doing nothing. `workers`: see
   // Adapter.orchestrationWorkers.
   orchestration?: { settings?: OrchestrationSetting[]; workers?: "sessions" };
+  // Track C fan-out only: app-managed folders whose session logs count as this ADE's own orchestration workers,
+  // on top of waitDone's cwd rule ("~/" paths). Backed by the profile notes, like claudeTrustScanDirs.
+  c1WorkerCwdPrefixes?: string[];
   // Folders the adapter trusts for Claude Code while the app runs, rescanned on a timer: an ADE that makes a git
   // worktree per workspace gives every new repo root its own trust prompt, and the folders appear only after the
   // app creates them, so account setup cannot list them (2026-11-20, Superset's ~/.superset/worktrees). Each path

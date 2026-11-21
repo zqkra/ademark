@@ -527,6 +527,15 @@ export function validateProfile(raw: unknown, id: string, agents: readonly Agent
       );
     }
   }
+  if (root.c1WorkerCwdPrefixes !== undefined) {
+    if (!Array.isArray(root.c1WorkerCwdPrefixes)) {
+      errors.push("c1WorkerCwdPrefixes: must be an array of paths under ~");
+    } else {
+      root.c1WorkerCwdPrefixes.forEach((dir, index) =>
+        checkHomePath(dir, `c1WorkerCwdPrefixes[${index}]`, errors),
+      );
+    }
+  }
   checkStringArray(root.notes, "notes", errors);
   if (root.agentGuide !== undefined) requireString(root.agentGuide, "agentGuide", errors);
   if (root.excludeTests !== undefined) {

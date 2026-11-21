@@ -302,6 +302,12 @@ export function profileAdapter(base: AdapterBase): Adapter {
     return profile.waitDone.cwd === "any" && state.agent !== "own" ? ctx.home : undefined;
   }
 
+  // Track C fan-out only: the profile's c1WorkerCwdPrefixes ("~/" paths) resolved under the run home.
+  function c1WorkerCwdPrefixes(ctx: AdapterContext): string[] {
+    const profile = loaded();
+    return (profile?.c1WorkerCwdPrefixes ?? []).map((dir) => homePath(ctx.home, dir));
+  }
+
   // Quit, confirm a quit dialog with Return (Synara always asks; Emdash and Superset while agents run), and return the
   // attributed processes still alive. A profile's own quit steps need the app's pid, which A1 and A2 do not keep.
   async function quitAndWait(ctx: AdapterContext, profile: AdeProfile, useSteps: boolean): Promise<number[]> {
@@ -517,6 +523,7 @@ export function profileAdapter(base: AdapterBase): Adapter {
       });
     },
     sessionLogCwdPrefix,
+    c1WorkerCwdPrefixes,
     async quit(ctx: AdapterContext): Promise<void> {
       isRealRun(ctx);
       const profile = requireProfile("quit");

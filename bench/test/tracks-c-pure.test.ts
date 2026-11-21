@@ -1,6 +1,6 @@
 // Pure Track C helpers: shipped, handoff codes, fan-out, lock runs, the survival rubric and delivery.
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { cpSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { CapturedUsage, CaptureRow, GradeResult, NativeProc } from "../core/contracts.ts";
@@ -11,6 +11,7 @@ import {
   bodyFileHasText,
   bodyHasText,
   codesPlaced,
+  claudeSessionIntervals,
   fanOut,
   followupDelivered,
   groupPassed,
@@ -111,6 +112,50 @@ describe("track C pure helpers", () => {
         { start_ms: 15, end_ms: 25 },
       ]),
     ).toEqual({ max: 3, total: 3 });
+  });
+
+  test("claudeSessionIntervals counts workers under an app prefix for claude and codex, skips decoys and old logs", () => {
+    const SESSION_FIXTURES = join(import.meta.dir, "fixtures", "session-logs");
+    const FIXTURE_CWD = "/Users/ademark/arena/bare-cli";
+    const home = mkdtempSync(join(tmpdir(), "ademark-c1-home-"));
+    const worktree = mkdtempSync(join(tmpdir(), "ademark-c1-worktree-"));
+    try {
+      const prefix = join(home, ".t3", "worktrees", "arena", "branch");
+      const workerA = join(prefix, "worker-a");
+      const workerB = join(prefix, "worker-b");
+      const decoy = join(home, "elsewhere");
+      for (const dir of [workerA, workerB, decoy]) mkdirSync(dir, { recursive: true });
+      const claudeDir = join(home, ".claude", "projects", "sessions");
+      mkdirSync(claudeDir, { recursive: true });
+      const claudeBody = readFileSync(join(SESSION_FIXTURES, "claude-tool-use-then-end.jsonl"), "utf8");
+      const writeClaude = (name: string, cwd: string): string => {
+        const path = join(claudeDir, name);
+        writeFileSync(path, claudeBody.replaceAll(FIXTURE_CWD, cwd));
+        return path;
+      };
+      writeClaude("worker-a.jsonl", workerA);
+      writeClaude("decoy.jsonl", decoy);
+      const oldPath = writeClaude("old.jsonl", workerB);
+      const codexDir = join(home, ".codex", "sessions", "2026", "11", "21");
+      mkdirSync(codexDir, { recursive: true });
+      const codexBody = readFileSync(join(SESSION_FIXTURES, "codex-complete.jsonl"), "utf8").replaceAll(FIXTURE_CWD, workerB);
+      writeFileSync(join(codexDir, "rollout-2026-11-21T00-00-00-codex.jsonl"), codexBody);
+      const old = new Date("2026-01-01T00:00:00.000Z");
+      utimesSync(oldPath, old, old);
+
+      const intervals = claudeSessionIntervals({
+        home,
+        worktree,
+        sinceMs: Date.now() - 60_000,
+        cwdPrefixes: [prefix],
+        agents: ["claude", "codex"],
+      });
+      expect(intervals).toHaveLength(2);
+      expect(fanOut(intervals).total).toBe(2);
+    } finally {
+      rmSync(home, { recursive: true, force: true });
+      rmSync(worktree, { recursive: true, force: true });
+    }
   });
 
   test("lock runs come from consecutive lost probes", () => {
