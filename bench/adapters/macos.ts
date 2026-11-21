@@ -1,5 +1,5 @@
 // macOS side effects shared by every adapter (ADES.md 1.1). Dry run logs the plan; a real run needs the `ademark` user.
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir, userInfo } from "node:os";
 import { basename, dirname, join } from "node:path";
 import type { AdapterContext, NativeProc } from "../core/contracts.ts";
@@ -527,6 +527,25 @@ export function runTool(ctx: AdapterContext, argv: string[]): string {
   if (plan(ctx, "run", argv)) return "";
   assertAdemarkUser();
   return run(argv.map((arg) => expandHome(arg, ctx.home))).stdout;
+}
+
+// A symlink under home (an app CLI on PATH, for example). The caller decides the target is safe to replace.
+export function linkPath(ctx: AdapterContext, target: string, source: string): void {
+  const link = expandHome(target, ctx.home);
+  const origin = expandHome(source, ctx.home);
+  if (plan(ctx, "linkPath", [link, origin])) return;
+  assertAdemarkUser();
+  mkdirSync(dirname(link), { recursive: true });
+  rmSync(link, { recursive: true, force: true });
+  symlinkSync(origin, link);
+}
+
+// Removes one path under home: a file, a symlink (never its target) or a whole directory tree.
+export function removePath(ctx: AdapterContext, path: string): void {
+  const target = expandHome(path, ctx.home);
+  if (plan(ctx, "removePath", [target])) return;
+  assertAdemarkUser();
+  rmSync(target, { recursive: true, force: true });
 }
 
 export const FIRST_LAUNCH_DIR = "/tmp/ademark-first-launch";

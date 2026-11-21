@@ -441,6 +441,7 @@ export async function runBlock(o: RunBlockOptions): Promise<BlockResult> {
       home: o.home,
       env: {},
       dryRun: o.instruments.dryRun,
+      agent: o.options.agent,
       log: (message) => console.log(`[${o.rowAde}] ${message}`),
     };
     if (!o.instruments.dryRun) mkdirSync(arena, { recursive: true });

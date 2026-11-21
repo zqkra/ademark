@@ -154,6 +154,9 @@ export interface AdapterContext {
   home: string;
   env: Record<string, string>;
   dryRun: boolean;
+  // The agent this block runs ("claude", "codex" or "own"). Track C setup uses it to aim vendor installs:
+  // Orca's `skills install --agent` takes the agent the block drives.
+  agent?: Agent;
   log(message: string): void;
 }
 
