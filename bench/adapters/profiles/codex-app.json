@@ -162,7 +162,7 @@
       "codex"
     ]
   },
-  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.17: multi-agent workflows, to verify on the current app. No trigger line is proven." },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.17: multi-agent workflows, to verify on the current app (26.1013.40934). The bundle confirms worktree execution environments and automations but no command or slash command that starts orchestration. Pilot must check whether Codex's multi-agent surface creates separate agent sessions a trigger line can reach; provider-native subagents inside one session do not count." },
   "notes": [
     "Bundle: ChatGPT.app 26.1013.40934 (build 20770), bundle id com.openai.codex, productName Codex, Team ID 2DC432GLL2, minimum macOS 13.0, URL schemes codex, http, https. Stack: Chromium renamed (Codex Framework 155.0.8059.80, app.asar 555 MB). Sources: calibrate probe --ade codex-app, codesign -dv /Applications/ChatGPT.app, Contents/Info.plist.",
     "ADES.md 3.17 says 26.1007.30912; the installed app updated itself to 26.1013.40934 (pins/versions.json records the re-pin on 2026-10-21). ADES.md needs the new number.",

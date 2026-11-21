@@ -100,10 +100,10 @@ describe("the apps of each late step", () => {
   });
 
   // ADEMARK-50 on main, 2026-11-11: a profile's trigger is a line, null, or { notCalibrated }.
-  test("from the real adapters: Bare CLI, bb, Capy, Cloudroom, Orca, Super Engineering, Synara", () => {
+  test("from the real adapters: Bare CLI, bb, Capy, Cloudroom, Orca, Paseo, Superset, Super Engineering, Synara, T3 Code, Zeron", () => {
     const apps = orchestrationApps([...MEASURED_ADES]);
     expect(apps[0]).toBe("bare-cli");
-    expect([...apps].sort()).toEqual(["bare-cli", "bb", "capy", "cloudroom", "orca", "super-engineering", "synara"]);
+    expect([...apps].sort()).toEqual(["bare-cli", "bb", "capy", "cloudroom", "orca", "paseo", "super-engineering", "superset", "synara", "t3code", "zeron"]);
     expect(profileNotCalibrated("traycer")).not.toBeNull();
     expect(profileNotCalibrated("orca")).toBeNull();
   });

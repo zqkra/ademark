@@ -364,7 +364,17 @@
       "/Users/ademark/.local/share/claude/versions/"
     ]
   },
-  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.3: agents launch agents through Paseo tools or the CLI. The tools need injectIntoAgents true (off by factory); the trigger line and that setting need a real C1 run." },
+  "orchestrationTrigger": "Use Paseo to launch additional agents for this task and coordinate their work.",
+  "orchestration": {
+    "settings": [
+      {
+        "file": "~/.paseo/config.json",
+        "path": ["daemon", "mcp", "injectIntoAgents"],
+        "value": true
+      }
+    ],
+    "workers": "sessions"
+  },
   "notes": [
     "masks: none recorded. Candidate animated elements found in the bundle: the agent working/connecting status dot and spinner in the sidebar, streaming text in the timeline, relative timestamps, the context/usage meter, and the daemon connection pill.",
     "focusClick: null. Paseo binds Cmd+L to 'Focus message input' (message-input-focus-cmd-l-mac) and focuses the composer when a new agent tab opens; the GUI must confirm the probe types without a click.",
@@ -373,7 +383,7 @@
     "No app sign-in. Claude runs the system `claude` CLI (provider manifest defaultBinary claude) and Codex runs `codex app-server`; both read the account's ~/.claude and ~/.codex. No login files to keep.",
     "Data: PASEO_HOME defaults to ~/.paseo (server/dist/server/server/paseo-home.js) holding config.json, agents/, projects/projects.json, projects/workspaces.json, worktrees/. Electron userData is the default ~/Library/Application Support/Paseo (app.setName('Paseo') before ready), holding desktop-settings.json and the renderer storage. reset moves both.",
     "desktop-settings.json keys: releaseChannel stable, notifications.playSound false, daemon.manageBuiltInDaemon true, daemon.keepRunningAfterQuit false (factory). config.json keys: daemon.relay.enabled false (factory), daemon.mcp.enabled true, daemon.mcp.injectIntoAgents false (factory; the persisted default resolves to false in config.js).",
-    "Orchestration: agents can create agents only through the injected Paseo MCP tools (create_agent, create_workspace) or the `paseo` CLI. injectIntoAgents is false by factory and gates those tools (bootstrap.js setPaseoToolsEnabled(config.mcpInjectIntoAgents !== false)). The CLI lives in the bundle and is only linked into ~/.local/bin by an explicit install action (dist/integrations/cli-install), so it is not on PATH by default. C1 therefore needs injectIntoAgents true, which would also add the Paseo tools to every Track B request; the profile keeps the factory value, so orchestrationTrigger is null until the harness can enable it for Track C only. The GUI session should verify the Bypass/Full Access mode labels and whether a lead agent sees Paseo tools.",
+    "Orchestration: agents can create agents only through the injected Paseo MCP tools (create_agent, create_workspace) or the `paseo` CLI. injectIntoAgents is false by factory and gates those tools (bootstrap.js setPaseoToolsEnabled(config.mcpInjectIntoAgents !== false)). The CLI lives in the bundle and is only linked into ~/.local/bin by an explicit install action (dist/integrations/cli-install), so it is not on PATH by default. The public docs (getpaseo/paseo public-docs/orchestration.md) document the flow: Settings > host > Agents > Enable Paseo tools, then a natural-language request such as 'Use Paseo to launch a second agent to review this branch'. orchestration.settings now flips daemon.mcp.injectIntoAgents to true for Track C only (reset restores false, so Track B is untouched). The trigger line follows the documented phrasing. The GUI pilot must confirm a fresh agent receives the Paseo tools and that workers appear as their own sessions (orchestration.workers sessions).",
     "configure uses the command center (Cmd+K, action command-center.toggle) because Paseo has no keyboard shortcut for the model picker. This is UNVERIFIED: the GUI session must confirm that typing a model slug, 'Bypass' and 'Full Access' highlights the matching command and that Enter applies it to the draft agent; adjust or remove the steps if not.",
     "Mode labels from provider-manifest.js: Claude default 'Auto mode' (id auto), pin 'Bypass' (id bypassPermissions); Codex default 'Auto-review' (id auto-review), pin 'Full Access' (id full-access).",
     "Auto-update cannot be switched off from config: auto-updater.js sets autoUpdater.autoDownload = true and only exposes releaseChannel stable/beta. A self-update between calibration and the night makes the gate stale.",

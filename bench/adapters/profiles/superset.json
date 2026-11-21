@@ -137,8 +137,9 @@
       "/Users/ademark/.local/share/claude/versions/"
     ]
   },
-  "orchestrationTrigger": {
-    "notCalibrated": "ADES.md 3.7: the superset:orchestrate skill. The line that starts it needs a real C1 run."
+  "orchestrationTrigger": "/superset:orchestrate",
+  "orchestration": {
+    "workers": "sessions"
   },
   "claudeTrustScanDirs": [
     "~/.superset/worktrees",
@@ -152,7 +153,7 @@
     "Global writes at launch: Claude hooks in ~/.claude/settings.json and Codex hooks in ~/.codex/hooks.json (agent-wrappers-claude-codex-opencode.ts), skills in ~/.claude/skills and ~/.agents/skills, commands in ~/.agents/commands (managed-skills.ts). The reset must restore ~/.claude, ~/.codex and ~/.agents.",
     "Auto-update: auto-updater.ts sets autoDownload and autoInstallOnAppQuit to true. Checks are skipped when the DISABLE_UPDATE_CHECK env var is set (macOS). A profile step cannot set an env var, so the harness must set it before open.",
     "Telemetry is on by default (renderer DEFAULT_TELEMETRY_ENABLED is true). The stored opt-out setting was not found by name. Opt-out is a GUI item.",
-    "orchestrationTrigger null means not decided, not no orchestration. ADES 3.7 names the superset:orchestrate skill (bundled Claude plugin superset v0.3.0). The trigger line needs a pilot run.",
+    "Orchestration: the superset:orchestrate skill ships in the bundle (dist/main/templates/plugin/skills/orchestrate/SKILL.md, confirmed in the installed 2.0.8 asar) and the app writes plugin skills into ~/.claude/skills and ~/.agents/skills at launch (managed-skills.ts). The documented Claude Code invocation is /superset:orchestrate (repo plugins/superset/skills/orchestrate/SKILL.md and the Paradev docs). The skill drives the `superset`/`paradev` CLI (agents create, terminals), which lives in the bundle; the pilot must confirm it is on PATH inside the workspace terminal and that each worker is its own Claude session (orchestration.workers sessions).",
     "No LaunchAgent label appears in the bundle code, so launchAgents is empty. The helper executables match the bundle names (Contents/Frameworks). The pty-daemon and host-service run as Electron in node mode; their process name is not verified.",
     "GUI session 2026-10-24 on 1.39.0 (re-pinned from pins/ after the app self-updated to 1.40.0 on the owner's first launch; DISABLE_UPDATE_CHECK=1 was in launchd for this launch). Signed in (zqkra's Team). After a force quit macOS asks 'reopen windows?' on the next launch (seen once; Don't Reopen).",
     "openProject (checked): the composer row 'Select project' (789,957) > 'Open from folder' (833,922) opens the macOS open panel; cmd+shift+g, the path, Enter, Enter imports the folder ('Project imported and selected', project named after the folder, Worktree mode, branch main). ~/.superset is in dataDirs, so this runs every block.",

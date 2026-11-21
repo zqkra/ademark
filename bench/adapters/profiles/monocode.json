@@ -310,7 +310,7 @@
       "/Users/ademark/.local/share/claude/versions/"
     ]
   },
-  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.12: /orchestrator, a lead with workers. It shows an Orchestration proposal card that starts only on its Confirm & start button, so C1 needs a calibrated confirm step." },
+  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.12: /orchestrator is the trigger line (orchestratorCommand.ts consumeOrchestratorCommand, leading composer command), but it only renders a proposal card; the run starts on the Confirm & start button (OrchestrationPreview.tsx). C1 sends text with no click, so the pilot must prove a keyboard confirm or add a calibrated click step." },
   "notes": [
     "First version researched from the 0.16.0 bundle and the v0.16.0 source on 2026-10-24, with no app launch in the owner account. Rects, click points and masks are inferred and must be measured in the ademark GUI session before the gate.",
     "Window 1600x1000: project rail 200 pt (appearance.ts PROJECT_RAIL_WIDTH_DEFAULT), session sidebar 260 pt (Sidebar.tsx DEFAULT_WIDTH), title bar 40 pt (TitleBar h-10). The message column and the composer are max-w-4xl (896 pt) centred in the 1140 pt main pane, so the composer box is 588..1472.",

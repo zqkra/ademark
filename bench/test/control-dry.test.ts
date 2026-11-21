@@ -228,9 +228,9 @@ describe("measure what is missing, dry", () => {
     store.close();
     expect(run?.ended_at).not.toBeNull();
     // ADEMARK-49: Paseo's tokens ran in the night's own first pass although its measure failed: Track B is apart from A.
-    // Paseo has no orchestration (a null trigger), so it gets no orchestration step, but its adapter excludes no
-    // reliability test, so it gets the reliability step.
-    expect(tasks.filter((task) => task.ade === "paseo").map((task) => `${task.step} ${task.status} ${task.attempts}`)).toEqual(["prove done 2", "measure done 3", "tokens done 1", "reliability done 1"]);
+    // Paseo has an orchestration trigger now, so it gets an orchestration step too, and no reliability exclusion,
+    // so it gets the reliability step.
+    expect(tasks.filter((task) => task.ade === "paseo").map((task) => `${task.step} ${task.status} ${task.attempts}`)).toEqual(["prove done 2", "measure done 3", "tokens done 1", "orchestration done 1", "reliability done 1"]);
     expect(tasks.filter((task) => task.ade === "bare-cli").map((task) => `${task.step} ${task.pass} ${task.status}`))
       .toEqual(["prove 0 done", "measure 0 done", "top-up 0 failed", "tokens 0 done", "orchestration 0 done", "reliability 0 done", "top-up 1 done"]);
     // In the first pass every late step started after its top-up, which ran after every measure of that pass. (Paseo's
@@ -242,6 +242,8 @@ describe("measure what is missing, dry", () => {
     const order = firstPass.filter((task) => task.step === "tokens" || task.step === "orchestration" || task.step === "reliability").sort((a, b) => Date.parse(a.started_at!) - Date.parse(b.started_at!))
       .map((task) => `${task.step} ${task.ade}`);
     expect(order.slice(0, 2).every((entry) => entry.startsWith("tokens"))).toBe(true);
+    // Both apps have a trigger now; Bare CLI's orchestration still comes first, and both get the reliability step.
+    expect(order.filter((entry) => entry.startsWith("orchestration"))).toEqual(["orchestration bare-cli", "orchestration paseo"]);
     expect(order.slice(-2)).toEqual(["reliability bare-cli", "reliability paseo"]);
     expect(tasks.filter((task) => task.ade === "bare-cli" && task.step === "top-up").map((task) => `${task.pass} ${task.status} ${task.attempts} ${task.tests}`))
       .toEqual(["0 failed 1 A5", "1 done 2 A5"]);

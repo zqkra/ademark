@@ -347,7 +347,7 @@
     ]
   },
   "orchestrationTrigger": {
-    "notCalibrated": "ADES.md 3.5: child agents with agent-to-agent messages; artifact skills start one child agent per ticket. No trigger line is proven."
+    "notCalibrated": "ADES.md 3.5: child agents with agent-to-agent messages; artifact skills start one child agent per ticket. No trigger line is proven in the bundle or docs. Pilot must find how a child agent is started (skill, command, or automatic fan-out) and whether children are separate sessions before a trigger can be written."
   },
   "notes": [
     "PLACEHOLDER: orchestrationTrigger null means UNKNOWN here, not 'no orchestration'. ADES 3.5 says child agents exist, and C1 reports null as 'not supported'. Do not run C1 until the trigger line is decided.",

@@ -143,6 +143,11 @@ export const t3code: Adapter = {
     launchAgents: [],
   },
   login: { kind: "agent-cli", files: [], signIn: null },
+  // C1: every V2 provider session gets T3's orchestration MCP tools automatically (docs/orchestration-v2/
+  // orchestrator-mcp-server.md), and delegate_task creates a child thread, a session of its own. The trigger names
+  // the tool so the lead delegates through T3.
+  orchestrationTrigger: "Use delegate_task to split this build across sub-agents and coordinate their work.",
+  orchestrationWorkers: "sessions",
   get timed(): Adapter["timed"] {
     // A3 needs the app's own shortcut; uncalibrated means no honest trigger to post (missing-value rule).
     const newThread: Trigger[] =

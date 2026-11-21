@@ -130,6 +130,11 @@ export const zeron: Adapter = {
     launchAgents: [],
   },
   login: { kind: "agent-cli", files: [], signIn: null },
+  // C1: the engine injects its `zeron` MCP server into every agent run (docs/mcp.md, RunRequest.mcp), and
+  // create_chats spawns child chats of their own. The trigger names the tool so the lead delegates through Zeron
+  // instead of the provider's native subagents, which share its session and would not count.
+  orchestrationTrigger: "Use create_chats to split this build across child chats and coordinate their work.",
+  orchestrationWorkers: "sessions",
   get timed(): Adapter["timed"] {
     return {
       launch: [{ kind: "open", bundleId: BUNDLE_ID }],
