@@ -104,9 +104,9 @@ describe("the apps of each late step", () => {
   test("each has its own folder and its own limit, after up to 11 minutes of calm", () => {
     expect(lateDir("/r", RUN, "orca", "tokens", 2, false)).toBe(`/r/${RUN}-orca-tokens-2`);
     expect(lateDir("/r", RUN, "orca", "orchestration", 1, true)).toBe(`/r/${RUN}-orca-orchestration-1-dry`);
-    expect(TOKENS_TIMEOUT_MS).toBe(45 * 60_000);
+    expect(TOKENS_TIMEOUT_MS).toBe(70 * 60_000);
     expect(ORCHESTRATION_TIMEOUT_MS).toBe(140 * 60_000);
-    expect(stepLimitMs("tokens")).toBe(56 * 60_000);
+    expect(stepLimitMs("tokens")).toBe(81 * 60_000);
     expect(stepLimitMs("orchestration")).toBe(151 * 60_000);
   });
 

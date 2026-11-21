@@ -838,7 +838,7 @@ Steps: as B1 with the B3 prompt from TASKS.md. Wait until the agent finishes and
 Values: the B1 components, plus the number of model requests and tool calls. The request count comes from the
 capture, the tool calls from the session log.
 
-Runs: 1 per model.
+Runs: 3 per model, like B1. The headline is the median of the valid repetitions.
 
 Receipt: `capture.jsonl`, `notes.md`.
 

@@ -228,8 +228,9 @@ Smoke rows (the rehearsal, `rehearsal-<time>`) never count as a measurement: the
 A Control night measures Track A in its measure and top-up steps, whatever `~/.config/ademark/tracks` says. Track B and
 C1 run in steps of their own, after every measure and top-up of a pass:
 
-1. **Tokens.** `run --ade <id> --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 45 minutes. A healthy block takes 4
-   to 5 (6 Nov); the limit holds a block where every turn runs to its cap, tried twice. Every app gets one.
+1. **Tokens.** `run --ade <id> --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 70 minutes. A healthy block takes about
+   7 minutes since B3 runs three times; the limit holds a block where every turn runs to its cap, tried twice. Every
+   app gets one.
 2. **Orchestration.** `run --ade <id> --tracks C --tests C1` in `<run>-<ade>-orchestration-<n>`, cut at 140 minutes (two
    runs of the 45-minute C1 cap, each with its wait for 5 quiet minutes, the settle and the grading: up to 131 minutes). Bare CLI goes first, because its solo run of the C1 goal is the
    baseline of `orchestration-tax`. Then each app whose adapter has a trigger line, read when the step is planned. An
@@ -290,6 +291,9 @@ ADEMark is built like Terminal-Bench: an open harness that anyone can run, with 
 
 ## Changelog
 
+- 2026-11-21: B3 runs three times per model, like B1, so the real-prompt tax has a median that covers rerun
+  variance (Refs #43). The tokens step limit grows to 70 minutes to hold the worst case of the six prompt turns,
+  tried twice.
 - 2026-11-12: v1.0 published with the first results: 15 ADEs and the Bare CLI, Track A, Track B and C1. C2 to C6 and the Codex app are not in v1.
 - 2026-10-19: v1.0-draft.
 - 2026-11-12: a night measures Track A in its measure and top-ups; Track B and C1 run in their own tokens and

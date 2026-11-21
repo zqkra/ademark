@@ -18,7 +18,7 @@ import {
 export const b3RealPromptTax: TestRunner = {
   id: "B3",
   track: "B",
-  repeats: () => 1,
+  repeats: () => 3,
   maxExtraRuns: 0,
   needsExtraRun: () => false,
   runRep: async (ctx, rep) => {

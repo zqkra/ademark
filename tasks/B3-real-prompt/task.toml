@@ -6,4 +6,5 @@ mode = "local"
 thread = "new"
 prompt = "prompt.md"
 time_cap_s = 300
+repeats = 3
 grade_groups = []

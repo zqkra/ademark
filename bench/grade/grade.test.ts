@@ -199,7 +199,7 @@ describe("task loading", () => {
     expect(restart.faults).toEqual([{ kind: "restart-app", at_s: 90, duration_s: null }]);
   });
 
-  test("B1 repeats three times and B3 defaults to one", () => {
+  test("B1 and B3 repeat three times", () => {
     const b1 = loadTask("B1-hello");
     expect(b1.time_cap_s).toBe(120);
     expect(b1.repeats).toBe(3);
@@ -207,7 +207,7 @@ describe("task loading", () => {
 
     const b3 = loadTask("B3-real-prompt");
     expect(b3.time_cap_s).toBe(300);
-    expect(b3.repeats).toBe(1);
+    expect(b3.repeats).toBe(3);
   });
 
   test("the fault prompts are byte-identical", () => {

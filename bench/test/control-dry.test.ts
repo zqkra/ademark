@@ -155,9 +155,10 @@ describe("night, dry", () => {
     expect([...new Set(topUp.map((entry) => entry.test_id))]).toEqual(["A4"]);
     const report = readFileSync(join(dir, `${night.run_id}-dry`, "report.md"), "utf8");
     // Dry instruments capture no model request, so the dry B rows are invalid with that reason (ADEMARK-49): 9 rows of
-    // Track A and 33 of Track B. One of the 33 is B4 `obeyed`, invalid with `no session log` since b0fae10 (a dry run
-    // writes no session log; before that fix the row was valid with no value). The dry C1 rows of Orca are valid.
-    expect(report.split("\n")[0]).toBe("42 invalid rows that are not accepted limits (NEW)");
+    // Track A and 49 of Track B (B3 runs three times since 2026-11-21). One of the 49 is B4 `obeyed`, invalid
+    // with `no session log` since b0fae10 (a dry run writes no session log; before that fix the row was valid with no
+    // value). The dry C1 rows of Orca are valid.
+    expect(report.split("\n")[0]).toBe("58 invalid rows that are not accepted limits (NEW)");
     expect(report).toContain("| B4 | tokens 1 | invalid (NEW): no session log |");
     expect(report).toContain("| A4 | top-up 1 | invalid (NEW): no replay request |");
     expect(report).toContain(`### Track B (tokens)\n\n- tokens 1: ${night.run_id}-orca-tokens-1-dry`);

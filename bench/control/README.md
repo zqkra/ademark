@@ -27,7 +27,7 @@ Each step of each ADE is one row in `results/control.sqlite`. Two buttons run th
      More) ends the night and starts nothing. A test takes the rows of a later attempt only if it was under its
      minimum before that attempt ran; a complete test keeps its attempt.
   5. **Tokens** and **Orchestration** (ADEMARK-49). After every measure and top-up of a pass, each app gets a tokens
-     step (`run --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 45 minutes, `TOKENS_TIMEOUT_MS`), then Bare CLI and
+     step (`run --tracks B` in `<run>-<ade>-tokens-<n>`, cut at 70 minutes, `TOKENS_TIMEOUT_MS`), then Bare CLI and
      each app whose adapter has an orchestration trigger get an orchestration step (`run --tracks C --tests C1` in
      `<run>-<ade>-orchestration-<n>`, cut at 140 minutes, `ORCHESTRATION_TIMEOUT_MS`). The first pass adds them by itself, after its top-ups; a
      later pass adds them for each app with no done attempt, or whose done attempt has no valid row, and the line under

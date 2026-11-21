@@ -28,7 +28,7 @@ reference machine and audited re-runs only (METHODOLOGY.md §8).
 | Step | Time | Model usage |
 |---|---|---|
 | Track A, speed and weight | about 25 to 30 minutes per ADE | none: a local replay server answers in place of the model |
-| Track B, tokens | about 4 to 5 minutes per agent | B1 ("hi") 3 times and B3 once. In v1 one "hi" sent 22.2K to 77.0K tokens. |
+| Track B, tokens | about 6 to 8 minutes per agent | B1 ("hi") and B3 three times each. In v1 one "hi" sent 22.2K to 77.0K tokens. |
 | Track C, test C1 | up to 45 minutes per run, and a second run when a graded build is not 5/5 (§7) | In v1 one C1 run sent 1.7 to 4.2 million tokens. One run can use up a 5-hour window of a Claude plan. |
 | Calibrating a new ADE | about 45 minutes, then about 25 minutes for the gate | none from the Claude plan: the gate runs Track A |
 
@@ -330,7 +330,7 @@ bun bench/cli.ts machine off --apply                                     # when 
 | Track | What the harness does | What to know |
 |---|---|---|
 | A | Resets the app, writes a fresh arena to `~/arena/<id>/`, starts the replay server on `127.0.0.1:8787`, seeds 5 threads, then runs A5, A6, A7, A8, A10, A11, A3, A4, A9, A2 and A1. | Do not touch the Mac. Keys go to the app only while it is in front, and a skipped key makes the row invalid. |
-| B | Resets the app, starts `mitmdump` to capture every model request, runs B1 three times and B3 once per agent, then computes B2 and B4 from the captures. | Needs the plan and network. |
+| B | Resets the app, starts `mitmdump` to capture every model request, runs B1 and B3 three times each per agent, then computes B2 and B4 from the captures. | Needs the plan and network. |
 | C | `--tests C1` runs only the orchestrated build of v1: the trigger line, the prompt, the agents, then the grader. | Read §7 first: a clone cannot grade the build. C2 to C6 were not part of v1. |
 
 Each run ends with `wrote <folder>`. What it writes in `results/<run-id>/`:

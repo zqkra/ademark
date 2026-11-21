@@ -54,13 +54,14 @@ export const TRACKS: readonly TrackLetter[] = tracksFrom(existsSync(TRACKS_FILE)
 export const MEASURE_TIMEOUT_MS = 75 * 60_000;
 // A smoke lap of one app is about 8 minutes; A11 alone may build its 2,000-message thread for up to 30.
 export const REHEARSE_TIMEOUT_MS = 45 * 60_000;
-// ADEMARK-49. A healthy Track B block takes 4 to 5 minutes, launch included (control-2026-11-06T09-52-52Z-bare-cli-1 and
-// -emdash-1, from the A marker to the B marker). The limit holds the worst case, where every turn runs to its cap: four
-// B1 turns (three and one extra run) and one B3 turn, each with the 25 s wait for the prompt to leave and the 30 s wait
-// for side calls, is about 18 minutes, plus the reset and the launch, and the run tries a stopped block once more.
-// Until 2026-11-11 the limit was 20 minutes: it would have cut exactly the apps whose turn end is not found (on 6 and 7
-// Nov `the turn failed` 292 times), with exit 124 and no finished attempt in place of rows with their reason.
-export const TOKENS_TIMEOUT_MS = 45 * 60_000;
+// ADEMARK-49. A healthy Track B block takes about 7 minutes, launch included (v1 blocks ran 4 to 5 on 6 Nov, and B3
+// runs three times since 2026-11-21). The limit holds the worst case, where every turn runs to its cap: four
+// B1 turns (three and one extra run) and three B3 turns, each with the 25 s wait for the prompt to leave and the
+// 30 s wait for side calls, is about 29 minutes, plus the reset and the launch, and the run tries a stopped block
+// once more. Until 2026-11-11 the limit was 20 minutes: it would have cut exactly the apps whose turn end is not
+// found (on 6 and 7 Nov `the turn failed` 292 times), with exit 124 and no finished attempt in place of rows with
+// their reason.
+export const TOKENS_TIMEOUT_MS = 70 * 60_000;
 // ADEMARK-49, from the Track C sizing of ADEMARK-50 (2026-11-11): a C1 block takes up to 121 minutes. That is the
 // 45-minute cap (tasks/C1-orchestrated-build/task.toml, time_cap_s 2700), a second run when shipped is under 5/5 or the
 // app crashed (TESTS.md section 4, C1), the settle and the grading. Since the same day each run also waits until every

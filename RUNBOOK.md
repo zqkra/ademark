@@ -338,7 +338,7 @@ The CLI runs this loop for every ADE in the published random order. The operator
 
 1. Gates, version check, reset, contamination check as in §7.1, with the replay variables unset.
 2. Start `mitmdump --mode local`. Set the CA variables (TESTS.md §1.5).
-3. Launch. For each model the ADE supports: B1 three times, then B3. B2 and B4 are computed afterwards from the captures.
+3. Launch. For each model the ADE supports: B1 and B3 three times each. B2 and B4 are computed afterwards from the captures.
 4. Run the `nettop` completeness check.
 5. Quit. Write `B.done`.
 
