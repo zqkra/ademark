@@ -331,7 +331,8 @@ The CLI runs this loop for every ADE in the published random order. The operator
    project. Create the 5 seeded threads.
 9. **Tests in this order:** A5 and A6 (front, then covered), A7, A8, A10, A11, A3, A4, A9 (3 runs, each ends with a
    relaunch), A2 (10 runs), A1 (10 runs, the first-launch tier once per ADE before the cold runs). A1 runs last
-   because it kills everything.
+   because it kills everything. The pilot tests A13 and A14 come after A1 and run only when `--tests` names them; each
+   launches the app again.
 10. **Done marker.** Write `results/<run-id>/<ade>/A.done`. The next ADE starts at step 1.
 
 ### 7.2 Track B (day 2 morning, real API)

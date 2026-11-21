@@ -7,6 +7,8 @@ import { SEED_PROMPT, SEED_TIMEOUT_MS } from "../../run/loop.ts";
 import { SMOKE, smokeCount, smokeSeconds } from "../../run/smoke.ts";
 import {
   SAMPLE_HZ,
+  agentOutputs,
+  agentsSplit,
   elapsedMs,
   invalidVariantRows,
   launchPid,
@@ -21,7 +23,13 @@ const OUTPUTS = [
   { variant: "rest-20", unit: "MB" },
   { variant: "mb-per-thread", unit: "MB" },
   { variant: "lag-p95-20", unit: "ms" },
+  // The same rest window as rest-20: the agents the 20 threads keep alive, and what the Mac pays for app and agents.
+  { variant: "rest-20-agents", unit: "MB" },
+  { variant: "rest-20-agent-count", unit: "count" },
+  { variant: "rest-20-total", unit: "MB" },
 ] as const;
+// The rows A10 published before the agents rows. Only these decide an extra run.
+const FIRST_VARIANTS = new Set<string>(["rest-20", "mb-per-thread", "lag-p95-20"]);
 const EXTRA_THREADS = 15;
 const WINDOW_S = 60;
 const LAG_PROBES = 30;
@@ -32,7 +40,7 @@ export const scale: TestRunner = {
   track: "A",
   repeats: () => 1,
   maxExtraRuns: 1,
-  needsExtraRun: (rows) => rows.some((row) => !row.valid),
+  needsExtraRun: (rows) => rows.some((row) => !row.valid && FIRST_VARIANTS.has(row.variant)),
   runRep: async (ctx, rep): Promise<ResultRow[]> => {
     const started = ctx.instruments.now();
     const pid = launchPid(ctx);
@@ -66,7 +74,8 @@ export const scale: TestRunner = {
       durationS: smokeSeconds(ctx, WINDOW_S, SMOKE.a10WindowS),
       csv: samples.abs,
     });
-    const app = groupSeries(readSamples(samples.abs), "app");
+    const restRows = readSamples(samples.abs);
+    const app = groupSeries(restRows, "app");
     const durationMs = elapsedMs(started, ctx.instruments.now());
     const notes = unfinished === 0 ? "" : `${unfinished} of ${extraThreads} seed threads did not finish`;
     if (app.length === 0) return invalidVariantRows(ctx, { ...base, durationMs, notes }, OUTPUTS, "no app samples");
@@ -94,6 +103,7 @@ export const scale: TestRunner = {
         invalidReason: baselineMb === null ? "no A5 value" : undefined,
       },
       { variant: "lag-p95-20", value: lag.p95, unit: "ms", receipts },
+      ...agentOutputs(ctx, agentsSplit(restRows), ["rest-20-agents", "rest-20-agent-count", "rest-20-total"]),
     ]);
   },
 };

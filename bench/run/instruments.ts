@@ -18,6 +18,7 @@ import type {
 } from "../core/contracts.ts";
 import type { Gates } from "../core/gates.ts";
 import type {
+  ClickOptions,
   CoverOptions,
   EchoOptions,
   IdleOptions,
@@ -91,6 +92,8 @@ export interface Instruments {
   window(o: WindowOptions): Promise<NativeWindow>;
   /** Posts keys, a combo or Enter to the measured pid. */
   keys(o: KeysOptions): Promise<NativeNow>;
+  /** Clicks one window point of the measured pid (A13 moves focus with it). */
+  click(o: ClickOptions): Promise<NativeNow>;
   /** Times typing readiness and visual settling from captured frames. */
   echo(o: EchoOptions): Promise<NativeEcho>;
   /** Waits until a word is visible in the region and returns the frame time. */

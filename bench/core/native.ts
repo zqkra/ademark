@@ -261,6 +261,17 @@ export function keys(options: KeysOptions): Promise<NativeNow> {
   return call<NativeNow>(args);
 }
 
+export interface ClickOptions {
+  pid: number;
+  /** Window point from the top-left; the helper puts the pointer back where it was. */
+  at: Point;
+}
+
+// One click at a window point (`ademark-native click`). The helper refuses unless `pid` is frontmost.
+export function click(options: ClickOptions): Promise<NativeNow> {
+  return call<NativeNow>(["click", "--pid", String(options.pid), "--at", pointArg(options.at)]);
+}
+
 export interface EchoOptions {
   pid: number;
   triggers: Trigger[];

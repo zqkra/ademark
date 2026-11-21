@@ -23,7 +23,7 @@ the interfaces here.
 9. Every registered runner of `TRACK_ORDER[track]`, in order, with `repeats(ctx)` runs and
    `needsExtraRun()`/`maxExtraRuns` extra runs. A1 to A4 stop early when their median is stable (below). Every
    returned row, invalid included, is written with `RunWriter.appendRow`. A block whose `<track>.done` marker exists
-   is skipped.
+   is skipped. A pilot runner (`pilot: true`, A13 and A14) is registered only when `run --tests` names it.
 10. `adapter.quit()` (best effort), the sampler stop, and `<rowAde>/<track>.done`.
 11. An adapter or runner error writes `harness error` and stops the ADE's remaining blocks. `runAll` writes the
     manifest before the first ADE, retries the ADEs that stopped (below), and writes `summary.json` after the last

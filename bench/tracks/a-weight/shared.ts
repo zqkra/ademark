@@ -1,12 +1,14 @@
 // Shared code of the Track A weight runners and A12 (TESTS.md §0.1, §1.2, §2).
 // Every pure computation is here, so the unit tests can feed it synthetic sample rows.
+import { existsSync, readFileSync } from "node:fs";
 import { basename } from "node:path";
 import type { Adapter, Receipts, ResultRow, Server, TestId } from "../../core/contracts.ts";
 import { profileStreamSetupMs } from "../../adapters/profile.ts";
 import { median, quantile } from "../../core/stats.ts";
-import type { TestContext } from "../../run/context.ts";
-import { BYTES_PER_MB, invalidRow, type SampleRow } from "../../run/kit.ts";
+import { sampleRulesFor, type TestContext } from "../../run/context.ts";
+import { BYTES_PER_MB, groupSeries, invalidRow, readSamples, receipt, type SampleRow } from "../../run/kit.ts";
 import { isAgentExecutable } from "../../core/agents.ts";
+import { NOT_SUPPORTED } from "../../calibrate/pass.ts";
 import { SMOKE, smokeSeconds } from "../../run/smoke.ts";
 
 // TESTS.md §1.2: the sampler runs at 4 Hz.
@@ -102,6 +104,35 @@ export function isSettled(slope: number): boolean {
   return slope < SETTLE_MB_PER_MIN;
 }
 
+const SETTLE_CHUNK_S = 20;
+export const SETTLE_CAP_S = 600;
+
+export interface Settle {
+  settled: boolean;
+  seconds: number;
+}
+
+// A5 step 1 (A13 reuses it): 20 s chunks, a line through the last 60 s of the `app` series, stop under 1 MB/min.
+export async function settleApp(ctx: TestContext, test: TestId, rep: number, pid: number, capS: number): Promise<Settle> {
+  const chunks: SampleRow[][] = [];
+  const chunkCount = Math.ceil(capS / SETTLE_CHUNK_S);
+  let seconds = 0;
+  for (let chunk = 1; chunk <= chunkCount; chunk++) {
+    const csv = receipt(ctx, test, rep, `settle-${String(chunk).padStart(2, "0")}.csv`);
+    await ctx.instruments.sample({
+      rules: sampleRulesFor(ctx.adapter, [pid]),
+      hz: SAMPLE_HZ,
+      durationS: SETTLE_CHUNK_S,
+      csv: csv.abs,
+    });
+    chunks.push(readSamples(csv.abs));
+    seconds += SETTLE_CHUNK_S;
+    const window = tailWindow(groupSeries(mergeSampleRows(chunks), "app"), SETTLE_WINDOW_NS);
+    if (window.length >= 2 && isSettled(slopeMbPerMin(window))) return { settled: true, seconds };
+  }
+  return { settled: false, seconds };
+}
+
 export function medianMb(series: readonly SeriesPoint[]): number {
   return quantile(series.map((point) => point.bytes), 0.5) / BYTES_PER_MB;
 }
@@ -140,6 +171,20 @@ export function agentsSplit(rows: readonly SampleRow[]): AgentsSplit {
   return { agents, total, counts };
 }
 
+// The agents an app keeps alive and what the Mac pays for app and agents, as `[agents, count, total]` rows (A5, A10).
+// An app whose agents run detached from it (Diri: ppid 1, own responsible pid) would read 0 MB of agents and a total too
+// low; its profile excludes that part with a reason instead (excludeTests "A5:agents").
+export function agentOutputs(ctx: TestContext, split: AgentsSplit, names: readonly [string, string, string]): Output[] {
+  const excluded = ctx.adapter.excludedTests?.["A5:agents"];
+  const reason = excluded === undefined ? undefined : `${NOT_SUPPORTED} here: ${excluded}`;
+  const value = (compute: () => number): number | null => (reason === undefined ? compute() : null);
+  return [
+    { variant: names[0], value: value(() => medianMb(split.agents)), unit: "MB", invalidReason: reason },
+    { variant: names[1], value: value(() => median(split.counts)), unit: "count", invalidReason: reason },
+    { variant: names[2], value: value(() => medianMb(split.total)), unit: "MB", invalidReason: reason },
+  ];
+}
+
 // RAM of one agent: each tick's agents sum over its agent count. Compared with the Bare CLI, this shows whether an
 // ADE's way of running Claude costs more than Claude itself.
 export function perAgentSeries(split: AgentsSplit): SeriesPoint[] {
@@ -172,6 +217,29 @@ export function peakLifetimeMb(rows: readonly SampleRow[]): number {
   return ticks.size === 0 ? Number.NaN : Math.max(...ticks.values()) / BYTES_PER_MB;
 }
 
+// CPU, wakeups and energy over a whole sample window, as A6 computes them, or null with fewer than two ticks.
+export function windowRates(rows: readonly SampleRow[], group: "app" | "agents" = "app"): AppRates | null {
+  const all = ticks(rows);
+  if (all.length < 2) return null;
+  return appRates(all[0]!, all[all.length - 1]!, group);
+}
+
+// The CPU, wakeup and energy rows of one window, named `<prefix>cpu`, `<prefix>wakeups`, `<prefix>energy` (A7, A13, A14).
+export function rateOutputs(prefix: string, rates: AppRates | null): Output[] {
+  const reason = (value: number | null | undefined, counter: string): string | undefined =>
+    rates === null ? "fewer than two sample ticks" : value === null ? `no ${counter} counter` : undefined;
+  return [
+    { variant: `${prefix}cpu`, value: rates?.cpu_percent ?? null, unit: "%", invalidReason: reason(rates?.cpu_percent, "cpu") },
+    {
+      variant: `${prefix}wakeups`,
+      value: rates?.wakeups_per_s ?? null,
+      unit: "per s",
+      invalidReason: reason(rates?.wakeups_per_s, "wakeup"),
+    },
+    { variant: `${prefix}energy`, value: rates?.energy_mw ?? null, unit: "mW", invalidReason: reason(rates?.energy_mw, "energy") },
+  ];
+}
+
 export interface AppRates {
   /** `app` pids present in both ticks of the window. */
   pids: number;
@@ -188,10 +256,10 @@ function readable(...values: readonly number[]): boolean {
 }
 
 // TESTS.md A6: deltas over the pids of the `app` group present in the first and the last tick.
-// A counter of -1 is not readable, so it is skipped instead of counted as zero.
-export function appRates(first: Tick, last: Tick): AppRates {
-  const before = new Map(first.rows.filter((row) => row.group === "app").map((row) => [row.pid, row]));
-  const after = last.rows.filter((row) => row.group === "app" && before.has(row.pid));
+// A counter of -1 is not readable, so it is skipped instead of counted as zero. A7 and A14 also read the `agents` group.
+export function appRates(first: Tick, last: Tick, group: "app" | "agents" = "app"): AppRates {
+  const before = new Map(first.rows.filter((row) => row.group === group).map((row) => [row.pid, row]));
+  const after = last.rows.filter((row) => row.group === group && before.has(row.pid));
   const dt_ns = last.t_ns - first.t_ns;
   const skipped = { cpu: 0, wakeups: 0, energy: 0 };
   let cpuDelta = 0;
@@ -356,6 +424,18 @@ export function elapsedMs(start: number | bigint, end: number | bigint): number 
 export function launchPid(ctx: TestContext): number {
   const pid = ctx.state.get("launch_pid");
   return typeof pid === "number" ? pid : 0;
+}
+
+/**
+ * The pilot tests A13 and A14 run after A1, whose last repetition quits the app. Each launches the app when the launch
+ * pid is gone, and reuses it when it still runs (`run --tests A14` alone, or A14 after A13).
+ */
+export async function runningPid(ctx: TestContext): Promise<{ pid: number; launched: boolean }> {
+  const pid = launchPid(ctx);
+  if (pid > 0 && (await ctx.instruments.procs()).some((proc) => proc.pid === pid)) return { pid, launched: false };
+  const launched = await ctx.adapter.launch(ctx.adapterCtx);
+  ctx.state.set("launch_pid", launched.pid);
+  return { pid: launched.pid, launched: true };
 }
 
 // TESTS.md A7, A8 and A10 open the same five streams in the same order, 2 s apart.
@@ -567,6 +647,39 @@ export async function waitForLongerStreams(
     goal = target();
   }
   return { waitedMs: Math.max(0, (Number(clock.now()) - startedNs) / 1e6), ended: goal.ended && Number(clock.now()) >= goal.atNs };
+}
+
+/**
+ * A14: when the first of the five streams to start ends, from the replay log after `sinceNs`. A window that ends later
+ * no longer has five streams. Null without five streams in the log (a live-model app, a dry run).
+ */
+export function firstStreamEndNs(log: string, sinceNs: number, streamSeconds: number = STREAM_SECONDS): number | null {
+  const firsts = new Map<string, number>();
+  for (const line of log.split("\n")) {
+    if (line.trim().length === 0) continue;
+    let entry: { t_ns?: number; session?: string | null };
+    try {
+      entry = JSON.parse(line) as { t_ns?: number; session?: string | null };
+    } catch {
+      continue;
+    }
+    if (typeof entry.t_ns !== "number" || entry.t_ns < sinceNs || typeof entry.session !== "string") continue;
+    if (!entry.session.startsWith("stream-") || firsts.has(entry.session)) continue;
+    firsts.set(entry.session, entry.t_ns);
+  }
+  if (firsts.size < STREAM_ORDER.length) return null;
+  return Math.min(...firsts.values()) + streamSeconds * 1e9;
+}
+
+// The replay server's request log of this block, or null when there is none (a live-model app, a dry run).
+export function replayLog(ctx: TestContext): string | null {
+  const replay = ctx.state.get("replay") as { logPath?: string } | undefined;
+  if (replay?.logPath === undefined || !existsSync(replay.logPath)) return null;
+  try {
+    return readFileSync(replay.logPath, "utf8");
+  } catch {
+    return null;
+  }
 }
 
 export async function streamCounts(ctx: TestContext): Promise<Record<string, number> | null> {

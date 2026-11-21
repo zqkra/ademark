@@ -87,6 +87,10 @@ Test IDs are stable. Every chart, receipt and data row carries its test ID.
 | A10 | Scale | RAM and Typing Lag with 20 open threads | MB per thread, lower | 1 |
 | A11 | Long Thread | Open, scroll and switch a 2,000-message thread | ms, dropped frames, lower | 5 |
 | A12 | Leak | RAM growth over 30 min of real work (measured during Track C) | MB/h, lower | passive |
+| A13 | Focus Idle (pilot) | CPU at rest with the composer focused, and with focus moved off it | %, lower | 1 window of 60 s each |
+| A14 | Background Streams (pilot) | CPU while 5 agents stream, with a streaming thread in front, then an idle one | %, lower | 1 window of 45 s each |
+
+Pilot tests run only when `run --tests` names them. They are not ranked until the pilot proves them.
 
 A1 + A3 + A4 is also shown as one number, **Ready to Answer**, because some ADEs start the agent
 when you open a thread and others when you send.

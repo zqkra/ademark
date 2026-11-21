@@ -315,6 +315,7 @@ export function realInstruments(): Instruments {
     sampleStart: async (o): Promise<SampleHandle> => native.sampleStart(o),
     window: (o) => native.window(o),
     keys: (o) => keysToFront(o),
+    click: (o) => timedAtFront(o.pid, [], () => native.click(o)),
     echo: (o) => timedAtFront(o.pid, o.triggers, () => native.echo(o)),
     watch: (o) => timedAtFront(o.pid, o.triggers, () => native.watch(o)),
     lag: (o) => native.lag(o),

@@ -1,5 +1,4 @@
 // A7 Fight Weight: RAM of the app while 5 agents stream (TESTS.md §2 A7).
-import { existsSync, readFileSync } from "node:fs";
 import { median } from "../../core/stats.ts";
 import type { ResultRow } from "../../core/contracts.ts";
 import { sampleRulesFor, type TestContext } from "../../run/context.ts";
@@ -23,6 +22,9 @@ import {
   streamOverlapSeconds,
   waitForLongerStreams,
   peakLifetimeMb,
+  rateOutputs,
+  replayLog,
+  windowRates,
   ticksWithAgents,
   weightRows,
 } from "./shared.ts";
@@ -30,22 +32,22 @@ import {
 const TEST = "A7";
 const VARIANTS = ["app-p95", "agents-p95", "total-p95", "app-peak", "per-agent-p95"] as const;
 // Claude against Claude: the RAM of one agent and how many ran, next to the Bare CLI's (TESTS.md A7).
-const MB_OUTPUTS = [...VARIANTS.map((variant) => ({ variant, unit: "MB" })), { variant: "agent-count", unit: "count" }];
+// Then the CPU of the same window: the app's CPU, wakeups and energy, and the agents' CPU beside it.
+const MB_OUTPUTS = [
+  ...VARIANTS.map((variant) => ({ variant, unit: "MB" })),
+  { variant: "agent-count", unit: "count" },
+  { variant: "app-cpu", unit: "%" },
+  { variant: "app-wakeups", unit: "per s" },
+  { variant: "app-energy", unit: "mW" },
+  { variant: "agents-cpu", unit: "%" },
+];
+// The rows A7 published before its CPU rows. Only these decide an extra run, so the CPU rows never re-run A7.
+const MEMORY_VARIANTS = new Set<string>([...VARIANTS, "agent-count"]);
 const WINDOW_S = 180;
 const AGENT_MINIMUM = 5;
 // TESTS.md A7: 150 s of the 180 s window. The required ticks keep that fraction when a smoke window is short.
 const AGENT_ACTIVE_FRACTION = 150 / 180;
 const REQUIRED_REASON = (seconds: number): string => `fewer than 5 agents for ${seconds} s`;
-
-function replayLog(ctx: TestContext): string | null {
-  const replay = ctx.state.get("replay") as { logPath?: string } | undefined;
-  if (replay?.logPath === undefined || !existsSync(replay.logPath)) return null;
-  try {
-    return readFileSync(replay.logPath, "utf8");
-  } catch {
-    return null;
-  }
-}
 
 function replayOverlap(ctx: TestContext, sinceNs: number, streamSeconds: number): number | null {
   const log = replayLog(ctx);
@@ -57,7 +59,7 @@ export const fightWeight: TestRunner = {
   track: "A",
   repeats: () => 1,
   maxExtraRuns: 1,
-  needsExtraRun: (rows) => rows.some((row) => !row.valid),
+  needsExtraRun: (rows) => rows.some((row) => !row.valid && MEMORY_VARIANTS.has(row.variant)),
   runRep: async (ctx, rep): Promise<ResultRow[]> => {
     const started = ctx.instruments.now();
     const pid = launchPid(ctx);
@@ -148,6 +150,8 @@ export const fightWeight: TestRunner = {
           invalidReason: perAgent.length === 0 ? "no agents samples" : undefined,
         },
         { variant: "agent-count", value: median(split.counts), unit: "count" },
+        ...rateOutputs("app-", windowRates(rows, "app")),
+        rateOutputs("agents-", windowRates(rows, "agents"))[0]!,
       ],
     );
   },

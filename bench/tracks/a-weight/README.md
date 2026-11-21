@@ -2,7 +2,8 @@
 
 `runners` here are A5 Weigh-in, A6 Idle Burn, A7 Fight Weight, A8 Typing Lag, A9 Ghost Weight and A10 Scale, which
 run in the Track A block, plus A12 Leak, which runs in the Track C block after C6 and reads the sampler CSV that
-block leaves in `state["C.samples_csv"]`.
+block leaves in `state["C.samples_csv"]`. A13 Focus Idle and A14 Background Streams are pilot tests: they run at the
+end of the Track A block, and only when `run --tests` names them.
 
 The procedure of each runner is TESTS.md §2; the values every row publishes are the ones in that section.
 `shared.ts` holds the pure computations (settle slope, CPU/wakeup/energy rates, p95, 5-agents count, leak slope and

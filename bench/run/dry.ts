@@ -187,6 +187,10 @@ export function dryInstruments(planPath: string): Instruments {
       record(planPath, "keys", { ...o });
       return { t_ns: Number(clock()) };
     },
+    click: async (o) => {
+      record(planPath, "click", { ...o });
+      return { t_ns: Number(clock()) };
+    },
     echo: async (o) => {
       record(planPath, "echo", { ...o });
       const t0 = Number(clock());

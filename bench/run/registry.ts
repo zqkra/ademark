@@ -28,13 +28,19 @@ export interface TestRunner {
   adaptive?: AdaptiveRuns;
   /** Repetitions in a smoke run, 1 by default. A test whose second repetition depends on the first needs 2. */
   smokeRepeats?: number;
+  /**
+   * A pilot test runs only when `run --tests` names it. Nights, Control, gates and rehearsals never load it, so a new
+   * test cannot change their plan, their top-ups or their pass rule until the pilot has proven it.
+   */
+  pilot?: boolean;
   /** True when the written rows need one more run, for example on any invalid row. */
   needsExtraRun(rows: ResultRow[]): boolean;
   runRep(ctx: TestContext, rep: number): Promise<ResultRow[]>;
 }
 
 export const TRACK_ORDER: Record<TrackLetter, TestId[]> = {
-  A: ["A5", "A6", "A7", "A8", "A10", "A11", "A3", "A4", "A9", "A2", "A1"],
+  // A13 and A14 are pilot tests. They come last: each relaunches the app itself, so no earlier test changes.
+  A: ["A5", "A6", "A7", "A8", "A10", "A11", "A3", "A4", "A9", "A2", "A1", "A13", "A14"],
   B: ["B1", "B3", "B2", "B4"],
   C: ["C1", "C2", "C3", "C4", "C5", "C6", "A12"],
 };
@@ -53,7 +59,11 @@ async function importRunners(indexPath: string): Promise<TestRunner[]> {
 }
 
 // Every folder under tracks/ is a group of runners, whatever its name: each runner's own track decides its block.
-export async function loadRunners(dir: string = resolve(benchRoot, "tracks")): Promise<Map<TestId, TestRunner>> {
+// Pilot runners load only with `pilot: true` (`run --tests`).
+export async function loadRunners(
+  dir: string = resolve(benchRoot, "tracks"),
+  options: { pilot?: boolean } = {},
+): Promise<Map<TestId, TestRunner>> {
   const root = resolve(dir);
   const runners = new Map<TestId, TestRunner>();
   if (!existsSync(root)) return runners;
@@ -66,6 +76,7 @@ export async function loadRunners(dir: string = resolve(benchRoot, "tracks")): P
     if (!existsSync(indexPath)) continue;
     for (const runner of await importRunners(indexPath)) {
       if (runners.has(runner.id)) throw new Error(`duplicate test runner id ${runner.id} (from ${indexPath})`);
+      if (runner.pilot === true && options.pilot !== true) continue;
       runners.set(runner.id, runner);
     }
   }

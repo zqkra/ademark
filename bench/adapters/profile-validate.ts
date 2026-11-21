@@ -205,6 +205,7 @@ function checkCalibration(value: unknown, window: WindowSize | null, errors: str
     checkRect(calibration.launchComposerRect, "calibration.launchComposerRect", window, errors, true);
   }
   checkPoint(calibration.focusClick, "calibration.focusClick", window, errors, true);
+  if ("blurClick" in calibration) checkPoint(calibration.blurClick, "calibration.blurClick", window, errors, true);
   if (calibration.probe !== undefined && !(typeof calibration.probe === "string" && /^[a-z]{4,12}$/.test(calibration.probe) && new Set(calibration.probe).size === calibration.probe.length)) {
     errors.push("calibration.probe: must be 4 to 12 different lowercase letters");
   }

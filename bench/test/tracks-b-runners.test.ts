@@ -221,11 +221,14 @@ describe("Track B runners", () => {
     expect(rows.filter((row) => row.variant === "requests" || row.variant === "tool-calls").every((row) => row.unit === "count")).toBe(true);
   });
 
-  test("B2 splits the first B1 body into five estimated segments", async () => {
+  test("B2 splits the first B1 body into five estimated segments and their total", async () => {
     const h = harness("claude", "claude-opus-5-5");
     await run(b1HelloTax, h, 1);
     const rows = await run(b2RequestAnatomy, h, 1);
-    expect(rows.map((row) => row.variant)).toEqual(["system", "tools", "mcp-tools", "injected", "params"]);
+    expect(rows.map((row) => row.variant)).toEqual(["system", "tools", "mcp-tools", "injected", "params", "total"]);
+    const segmentSum = rows.slice(0, 5).reduce((sum, row) => sum + row.value!, 0);
+    expect(rows[5]!.value).toBe(segmentSum);
+    expect(rows[5]!.notes).toContain("estimate");
     expect(rows.every((row) => row.unit === "tokens" && row.valid)).toBe(true);
 
     const anatomy = anatomyOf(BODY, loadTask("B1-hello").prompt);
@@ -249,7 +252,7 @@ describe("Track B runners", () => {
   test("B2 without B1 capture writes one invalid row per segment", async () => {
     const h = harness("claude", "claude-opus-5-5");
     const rows = await run(b2RequestAnatomy, h, 1);
-    expect(rows).toHaveLength(5);
+    expect(rows).toHaveLength(6);
     expect(rows.every((row) => !row.valid)).toBe(true);
     expect(rows.every((row) => row.invalid_reason === "no B1 capture")).toBe(true);
   });

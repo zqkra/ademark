@@ -721,9 +721,9 @@ async function cmdRun(args: string[]): Promise<number> {
 
   try {
     for (const id of ades) getAdapter(id);
-    const allRunners = await loadRunners(flag(args, "--runners"));
-    // --tests reruns only some tests of a block (a pilot fix), with the block's own setup.
+    // --tests reruns only some tests of a block (a pilot fix), with the block's own setup. It also runs pilot tests.
     const only = flag(args, "--tests")?.split(",").map((name) => name.trim());
+    const allRunners = await loadRunners(flag(args, "--runners"), { pilot: only !== undefined });
     const runners = only === undefined ? allRunners : new Map([...allRunners].filter(([id]) => only.includes(id)));
     if (only !== undefined && runners.size !== only.length) {
       console.error(`run: --tests names an unknown test: ${only.filter((id) => !allRunners.has(id as never)).join(",")}`);

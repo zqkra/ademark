@@ -2,7 +2,7 @@
 // Modules: core (runner, results, gates), adapters, native helpers, replay, capture, grade.
 
 export type TestId =
-  | "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "A7" | "A8" | "A9" | "A10" | "A11" | "A12"
+  | "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "A7" | "A8" | "A9" | "A10" | "A11" | "A12" | "A13" | "A14"
   | "B1" | "B2" | "B3" | "B4"
   | "C1" | "C2" | "C3" | "C4" | "C5" | "C6"
   | "F";
@@ -105,6 +105,9 @@ export interface Calibration {
   clearKeys?: string[];
   threadRect: Rect | null;
   focusClick: Point | null;
+  // A13 (pilot): a point inside the window that takes focus off the composer and starts nothing (an empty part of the
+  // sidebar or the title bar). Missing: A13 writes no `front-blurred` rows.
+  blurClick?: Point | null;
   // The letters A1 to A3 type, when the default probe ("ademarkqz") has a pair that the app's own text holds (a
   // placeholder with "folders" or "commands"): the native rule would take that text as the echo. Lowercase letters
   // whose pairs no ordinary word has. Missing = the default probe.

@@ -27,7 +27,7 @@ describe("dryInstruments", () => {
     try {
       const instruments = dryInstruments(join(dir, "plan.jsonl")) as unknown as Record<string, unknown>;
       const members = [
-        "now", "sleep", "procs", "pidOf", "idle", "sample", "sampleStart", "window", "keys", "echo", "watch", "lag",
+        "now", "sleep", "procs", "pidOf", "idle", "sample", "sampleStart", "window", "keys", "click", "echo", "watch", "lag",
         "scroll", "cover", "screenshot", "prepareArena", "startReplay", "startCapture", "fault", "grade",
         "footprint", "purge", "gates", "contamination",
       ];

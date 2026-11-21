@@ -6,7 +6,7 @@ const FIXTURES = resolve(import.meta.dir, "fixtures", "run");
 
 describe("runner registry", () => {
   test("orders every track exactly as RUNBOOK.md §7", () => {
-    expect(TRACK_ORDER.A).toEqual(["A5", "A6", "A7", "A8", "A10", "A11", "A3", "A4", "A9", "A2", "A1"]);
+    expect(TRACK_ORDER.A).toEqual(["A5", "A6", "A7", "A8", "A10", "A11", "A3", "A4", "A9", "A2", "A1", "A13", "A14"]);
     expect(TRACK_ORDER.B).toEqual(["B1", "B3", "B2", "B4"]);
     expect(TRACK_ORDER.C).toEqual(["C1", "C2", "C3", "C4", "C5", "C6", "A12"]);
   });

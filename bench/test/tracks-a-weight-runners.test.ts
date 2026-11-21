@@ -257,18 +257,28 @@ describe("A6 Idle Burn", () => {
 });
 
 describe("A7 Fight Weight", () => {
-  test("app, agents and total p95 plus app-peak over a 3 minute window", async () => {
+  test("app, agents and total p95 plus app-peak, then the CPU of the same 3 minute window", async () => {
     const csv = writeSampleCsv(join(dir, "fight.csv"), {
       seconds: 180,
       rows: [
-        { pid: 100, group: "app", exe: APP_EXE, bytes: 200 * MIB, lifetimeMaxB: 210 * MIB },
-        { pid: 101, group: "app", exe: HELPER_EXE, bytes: 100 * MIB, lifetimeMaxB: 130 * MIB },
+        {
+          pid: 100,
+          group: "app",
+          exe: APP_EXE,
+          bytes: 200 * MIB,
+          lifetimeMaxB: 210 * MIB,
+          cpuNsPerS: 0.2e9,
+          wakeupsPerS: 40,
+          energyNjPerS: 3e6,
+        },
+        { pid: 101, group: "app", exe: HELPER_EXE, bytes: 100 * MIB, lifetimeMaxB: 130 * MIB, cpuNsPerS: 0.1e9, wakeupsPerS: 20 },
         ...Array.from({ length: 5 }, (_, index) => ({
           pid: 300 + index,
           ppid: 100,
           group: "agents" as const,
           exe: AGENT_EXE,
           bytes: 50 * MIB,
+          cpuNsPerS: 0.4e9,
         })),
       ],
     });
@@ -288,8 +298,14 @@ describe("A7 Fight Weight", () => {
     expectValidRows(rows);
     expect(rows.map((row) => row.variant)).toEqual([
       "app-p95", "agents-p95", "total-p95", "app-peak", "per-agent-p95", "agent-count",
+      "app-cpu", "app-wakeups", "app-energy", "agents-cpu",
     ]);
-    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "MB", "MB", "MB", "count"]);
+    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "MB", "MB", "MB", "count", "%", "per s", "mW", "%"]);
+    // 0.2 + 0.1 cores of app CPU, 40 + 20 wakeups per s, 3 mJ per s from the main process, and 5 agents at 0.4 core.
+    expect(rows[6]!.value).toBeCloseTo(30, 6);
+    expect(rows[7]!.value).toBeCloseTo(60, 6);
+    expect(rows[8]!.value).toBeCloseTo(3, 6);
+    expect(rows[9]!.value).toBeCloseTo(200, 6);
     expect(rows.every((row) => row.valid)).toBe(true);
     expect(rows[0]!.value).toBeCloseTo(300, 9);
     expect(rows[1]!.value).toBeCloseTo(250, 9);
@@ -324,7 +340,7 @@ describe("A7 Fight Weight", () => {
     });
 
     const rows = await fightWeight.runRep(ctx, 1);
-    expect(rows.length).toBe(6);
+    expect(rows.length).toBe(10);
     expect(rows.every((row) => !row.valid && row.invalid_reason === "fewer than 5 agents for 150 s")).toBe(true);
   });
 
@@ -334,7 +350,7 @@ describe("A7 Fight Weight", () => {
 
     const rows = await fightWeight.runRep(ctx, 1);
     expectValidRows(rows);
-    expect(rows.length).toBe(6);
+    expect(rows.length).toBe(10);
     expect(rows.every((row) => row.invalid_reason === "not calibrated: newThread")).toBe(true);
     expect(fake.calls.length).toBe(0);
   });
@@ -441,10 +457,16 @@ describe("A9 Ghost Weight", () => {
 });
 
 describe("A10 Scale", () => {
-  test("rest median, MB per thread and lag p95 with 20 threads", async () => {
+  test("rest median, MB per thread and lag p95 with 20 threads, and the agents the threads keep", async () => {
     const rest = writeSampleCsv(join(dir, "rest.csv"), {
       seconds: 60,
-      rows: [{ pid: 100, group: "app", exe: APP_EXE, bytes: 400 * MIB }],
+      rows: [
+        { pid: 100, group: "app", exe: APP_EXE, bytes: 400 * MIB },
+        { pid: 300, ppid: 100, group: "agents", exe: AGENT_EXE, bytes: 60 * MIB },
+        { pid: 301, ppid: 100, group: "agents", exe: AGENT_EXE, bytes: 40 * MIB },
+        // A git child of an agent counts in the agents' RAM, not as another agent.
+        { pid: 302, ppid: 301, group: "agents", exe: "/usr/bin/git", bytes: 10 * MIB },
+      ],
     });
     const calls: string[] = [];
     const adapter = weightAdapter({
@@ -463,9 +485,14 @@ describe("A10 Scale", () => {
 
     const rows = await scale.runRep(ctx, 1);
     expectValidRows(rows);
-    expect(rows.map((row) => row.variant)).toEqual(["rest-20", "mb-per-thread", "lag-p95-20"]);
-    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "ms"]);
+    expect(rows.map((row) => row.variant)).toEqual([
+      "rest-20", "mb-per-thread", "lag-p95-20", "rest-20-agents", "rest-20-agent-count", "rest-20-total",
+    ]);
+    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "ms", "MB", "count", "MB"]);
     expect(rows.every((row) => row.valid)).toBe(true);
+    expect(rows[3]!.value).toBeCloseTo(110, 9);
+    expect(rows[4]!.value).toBe(2);
+    expect(rows[5]!.value).toBeCloseTo(510, 9);
     expect(rows[0]!.value).toBeCloseTo(400, 9);
     expect(rows[1]!.value).toBeCloseTo(8, 9);
     expect(rows[2]!.value).toBeCloseTo(33, 9);
@@ -484,8 +511,8 @@ describe("A10 Scale", () => {
 
     const rows = await scale.runRep(ctx, 1);
     expectValidRows(rows);
-    expect(rows.length).toBe(3);
-    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "ms"]);
+    expect(rows.length).toBe(6);
+    expect(rows.map((row) => row.unit)).toEqual(["MB", "MB", "ms", "MB", "count", "MB"]);
     expect(rows.every((row) => row.invalid_reason === "not calibrated: composerRect")).toBe(true);
     expect(fake.calls.length).toBe(0);
   });

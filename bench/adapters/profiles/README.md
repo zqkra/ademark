@@ -124,6 +124,7 @@ validation error.
 | `calibration.threadRect` | The message column used for OCR. Required, not null. |
 | `calibration.newThreadComposerRect` | A3, optional: the composer of the new thread, when the new-thread action opens it where the old thread has no composer (a modal). Needs `activeComposerRect`, and must not overlap it. Set only after a check on recorded frames. |
 | `calibration.focusClick` | Point to click when the app does not focus the composer itself; null when it does. |
+| `calibration.blurClick` | A13 (pilot), optional: a point inside the window that takes focus off the composer and starts nothing, such as an empty part of the sidebar. Missing: A13 writes no `blurred-*` rows. |
 | `calibration.masks` | Rects the "visually settled" check ignores (caret, spinners, clocks). |
 | `calibration.drive` | `cli`, `api`, `cdp`, `ax`, `keys` or `manual`, from `ADES.md`. |
 | `calibration.dataDirs` | Folders `reset()` moves aside. Never deleted. |

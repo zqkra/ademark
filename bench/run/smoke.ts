@@ -19,6 +19,11 @@ export const SMOKE = {
   /** A10: extra threads and the rest window, in seconds. */
   a10ExtraThreads: 3,
   a10WindowS: 5,
+  /** A13 (pilot): settle cap and each measuring window, in seconds. */
+  a13SettleCapS: 20,
+  a13WindowS: 5,
+  /** A14 (pilot): each measuring window, in seconds. */
+  a14WindowS: 5,
   /** A7, A8, A10: the gap between opening the five streams (full run 2 s). */
   streamGapS: 0.5,
 } as const;

@@ -2,24 +2,20 @@
 import type { ResultRow } from "../../core/contracts.ts";
 import { sampleRulesFor, type TestContext } from "../../run/context.ts";
 import type { TestRunner } from "../../run/registry.ts";
-import { BYTES_PER_MB, emptyReceipts, groupSeries, readSamples, receipt, type SampleRow } from "../../run/kit.ts";
-import { NOT_SUPPORTED } from "../../calibrate/pass.ts";
-import { median } from "../../core/stats.ts";
+import { BYTES_PER_MB, emptyReceipts, groupSeries, readSamples, receipt } from "../../run/kit.ts";
 import { SMOKE, smokeSeconds } from "../../run/smoke.ts";
 import {
   SAMPLE_HZ,
-  SETTLE_WINDOW_NS,
+  SETTLE_CAP_S,
+  agentOutputs,
   agentsSplit,
   appPidsAt,
   elapsedMs,
   invalidVariantRows,
-  isSettled,
   launchPid,
   medianMb,
-  mergeSampleRows,
   pidSeries,
-  slopeMbPerMin,
-  tailWindow,
+  settleApp,
   weightRows,
 } from "./shared.ts";
 
@@ -31,35 +27,7 @@ const OUTPUTS = [
   { variant: "agent-count", unit: "count" },
   { variant: "total", unit: "MB" },
 ];
-const SETTLE_CHUNK_S = 20;
-const SETTLE_CAP_S = 600;
 const WINDOW_S = 60;
-
-interface Settle {
-  settled: boolean;
-  seconds: number;
-}
-
-// A5 step 1: 20 s chunks, a line through the last 60 s of the `app` series, stop under 1 MB/min.
-async function settle(ctx: TestContext, rep: number, pid: number, capS: number): Promise<Settle> {
-  const chunks: SampleRow[][] = [];
-  const chunkCount = Math.ceil(capS / SETTLE_CHUNK_S);
-  let seconds = 0;
-  for (let chunk = 1; chunk <= chunkCount; chunk++) {
-    const csv = receipt(ctx, TEST, rep, `settle-${String(chunk).padStart(2, "0")}.csv`);
-    await ctx.instruments.sample({
-      rules: sampleRulesFor(ctx.adapter, [pid]),
-      hz: SAMPLE_HZ,
-      durationS: SETTLE_CHUNK_S,
-      csv: csv.abs,
-    });
-    chunks.push(readSamples(csv.abs));
-    seconds += SETTLE_CHUNK_S;
-    const window = tailWindow(groupSeries(mergeSampleRows(chunks), "app"), SETTLE_WINDOW_NS);
-    if (window.length >= 2 && isSettled(slopeMbPerMin(window))) return { settled: true, seconds };
-  }
-  return { settled: false, seconds };
-}
 
 interface WindowServerReading {
   mb: number | null;
@@ -77,18 +45,6 @@ async function windowServerFootprint(ctx: TestContext, rep: number, tag: string)
   return { mb: footprint.total_b / BYTES_PER_MB, note: "" };
 }
 
-// An app whose agents run detached from it (Diri: ppid 1, own responsible pid) would read 0 MB of agents and a total too
-// low; its profile excludes that part with a reason instead (excludeTests "A5:agents").
-function agentOutputs(ctx: TestContext, split: ReturnType<typeof agentsSplit>) {
-  const excluded = ctx.adapter.excludedTests?.["A5:agents"];
-  const reason = excluded === undefined ? undefined : `${NOT_SUPPORTED} here: ${excluded}`;
-  return [
-    { variant: "agents", value: reason === undefined ? medianMb(split.agents) : null, unit: "MB", invalidReason: reason },
-    { variant: "agent-count", value: reason === undefined ? median(split.counts) : null, unit: "count", invalidReason: reason },
-    { variant: "total", value: reason === undefined ? medianMb(split.total) : null, unit: "MB", invalidReason: reason },
-  ];
-}
-
 export const weighIn: TestRunner = {
   id: TEST,
   track: "A",
@@ -103,7 +59,7 @@ export const weighIn: TestRunner = {
     const settleCapS = smokeSeconds(ctx, SETTLE_CAP_S, SMOKE.a5SettleCapS);
     const windowS = smokeSeconds(ctx, WINDOW_S, SMOKE.a5WindowS);
 
-    const settled = await settle(ctx, rep, pid, settleCapS);
+    const settled = await settleApp(ctx, TEST, rep, pid, settleCapS);
     const gatesBefore = await ctx.instruments.gates();
     const windowserverBefore = await windowServerFootprint(ctx, rep, "start");
 
@@ -171,7 +127,7 @@ export const weighIn: TestRunner = {
           unit: "MB",
           invalidReason: windowServerMissing ? `windowserver not measured: ${windowServerNote}` : undefined,
         },
-        ...agentOutputs(ctx, split),
+        ...agentOutputs(ctx, split, ["agents", "agent-count", "total"]),
       ],
     );
   },

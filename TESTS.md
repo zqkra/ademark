@@ -345,6 +345,7 @@ Calibration data in the same file, made during the pilot:
 | `bundleId`, `appName` | For launch and quit |
 | `composerRect`, `threadRect` | Regions for OCR, relative to the window |
 | `focusClick` | Point to click when the composer is not focused |
+| `blurClick` | A13: a point that takes focus off the composer and starts nothing |
 | `newThread` | Shortcut or click point |
 | `masks` | Rectangles ignored by "visually settled" |
 | `drive` | `cli`, `api`, `cdp`, `ax` or `keys`, from ADES.md |
@@ -639,6 +640,12 @@ Values (one row each):
 | `per-agent-p95` | p95 of each tick's `agents` sum divided by its agent count: one agent's RAM, compared with the Bare CLI's |
 | `agent-count` | Median number of agent subtrees alive |
 | `overhead` | `total-p95` minus the Bare CLI's `total-p95` |
+| `app-cpu` | CPU of the `app` group over the same window, as A6 computes it, in % of one core |
+| `app-wakeups`, `app-energy` | Wakeups per s and energy in mW of the `app` group, as A6 |
+| `agents-cpu` | CPU of the `agents` group over the window. It shows that every ADE carried the same agent load |
+
+The CPU rows read the samples the memory rows read. They take no extra time and change no step. A CPU row invalid on
+its own (an unreadable counter) never re-runs A7.
 
 Validity: invalid if fewer than 5 agent processes (or 5 SDK sessions) were active for at least 150 s. Also invalid
 if the replay log shows the five streams ran together less than 150 s: the stream length minus the time from the first
@@ -704,6 +711,12 @@ Values:
 | `mb-per-thread` (headline) | (A10 rest median − A5 median) ÷ 15 |
 | `rest-20` | the `app` median at rest with 20 threads |
 | `lag-p95-20` | Typing Lag p95 with 20 threads and 5 streams |
+| `rest-20-agents` | Median of the `agents` sum in the rest window, as A5 `agents` |
+| `rest-20-agent-count` | Median number of agent subtrees alive in the rest window |
+| `rest-20-total` | Median of `app` + `agents` in the rest window: what the Mac pays with 20 threads open |
+
+The last three read the rest window's samples. An app whose profile excludes `A5:agents` gets them as not supported,
+with the same reason.
 
 Runs: 1.
 
@@ -751,6 +764,66 @@ Value: the slope of a least-squares line through the `app` sum over the longest 
 with its 95 % interval. If Track C for the ADE is shorter than 30 minutes, the row covers the available window and says so.
 
 Receipt: `samples.csv` for the window.
+
+### A13. Focus Idle (pilot)
+
+Purpose: CPU, wakeups and energy at rest with the composer focused, and with focus moved off it inside the app. A
+focused text field can keep a caret, a compositor or a frame loop busy in some apps. A6 `front` does not say where focus
+is.
+
+Pilot: runs only with `run --tests A13`. Not ranked and not on the site until the pilot proves it.
+
+Preconditions: after A1. The app is launched again if A1 left it closed. No screen recording during the windows.
+
+Steps:
+
+1. Settle as A5 step 1 (cap 10 min).
+2. Click the composer: `focusClick`, or the centre of `launchComposerRect` or `composerRect`. Type the probe until the
+   echo timer reads it (§1.3, 10 s cap), then clear it. The composer now has focus, as after typing.
+3. Wait 5 s, then sample 60 s (`focused`).
+4. If the profile has `calibration.blurClick`: click it, wait 5 s, sample 60 s (`blurred`), then click the composer
+   again.
+
+Values: `focused-cpu`, `focused-wakeups`, `focused-energy`, `blurred-cpu`, `blurred-wakeups`, `blurred-energy`, computed
+as A6. The finding is the difference between the two windows of one app, not a rank against A6.
+
+Validity: `focused` rows are invalid when the probe never showed (`the composer did not show typing after the focus
+click`). Every row is invalid when swap grew. A profile without `blurClick` writes no `blurred` rows.
+**(validate in pilot: a short recording of the composer before each window shows the caret blinking when focused and
+still when blurred.)**
+
+Runtime: about 3 to 13 minutes, most of it the settle.
+
+Receipt: `settle-*.csv`, `samples-focused.csv`, `samples-blurred.csv`, `frames-focus.json`.
+
+### A14. Background Streams (pilot)
+
+Purpose: the app's cost while 5 agents stream in threads the user is not looking at. Do hidden threads still render?
+
+Pilot: runs only with `run --tests A14`. Not ranked and not on the site until the pilot proves it.
+
+Preconditions: after A13 (or after A1). Replay server on. No screen recording during the windows.
+
+Steps:
+
+1. Open the 5 streams of A7 (thread 1 ends in front). Wait 5 s.
+2. Sample 45 s (`front`).
+3. Run `timed.shortThread` and watch `threadRect` for the seed marker, as A3 step 1 (10 s cap).
+4. Sample 45 s (`background`).
+
+Both windows and the switch end inside one 3-minute stream, also for an app that takes 40 s to start its five.
+
+Values: `front-cpu`, `front-wakeups`, `front-energy`, `front-agents-cpu`, the same four for `background`, and
+`agent-count`. The finding is `background-cpu` against `front-cpu` of the same app. `agents-cpu` shows the agents
+carried the same load in both windows.
+
+Validity: as A7, each window needs 5 agents for 150/180 of its ticks, every stream must reach the replay server, and
+no stream may end before the background window does. `background` rows are invalid when the marker never showed (`no
+seeded thread came to the front`).
+
+Runtime: about 2 minutes.
+
+Receipt: `samples-front.csv`, `samples-background.csv`, `frames-switch.json`.
 
 ## 3. Track B. Tokens
 
@@ -822,7 +895,10 @@ Steps:
 3. Diff the ADE against the Bare CLI: tools added and removed by name, system text added, parameter changes.
 4. Record the User-Agent: Claude Code or SDK version, Codex version.
 
-Values: tokens per segment and the difference against the Bare CLI per segment.
+Values: tokens per segment and the difference against the Bare CLI per segment. A sixth row, `total`, is the sum of
+the five segments. Its difference against the Bare CLI's `total` is what the ADE adds to each request, in tokens.
+Each segment is counted alone, so `total` holds the framing of five count requests. The Bare CLI's holds the same, and
+the difference does not.
 
 Publication rule: for open-source ADEs, the added text is quoted with a link to its source line. For closed-source
 ADEs, only sizes and categories are published.

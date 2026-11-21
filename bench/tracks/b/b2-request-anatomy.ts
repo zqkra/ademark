@@ -28,6 +28,9 @@ export interface Anatomy {
 }
 
 export const SEGMENT_NAMES: readonly SegmentName[] = ["system", "tools", "mcp-tools", "injected", "params"];
+// The rows B2 writes: one per segment, then their sum. Against the Bare CLI's sum, `total` is the tokens the ADE adds to
+// each request before the user's prompt.
+export const B2_VARIANTS: readonly string[] = [...SEGMENT_NAMES, "total"];
 const CONVERSATION_KEYS = new Set(["messages", "input", "system", "instructions", "tools"]);
 const ANTHROPIC_COUNT_URL = "https://api.anthropic.com/v1/messages/count_tokens";
 
@@ -218,7 +221,7 @@ export const b2RequestAnatomy: TestRunner = {
       const faults = b1.map((entry) => repProblem(entry)).filter((problem): problem is string => problem !== null);
       const reason = faults.length > 0 ? `no valid B1 repetition: ${faults[0]}` : "no B1 capture";
       const log = writeNotes(ctx, rep, ["# B2", reason === "no B1 capture" ? "no B1 capture with a main-thread body" : reason]);
-      return SEGMENT_NAMES.map((variant) =>
+      return B2_VARIANTS.map((variant) =>
         invalidRow(
           ctx,
           { test_id: "B2", variant, rep, server: "live", unit: "tokens", duration_ms: 0, receipts: receipts(log), notes: "" },
@@ -232,7 +235,7 @@ export const b2RequestAnatomy: TestRunner = {
       body = JSON.parse(readBodyText(capture, bodyFile));
     } catch {
       const log = writeNotes(ctx, rep, ["# B2", `cannot parse ${bodyFile}`]);
-      return SEGMENT_NAMES.map((variant) =>
+      return B2_VARIANTS.map((variant) =>
         invalidRow(
           ctx,
           { test_id: "B2", variant, rep, server: "live", unit: "tokens", duration_ms: 0, receipts: receipts(log), notes: "" },
@@ -242,7 +245,7 @@ export const b2RequestAnatomy: TestRunner = {
     }
     if (asObject(body) === null) {
       const log = writeNotes(ctx, rep, ["# B2", `${bodyFile} is not a JSON object`]);
-      return SEGMENT_NAMES.map((variant) =>
+      return B2_VARIANTS.map((variant) =>
         invalidRow(
           ctx,
           { test_id: "B2", variant, rep, server: "live", unit: "tokens", duration_ms: 0, receipts: receipts(log), notes: "" },
@@ -297,21 +300,25 @@ export const b2RequestAnatomy: TestRunner = {
       ),
     ]);
 
-    return anatomy.segments.map((segment, index) => {
-      const count = counts[index]!;
-      return ctx.row({
+    const durationMs = Math.max(0, Math.round((Number(ctx.instruments.now()) - startedNs) / 1_000_000));
+    const tokenRow = (variant: string, tokens: number, estimated: boolean) =>
+      ctx.row({
         test_id: "B2",
-        variant: segment.name,
+        variant,
         rep,
         server: "live",
-        value: count.tokens,
+        value: tokens,
         unit: "tokens",
-        duration_ms: Math.max(0, Math.round((Number(ctx.instruments.now()) - startedNs) / 1_000_000)),
+        duration_ms: durationMs,
         valid: true,
         invalid_reason: null,
         receipts: receipts(log),
-        notes: count.estimated ? "estimate" : "",
+        notes: estimated ? "estimate" : "",
       });
-    });
+    const total = counts.reduce((sum, count) => sum + count.tokens, 0);
+    return [
+      ...anatomy.segments.map((segment, index) => tokenRow(segment.name, counts[index]!.tokens, counts[index]!.estimated)),
+      tokenRow("total", total, counts.some((count) => count.estimated)),
+    ];
   },
 };
