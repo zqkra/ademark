@@ -97,7 +97,7 @@ when you open a thread and others when you send.
 |---|---|---|---|---|
 | B1 | Hello Tax | Tokens and $ sent for the prompt "hi", split into fresh input, cache write, cache read, output and side calls | tokens, $ | 3 per model |
 | B2 | Request Anatomy | What the ADE adds to the first request against the Bare CLI: system prompt, tools, MCP tools, injected text | tokens per category | 1 per model |
-| B3 | Real Prompt Tax | The same split for one read-only real prompt | tokens, $ | 1 per model |
+| B3 | Real Prompt Tax | The same split for one read-only real prompt | tokens, $ | 3 per model |
 | B4 | Repo Rules | Does the agent see the repository's `AGENTS.md` (a canary instruction) | yes or no | 1 per model |
 
 ### Track C. Orchestration and Reliability (real model: Claude)
