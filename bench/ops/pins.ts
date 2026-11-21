@@ -37,7 +37,8 @@ export function appPinAt(appPath: string, runner: OpsRunner): Pin | null {
 
 export type CliResolve = (command: string) => { version: string | null; path: string | null };
 
-// claude and codex are command line tools, not apps: the pin is the `--version` string doctor compares.
+// claude, codex and ghostty are command line tools or helpers, not field apps: the pin is the `--version` string
+// doctor compares. codex is recorded only when installed; the bench measures Claude only, so it is never required.
 export function cliPin(name: string, runner: OpsRunner, resolve: CliResolve = versionOf): Pin | null {
   const result = runner.run([name, "--version"]);
   const version = result.code === 0 ? parseVersionOutput(result.stdout) : null;
@@ -64,7 +65,8 @@ export interface CollectDeps {
   cliResolve?: CliResolve;
 }
 
-// Reads every measured app plus claude, codex and Ghostty. Old entries that differ move under "replaced".
+// Reads every measured app plus claude, codex (when installed) and Ghostty. Old entries that differ move under
+// "replaced".
 export async function collectPins(runner: OpsRunner = defaultOpsRunner, privateRootPath: string = privateRoot(), deps: CollectDeps = {}): Promise<CollectedPins> {
   const installOf = deps.install ?? ((id: string) => getAdapter(id).installCheck());
   const cliResolve = deps.cliResolve ?? versionOf;
@@ -86,7 +88,8 @@ export async function collectPins(runner: OpsRunner = defaultOpsRunner, privateR
   };
 
   for (const id of MEASURED_ADES) {
-    if (id === "bare-cli") continue;
+    // bare-cli is the control, not an app; codex-app runs only OpenAI models and is not measured.
+    if (id === "bare-cli" || id === "codex-app") continue;
     const install = await installOf(id);
     if (!install.installed || install.path === null) {
       note("apps", id, null);
