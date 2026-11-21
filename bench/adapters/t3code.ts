@@ -102,6 +102,13 @@ function setTelemetry(ctx: AdapterContext): void {
   setenv(ctx, TELEMETRY_ENV, "false");
 }
 
+// Pilot 2026-10-20: each thread runs in its own worktree, ~/.t3/worktrees/<project folder name>/<branch>, and the
+// Claude session log carries that cwd, not the arena's. waitDone and Track B read the same logs, so they share
+// this prefix.
+function sessionLogCwdPrefix(ctx: AdapterContext): string {
+  return join(ctx.home, ".t3", "worktrees", basename(ctx.worktree));
+}
+
 export const t3code: Adapter = {
   id: "t3code",
   name: "T3 Code",
@@ -227,12 +234,11 @@ export const t3code: Adapter = {
       since: state.since || Date.now(),
       timeoutMs,
       pollMs: 2000,
-      // Pilot 2026-10-20: each thread runs in its own worktree, ~/.t3/worktrees/<project folder name>/<branch>, and the
-      // Claude session log carries that cwd, not the arena's.
-      cwdPrefix: join(ctx.home, ".t3", "worktrees", basename(ctx.worktree)),
+      cwdPrefix: sessionLogCwdPrefix(ctx),
       idleFallback: false,
     });
   },
+  sessionLogCwdPrefix,
   async quit(ctx: AdapterContext): Promise<void> {
     isRealRun(ctx);
     const appPids = await pidsFor(ctx, APP_HINTS);

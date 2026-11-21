@@ -289,6 +289,14 @@ export function profileAdapter(base: AdapterBase): Adapter {
     return state.pid ?? 0;
   }
 
+  // waitDone's session-log cwd rule: "any" reads under the whole home. Track B reads the same logs for tokens
+  // and tool calls, so it asks the adapter for the same prefix. An own agent has no session log, so its wait
+  // ends by the idle fallback alone, and that reads file changes in the project folder, not the whole home.
+  function sessionLogCwdPrefix(ctx: AdapterContext): string | undefined {
+    const profile = requireProfile("waitDone");
+    return profile.waitDone.cwd === "any" && state.agent !== "own" ? ctx.home : undefined;
+  }
+
   // Quit, confirm a quit dialog with Return (Synara always asks; Emdash and Superset while agents run), and return the
   // attributed processes still alive. A profile's own quit steps need the app's pid, which A1 and A2 do not keep.
   async function quitAndWait(ctx: AdapterContext, profile: AdeProfile, useSteps: boolean): Promise<number[]> {
@@ -480,10 +488,8 @@ export function profileAdapter(base: AdapterBase): Adapter {
     async waitDone(ctx: AdapterContext, timeoutMs: number): Promise<{ done: boolean; reason: string }> {
       isRealRun(ctx);
       const profile = requireProfile("waitDone");
-      // An own agent has no session log, so its wait ends by the idle fallback alone, and that reads file changes in
-      // one folder: the project, not the whole home, where something always changes.
-      const anyCwd = profile.waitDone.cwd === "any" && state.agent !== "own";
-      const cwd = anyCwd ? ctx.home : ctx.worktree;
+      const cwdPrefix = sessionLogCwdPrefix(ctx);
+      const cwd = cwdPrefix ?? ctx.worktree;
       if (ctx.dryRun) {
         ctx.log(planMessage("waitForEndOfTurn", [`agent=${state.agent}`, `cwd=${cwd}`, `timeoutMs=${timeoutMs}`]));
         return { done: true, reason: "dry run" };
@@ -492,13 +498,14 @@ export function profileAdapter(base: AdapterBase): Adapter {
         ctx,
         agent: state.agent,
         cwd,
-        cwdPrefix: anyCwd ? ctx.home : undefined,
+        cwdPrefix,
         since: state.since || Date.now(),
         timeoutMs,
         pollMs: 2000,
         idleFallback: profile.waitDone.idleFallback,
       });
     },
+    sessionLogCwdPrefix,
     async quit(ctx: AdapterContext): Promise<void> {
       isRealRun(ctx);
       const profile = requireProfile("quit");

@@ -66,12 +66,12 @@ interface Harness {
   rows: ResultRow[];
 }
 
-function sessionLog(): string {
+function sessionLog(cwd: string = worktree): string {
   const dir = join(home, ".claude", "projects", "-tmp-ademark-tracks-b");
   mkdirSync(dir, { recursive: true });
   const path = join(dir, "session.jsonl");
-  const content = readFileSync(join(FIXTURES, "claude-session.jsonl"), "utf8").replaceAll("/tmp/ademark-tracks-b", worktree);
-  const asked = JSON.stringify({ type: "user", isSidechain: false, cwd: worktree, message: { role: "user", content: loadTask("B3-real-prompt").prompt } });
+  const content = readFileSync(join(FIXTURES, "claude-session.jsonl"), "utf8").replaceAll("/tmp/ademark-tracks-b", cwd);
+  const asked = JSON.stringify({ type: "user", isSidechain: false, cwd, message: { role: "user", content: loadTask("B3-real-prompt").prompt } });
   writeFileSync(path, `${asked}\n${content}`);
   const future = new Date(Date.now() + 3_600_000);
   utimesSync(path, future, future);
@@ -219,6 +219,21 @@ describe("Track B runners", () => {
     expect(value("tool-calls")).toBe(1);
     expect(value("fresh-input")).toBe(1000);
     expect(rows.filter((row) => row.variant === "requests" || row.variant === "tool-calls").every((row) => row.unit === "count")).toBe(true);
+  });
+
+  // T3 Code and Conductor run each thread in the app's own worktree folder, so the session log's cwd is not
+  // the arena's. The adapter declares that prefix and Track B must read the log through it.
+  test("B3 reads the session log under the adapter's cwd prefix", async () => {
+    const h = harness("claude", "claude-opus-5-5");
+    const prefix = join(root, "app-worktrees");
+    const sessionCwd = join(prefix, "ledger-thread");
+    mkdirSync(sessionCwd, { recursive: true });
+    h.ctx.adapter.sessionLogCwdPrefix = () => prefix;
+    sessionLog(sessionCwd);
+    const rows = await run(b3RealPromptTax, h, 1);
+    const tools = rows.find((row) => row.variant === "tool-calls")!;
+    expect(tools.value).toBe(1);
+    expect(tools.valid).toBe(true);
   });
 
   test("B2 splits the first B1 body into five estimated segments", async () => {

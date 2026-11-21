@@ -201,6 +201,10 @@ export interface Adapter {
   newThread(ctx: AdapterContext): Promise<void>;
   send(ctx: AdapterContext, text: string): Promise<void>;
   waitDone(ctx: AdapterContext, timeoutMs: number): Promise<{ done: boolean; reason: string }>;
+  // Track B reads the agent's session log for tokens and tool calls. An ADE whose threads run in its own
+  // worktree folders declares the prefix those session cwds live under here, the same one its waitDone
+  // passes to waitForEndOfTurn. Missing: only the exact worktree cwd matches.
+  sessionLogCwdPrefix?(ctx: AdapterContext): string | undefined;
   quit(ctx: AdapterContext): Promise<void>;
   // Untimed, before the quit of an A2 relaunch ("relaunch") or an A1 cold start ("cold"): leave a known state for the
   // app to restore. Missing: nothing to do.

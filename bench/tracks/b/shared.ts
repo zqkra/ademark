@@ -259,6 +259,7 @@ export async function runPromptRep(
       agent: sessionAgent,
       cwd: ctx.adapterCtx.worktree,
       since: startMs,
+      cwdPrefix: ctx.adapter.sessionLogCwdPrefix?.(ctx.adapterCtx),
     }).filter((log) => sessionAgent !== "claude" || log.summary.userTexts.some((text) => text.trim().endsWith(task.prompt.trim())));
     if (logs.length === 0) {
       notes.push("no session log");

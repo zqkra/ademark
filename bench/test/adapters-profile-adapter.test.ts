@@ -301,6 +301,20 @@ describe("profileAdapter with a profile, dry run", () => {
     ]);
   });
 
+  // Track B reads the agent's session log through the same cwd prefix waitDone uses, so an ADE whose
+  // threads run in its own worktree folders (Conductor) still has its logs found.
+  test("sessionLogCwdPrefix mirrors waitDone's cwd rule", () => {
+    writeProfile();
+    const { ctx } = captureContext({ worktree: "/tmp/home/arena/demo" });
+    expect(profileAdapter(BASE).sessionLogCwdPrefix?.(ctx)).toBeUndefined();
+
+    const profile = validProfile();
+    profile.app.path = "/Applications/Demo Pro.app";
+    profile.waitDone.cwd = "any";
+    writeFileSync(profileFile(BASE.id), JSON.stringify(profile));
+    expect(profileAdapter(BASE).sessionLogCwdPrefix?.(ctx)).toBe(ctx.home);
+  });
+
   test("beforeQuit runs the profile's list for A2 or A1, and nothing when the list is missing", async () => {
     const profile = validProfile();
     profile.app.path = "/Applications/Demo Pro.app";
