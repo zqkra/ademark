@@ -17,6 +17,12 @@ data/v1/runs/<run>/c1.json         Only in the five C1 runs: how the run ended a
 
 A run is a folder whose name starts with `control-`. There are 37.
 
+## Track R submissions
+
+`data/remote/<run>/` holds Track R runs sent by the community (TESTS.md §6). They are not v1 results and not
+verified: each comes from the sender's two machines, which `manifest.json` describes. The same rule applies: rows,
+`summary.json` and `manifest.json` only, with machine names, relay hostnames and receipt files removed.
+
 ## What is not published
 Screen recordings, screenshots, network captures, request bodies, logs and sample files are not published. They
 could show the private screen and accounts of the machine owner. Free text that came from the machine was

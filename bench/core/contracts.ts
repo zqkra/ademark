@@ -5,9 +5,10 @@ export type TestId =
   | "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "A7" | "A8" | "A9" | "A10" | "A11" | "A12"
   | "B1" | "B2" | "B3" | "B4"
   | "C1" | "C2" | "C3" | "C4" | "C5" | "C6"
+  | "R1" | "R2" | "R3" | "R4" | "R5" | "R6"
   | "F";
 
-export type Track = "A" | "B" | "C" | "F";
+export type Track = "A" | "B" | "C" | "R" | "F";
 export type Family = "control" | "EL-SDK" | "EL-PTY" | "NATIVE" | "OWN" | "FIRST";
 export type Drive = "cli" | "api" | "cdp" | "ax" | "keys" | "manual";
 export type Server = "replay" | "live" | "none";

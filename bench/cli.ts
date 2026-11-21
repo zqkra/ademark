@@ -61,6 +61,7 @@ Usage:
   ademark build-id --ade <id>
   ademark watchdog --once [--dry-run] [--heartbeat-limit <s>] | install | uninstall | status
   ademark prepare [--tracks A,B] [--agent claude,own] [--ade <id,...>] [--skip <id,...>] [--rounds 3] [--dry-run]
+  ademark remote list|facts|run|record   (Track R, two machines: ademark remote help)
   ademark run --ade <id|all> [--tracks A,B,C] [--agent claude,codex] [--dry-run] [--smoke] [--reference] [--run-id <id>] [--seed <s>] [--runners <dir>] [--tests A3,A11] [--smoke-reps A1=3,A2=3] [--resume]
 
 A real run is only allowed as the dedicated "ademark" macOS user; --dry-run works for anyone and writes
@@ -869,6 +870,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       return await cmdReport(args);
     case "build-id":
       return await cmdBuildId(args);
+    case "remote":
+      return await (await import("./remote/cli.ts")).cmdRemote(args);
     default:
       unknown(command);
   }

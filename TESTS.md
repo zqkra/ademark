@@ -1062,3 +1062,180 @@ a link, or "observed in vX.Y.Z on YYYY-MM-DD".
 | Background processes kept after quit | A9 process list |
 
 Output: `results/<run-id>/fit.json`, one object per ADE.
+
+## 6. Track R. Remote Access
+
+Purpose: how fast and how reliably an ADE reaches agents on another computer. It measures the remote path's speed,
+recovery after a network drop and dev server access, and lists who can read the traffic.
+
+Track R is the only track on two machines. The **client** is the bench Mac, where the harness runs. The **peer** is a
+second computer, where the ADE hosts its agents. Track R never runs during Tracks A to C and never touches the model.
+
+```sh
+bun bench/cli.ts remote run --ade <id> --peer <name>
+```
+
+The harness writes `results/<run-id>/rows.jsonl`, the receipts, `summary.json` and `manifest.json` (§0), with
+`machine_id` the client's and `manifest.peer` the peer's name. Rows of Track R are never mixed with rows of another
+track. A Track R manifest is `verified: false` until a reference pair of machines exists.
+
+One run measures one ADE. Two ADEs compare only when their runs used the same two machines on the same networks,
+back to back, and the report says so. The operator records the peer's OS, its ADE version, and how both machines
+reach the internet (Wi-Fi or wired, and the city) in `manifest.peer_description`.
+
+### 6.1 Paths, the probe, and the adapter
+
+An ADE may offer several ways from the client to the peer. Each is a **path**, and every test runs on every path the
+ADE offers:
+
+| Path | Meaning |
+|---|---|
+| `direct` | A peer-to-peer path the ADE sets up itself (QUIC or UDP hole punching, the LAN) |
+| `relay` | The ADE vendor's relay or cloud carries every byte |
+| `vpn` | A VPN the user runs, such as Tailscale; the ADE listens on the VPN address |
+
+One remote adapter per ADE, `bench/remote/adapters/<id>.ts`, implements `RemoteAdapter` (`bench/remote/contracts.ts`):
+
+| Member | Job |
+|---|---|
+| `paths()` | Open each path. A path may start the ADE's own helper (for example its QUIC helper); the harness then connects through it |
+| `probe()` | The **probe**: the cheapest request the peer answers only after it has checked the caller's credentials. It runs through the ADE's own server on the peer |
+| `forwardPort()` | R5: a byte stream to a port on the peer, carried the way the ADE carries it. If missing, the ADE has no port forward |
+| `facts` | R6, each fact with its source |
+
+The harness times every path with one HTTP/1.1 client (`bench/remote/http1.ts`): TLS with the ADE's own key pin when
+it has one, `TCP_NODELAY`. The adapter opens paths and names the probe; it never times. The probe must:
+
+- be answered by the ADE's own server on the peer, after it checked the caller's credentials;
+- do no other work there (no shell, no file read, no model);
+- answer with at most 1 KB.
+
+The manifest records the probe's method and path, never its headers. The adapter reads the client's credentials from
+the ADE's own config on the client at run time (its file says where); they are never printed or written to a receipt.
+
+An ADE whose remote path is not a TCP stream the harness can open (WebRTC, a vendor cloud that the host polls, a
+browser-only client) needs an adapter that exposes one, for example through a local helper. Until it has one, its
+R2 to R5 rows are "not measured". SSH and plain HTTP paths use the same client with no TLS.
+
+**Floor.** Each path also gets a round trip of its transport with nothing of the ADE's server on it, written as the
+`<path>:floor` variant of R2. Each transport has its own floor method, so floors compare only inside one path:
+
+| Path | Floor |
+|---|---|
+| `relay` | TCP connect time from the client to the relay (the client's leg only) |
+| `direct` | none: a peer-to-peer transport cannot be timed apart from the ADE's own helper. The row says `not measured` |
+| `vpn` | `tailscale ping` to the peer (or the VPN's own ping); its route, direct or a Tailscale relay (DERP), goes in the row's notes |
+
+R2 minus the floor of the same path is an upper bound of what the ADE adds on that path.
+
+**Rounds.** Tests run in rounds. Each round runs every path once, in the adapter's order, so drift in the network over
+the run hits every path alike. Default: 3 rounds, 100 R2 samples and 20 R3 samples per path per round, 100 ms apart.
+
+### R1. Pair to Session
+
+Purpose: from the moment the user starts pairing to the first usable session on the new device.
+
+Steps: on the peer, the computer that runs the agents, start the ADE's pairing flow (show the QR code, the link or
+the sign-in). The new device is the client, or a phone. Record the screens of both. Stop at the first keystroke
+echoed by a remote terminal on the new device. Repeat on a fresh pairing each time (revoke the device first). R1 runs
+on the ADE's default path, once in total, not per path.
+
+Value: seconds, read from the recording. Runs: 3. Drive: `manual`. Write each row with
+`bun bench/cli.ts remote record --ade <id> --run-id <run> --test R1 --value <s> --rep <n>`.
+
+### R2. Round Trip
+
+Purpose: the latency you feel in every remote action: one request to the peer and its answer, on a connection that is
+already open.
+
+Steps: per path and round, open one connection, send 10 untimed probes, then 100 timed probes 100 ms apart.
+
+Value: `<path>:p50` and `<path>:p95` of the 100 samples, in ms, plus `<path>:floor` (§6.1). Receipt: one CSV per
+path with every sample.
+
+### R3. Cold Connect
+
+Purpose: the cost of a new connection: what a CLI call, a reload or a reconnect pays before its first answer.
+
+Steps: per path and round, 20 times: open a new connection (TCP or the helper's stream, then TLS), send one probe, close.
+
+Value: `<path>:p50` and `<path>:p95` of the 20 samples, in ms. Receipt: one CSV per path with each sample and its
+`connected_ms`, the time to a finished TLS handshake.
+
+### R4. Reconnect
+
+Purpose: after the client side of a remote path stops for a while, as when a laptop loses its network, how long
+until the peer answers again, and whether that happens with no user action.
+
+R4 is a **process-level drop**, not a network drop. It touches no network interface, so other apps on the client
+keep working and the harness keeps its own control. Steps, with every path open and answering:
+
+1. On each path, open one connection and send one probe. This connection stays open through the drop.
+2. Stop the client side of every path for 30 s: `SIGSTOP` to each client-side process the adapter names for the path
+   (`clientPids()`, for example the ADE's direct helper), and no reads or writes on the kept connections. Then `SIGCONT`.
+3. The clock starts at `SIGCONT`. Send one probe on the kept connection, given up after 2 s. If it does not answer,
+   send a probe on a new connection every 250 ms, each given up after 2 s, until one answers or 120 s pass.
+
+5 drops, 15 s apart, after the rounds of R2, R3 and R5. Each drop measures every path at once, so drops are not tied
+to rounds. Run with `--freeze`; without it, R4 is written as `not measured: no --freeze given`.
+
+Value: `<path>` in s; `<path>:kept`, 1 when the kept connection still answered; `<path>:recovered`, 1 when the path
+answered within 120 s with no user action. A path that did not answer before the drop gets no value.
+
+What it shows and what it does not: a stopped client sends no keepalives and reads nothing, so a peer, relay or
+QUIC helper that times out idle connections drops them, and the ADE's own reconnect logic (helper re-dial, backoff)
+runs after the resume. A real network loss also changes addresses and routes, which a process-level drop does not.
+Whether the app's own window shows the session again is a separate reading from the app's status (its log or its
+UI), written in the row's notes when the adapter can read it. **(validate in pilot: that app-level reading for each
+ADE.)**
+
+### R5. Remote Preview
+
+Purpose: can a dev server on the peer be opened from the client, and how fast.
+
+Steps: on the peer, start the stand-in dev server, the same for every ADE:
+`node bench/remote/peer-server.mjs --port 47801` (Node 18 or later, or Bun; it answers every `GET` with
+`ademark-r5\n`). Per path and round: open the ADE's forward to that port the way its client does (list the peer's
+ports when the ADE asks for that first), send `GET /`, then 50 more `GET /` on the same stream, 100 ms apart.
+
+Value: `<path>:first` (everything from the request to open the forward, the port listing included, to the first
+page, ms), `<path>:p50` and `<path>:p95` of the 50 pages. An ADE with no port forward writes `not supported`, never
+zero.
+
+### R6. Remote Fit
+
+Purpose: facts about each ADE's remote access, with no score: what the numbers above cannot say.
+
+| Field | How it is filled |
+|---|---|
+| Mechanism | Vendor relay, direct path, VPN, SSH, LAN only, self-hosted server |
+| Who can read the traffic | End to end between the devices, or the vendor's server ends TLS or stores content |
+| Pairing | QR code, link, account sign-in, token, SSH key |
+| Per-device revoke | Can one device be removed on its own |
+| Previews | Remote dev server or port access |
+| Works without a VPN | Yes or no |
+
+Every fact carries a source: a link, or "observed in vX.Y.Z on YYYY-MM-DD", as in Track F. Output:
+`results/<run-id>/remote-fit.json`. The facts of every ADE in the field, measured or not, are in ADES.md §5.
+
+### 6.2 One machine: a test instance as the peer
+
+Without a second computer, the peer can be an isolated test instance of the ADE on the client machine, with its own
+data folder, home folder and credentials. The ADE's own pairing flow links the harness with it; the result is the
+profile the adapter reads (Pane: `ADEMARK_PANE_PROFILE`). Then:
+
+- `relay` rows measure client → relay → client. Running the test instance on each of the vendor's relay regions in
+  turn shows what each region adds. They do not measure a link between two places.
+- `direct` rows run over the machine's own network stack. They show what the ADE's direct helper and server add,
+  not a network.
+- R4 also stops the test instance: `--freeze-peer-pids <pid>` stops that process and every process under it with
+  the client side. Never pass the pid of the ADE the operator uses.
+
+The manifest says so in `peer_description`. One-machine rows never compare with two-machine rows.
+
+### 6.3 What Track R does not measure
+
+- Bandwidth and large transfers. The probe and the preview page are small on purpose: they measure latency.
+- A phone. The client is a Mac. Phone apps reach the peer through the same paths, but their own overhead is not counted.
+- Throttling by the vendor relay under load. One client, one peer.
+- An ADE without a remote adapter. Its rows are absent and ADES.md §5 says "not measured".

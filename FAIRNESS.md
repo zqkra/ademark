@@ -416,3 +416,34 @@ whatever it shows.
 | "Cloudroom's cloud feels as fast as local" | reply to the same post | not tested in v1: every ADE runs in local mode | not tested |
 | T3 Code 0.1.0 is the "best tool right now" | tier list v2 post, 16 Oct 2026 | all five grades | not measured yet |
 | "@TraycerAI is goated" | post, 20 Sep 2026 | all five grades | not measured yet |
+
+## 9. Remote access
+
+### R-1. "Track R was written by a vendor, and that vendor's app is the only one measured."
+- **Verdict:** Valid.
+- **What we did:** The track came from Pane's maker in a pull request. The method is the same for every ADE: one
+  harness client, the same request on every path, the floor of each transport beside it, and every path an ADE
+  offers. The adapter opens paths and names the probe; it never times. Pane's rows are a community submission,
+  labeled so, and every other ADE shows "not measured" until it has a remote adapter.
+- **Verify:** TESTS.md §6; `bench/remote/run.ts`; ADES.md §5.
+
+### R-2. "Your HTTP client is not our app. Users feel our UI, not a probe."
+- **Verdict:** Partly valid.
+- **What we did:** R2, R3 and R5 measure the ADE's transport and server: its relay, its direct helper, its auth
+  check and its port forward, through its own key pin. What the app's UI adds on top is not counted. R1 is timed on
+  the real devices from a recording.
+- **Verify:** TESTS.md §6.1.
+
+### R-3. "Relay numbers depend on where the machines and the relay are."
+- **Verdict:** Valid.
+- **What we did:** Every row names its run, and the manifest names both machines. Paths are compared only inside one
+  run, round by round, and each path carries its floor, so what the ADE adds is visible apart from geography.
+- **Verify:** METHODOLOGY.md §9; `results/<run>/manifest.json`.
+
+### R-4. "A stopped process is not a dropped network."
+- **Verdict:** Valid.
+- **What we did:** R4 says it is a process-level drop. It stops the client side of each path for 30 s, so idle
+  timeouts on the peer, the relay and any helper fire, and the ADE's reconnect logic runs after the resume. It does not
+  change addresses or routes, as a real network loss does. It was chosen because it needs no root and leaves every
+  other app on the client running.
+- **Verify:** TESTS.md R4.

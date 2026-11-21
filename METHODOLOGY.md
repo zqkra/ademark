@@ -27,6 +27,7 @@ Each one has its own track:
 | What the model receives | B. Tokens | small: a few short prompts per ADE |
 | How agents work together, and what happens when something breaks | C. Orchestration and Reliability | real: Claude, full tasks |
 | What the product offers | F. Fit | none: a fact table with no score |
+| How you reach your agents from another device | R. Remote Access | none: two machines, no model |
 
 ## 2. The field
 
@@ -112,6 +113,24 @@ when you open a thread and others when you send.
 | C6 | App Restart | The ADE is quit and reopened at 90 s. Do threads restore and finish | Survival | 1, a second run if fail |
 
 ADEs without orchestration (Emdash, Conductor) show "not supported" in C1, never zero. C2 to C6 apply to all.
+
+### Track R. Remote Access (two machines, no model usage)
+
+Track R runs on the bench Mac (the client) and a second computer (the peer) where the ADE hosts its agents. Every test
+runs on every path the ADE offers: `direct` (peer to peer), `relay` (the vendor's relay or cloud) and `vpn` (a VPN the
+user runs, such as Tailscale). One HTTP/1.1 client times every path with the same request, and each path also gets a
+floor: the round trip of its transport with nothing of the ADE on it.
+
+| ID | Public name | Question | Unit, direction | Runs |
+|---|---|---|---|---|
+| R1 | Pair to Session | Start of pairing to the first echoed keystroke on the new device (manual, from a recording) | s, lower | 3 |
+| R2 | Round Trip | One authenticated request to the peer and its answer, on an open connection | ms p50/p95, lower | 100 per path per round |
+| R3 | Cold Connect | A new connection, TLS and the first authenticated answer | ms p50/p95, lower | 20 per path per round |
+| R4 | Reconnect | After a process-level drop (the client side of each path stopped for 30 s with SIGSTOP): time until the peer answers again, and whether it does with no user action | s, lower; recovered yes or no | 5 drops |
+| R5 | Remote Preview | Open a dev server on the peer from the client: first page, then pages on the same stream | ms, lower | 50 per path per round |
+| R6 | Remote Fit | Mechanism, who can read the traffic, pairing, per-device revoke, previews, works without a VPN | facts | once |
+
+Track R is not part of a night and no result of it is verified until a reference pair of machines exists.
 
 ### Track F. Fit (facts, no score)
 
@@ -287,9 +306,12 @@ ADEMark is built like Terminal-Bench: an open harness that anyone can run, with 
 - Which ADE writes better code. Track C uses one real task; it shows whether an ADE finishes it, not who codes best.
 - Claude against GPT. Each model runs through a different agent.
 - Anything about other machines. Results are for the reference machine; the harness is open so anyone can run it.
+- Remote access in general. Track R numbers depend on where the two machines and the vendor's relay are. Paths
+  compare inside one run. ADEs compare only between runs on the same two machines and networks, back to back.
 
 ## Changelog
 
+- 2026-11-15: Track R, remote access (R1 to R6), on two machines. Not part of a night; no verified result yet.
 - 2026-11-12: v1.0 published with the first results: 15 ADEs and the Bare CLI, Track A, Track B and C1. C2 to C6 and the Codex app are not in v1.
 - 2026-10-19: v1.0-draft.
 - 2026-11-12: a night measures Track A in its measure and top-ups; Track B and C1 run in their own tokens and

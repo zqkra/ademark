@@ -1,0 +1,203 @@
+{
+  "run_id": "remote-pane-mac-asia-2026-11-15",
+  "rows": 63,
+  "invalid_rows": 0,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "pane": {
+      "family": "EL-PTY",
+      "tests": {
+        "R2/direct:p50": {
+          "n": 3,
+          "median": 1.6,
+          "p25": 1.55,
+          "p75": 1.8,
+          "min": 1.5,
+          "max": 2,
+          "against_bare_cli": null
+        },
+        "R2/direct:p95": {
+          "n": 3,
+          "median": 4.5,
+          "p25": 3.85,
+          "p75": 7.5,
+          "min": 3.2,
+          "max": 10.5,
+          "against_bare_cli": null
+        },
+        "R3/direct:p50": {
+          "n": 3,
+          "median": 5.5,
+          "p25": 5.4,
+          "p75": 8,
+          "min": 5.3,
+          "max": 10.5,
+          "against_bare_cli": null
+        },
+        "R3/direct:p95": {
+          "n": 3,
+          "median": 11.4,
+          "p25": 8.6,
+          "p75": 19.15,
+          "min": 5.8,
+          "max": 26.9,
+          "against_bare_cli": null
+        },
+        "R5/direct:first": {
+          "n": 3,
+          "median": 82.7,
+          "p25": 76.15,
+          "p75": 398.49999999999994,
+          "min": 69.6,
+          "max": 714.3,
+          "against_bare_cli": null
+        },
+        "R5/direct:p50": {
+          "n": 3,
+          "median": 1.8,
+          "p25": 1.65,
+          "p75": 2.1,
+          "min": 1.5,
+          "max": 2.4,
+          "against_bare_cli": null
+        },
+        "R5/direct:p95": {
+          "n": 3,
+          "median": 3.4,
+          "p25": 2.6,
+          "p75": 5.3,
+          "min": 1.8,
+          "max": 7.2,
+          "against_bare_cli": null
+        },
+        "R2/relay:p50": {
+          "n": 3,
+          "median": 340.7,
+          "p25": 340.35,
+          "p75": 340.95,
+          "min": 340,
+          "max": 341.2,
+          "against_bare_cli": null
+        },
+        "R2/relay:p95": {
+          "n": 3,
+          "median": 345.3,
+          "p25": 344.70000000000005,
+          "p75": 345.70000000000005,
+          "min": 344.1,
+          "max": 346.1,
+          "against_bare_cli": null
+        },
+        "R2/relay:floor": {
+          "n": 3,
+          "median": 173,
+          "p25": 172.15,
+          "p75": 173.1,
+          "min": 171.3,
+          "max": 173.2,
+          "against_bare_cli": null
+        },
+        "R3/relay:p50": {
+          "n": 3,
+          "median": 1882.4,
+          "p25": 1881.6,
+          "p75": 1884.25,
+          "min": 1880.8,
+          "max": 1886.1,
+          "against_bare_cli": null
+        },
+        "R3/relay:p95": {
+          "n": 3,
+          "median": 1906,
+          "p25": 1905.7,
+          "p75": 1906.35,
+          "min": 1905.4,
+          "max": 1906.7,
+          "against_bare_cli": null
+        },
+        "R5/relay:first": {
+          "n": 3,
+          "median": 3155.8,
+          "p25": 2901.4,
+          "p75": 3168.75,
+          "min": 2647,
+          "max": 3181.7,
+          "against_bare_cli": null
+        },
+        "R5/relay:p50": {
+          "n": 3,
+          "median": 339.9,
+          "p25": 339.54999999999995,
+          "p75": 340.9,
+          "min": 339.2,
+          "max": 341.9,
+          "against_bare_cli": null
+        },
+        "R5/relay:p95": {
+          "n": 3,
+          "median": 343.1,
+          "p25": 343.05,
+          "p75": 344.05,
+          "min": 343,
+          "max": 345,
+          "against_bare_cli": null
+        },
+        "R4/direct": {
+          "n": 3,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "R4/direct:kept": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "R4/direct:recovered": {
+          "n": 3,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        },
+        "R4/relay": {
+          "n": 3,
+          "median": 2.1,
+          "p25": 2.1,
+          "p75": 2.1,
+          "min": 2.1,
+          "max": 2.1,
+          "against_bare_cli": null
+        },
+        "R4/relay:kept": {
+          "n": 3,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "against_bare_cli": null
+        },
+        "R4/relay:recovered": {
+          "n": 3,
+          "median": 1,
+          "p25": 1,
+          "p75": 1,
+          "min": 1,
+          "max": 1,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

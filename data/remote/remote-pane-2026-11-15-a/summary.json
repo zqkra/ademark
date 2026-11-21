@@ -1,0 +1,176 @@
+{
+  "run_id": "remote-pane-2026-11-15-a",
+  "rows": 78,
+  "invalid_rows": 3,
+  "generated_from": "rows.jsonl",
+  "smoke": false,
+  "ades": {
+    "pane": {
+      "family": "EL-PTY",
+      "tests": {
+        "R2/vpn": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "R3/vpn": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "R5/vpn": {
+          "n": 0,
+          "median": null,
+          "p25": null,
+          "p75": null,
+          "min": null,
+          "max": null,
+          "against_bare_cli": null
+        },
+        "R2/direct:p50": {
+          "n": 5,
+          "median": 36.3,
+          "p25": 36,
+          "p75": 36.5,
+          "min": 35.8,
+          "max": 36.6,
+          "against_bare_cli": null
+        },
+        "R2/direct:p95": {
+          "n": 5,
+          "median": 43,
+          "p25": 40.9,
+          "p75": 45.7,
+          "min": 38.6,
+          "max": 62,
+          "against_bare_cli": null
+        },
+        "R3/direct:p50": {
+          "n": 5,
+          "median": 78.9,
+          "p25": 77,
+          "p75": 79.1,
+          "min": 75.9,
+          "max": 79.3,
+          "against_bare_cli": null
+        },
+        "R3/direct:p95": {
+          "n": 5,
+          "median": 88.9,
+          "p25": 86.4,
+          "p75": 96.3,
+          "min": 86.2,
+          "max": 106.7,
+          "against_bare_cli": null
+        },
+        "R5/direct:first": {
+          "n": 5,
+          "median": 220.6,
+          "p25": 219.4,
+          "p75": 252.2,
+          "min": 216.2,
+          "max": 276.7,
+          "against_bare_cli": null
+        },
+        "R5/direct:p50": {
+          "n": 5,
+          "median": 36.1,
+          "p25": 36.1,
+          "p75": 36.2,
+          "min": 35.9,
+          "max": 36.3,
+          "against_bare_cli": null
+        },
+        "R5/direct:p95": {
+          "n": 5,
+          "median": 41.3,
+          "p25": 40.3,
+          "p75": 41.8,
+          "min": 40.1,
+          "max": 41.9,
+          "against_bare_cli": null
+        },
+        "R2/relay:p50": {
+          "n": 5,
+          "median": 109.2,
+          "p25": 108.5,
+          "p75": 110,
+          "min": 107.9,
+          "max": 110.9,
+          "against_bare_cli": null
+        },
+        "R2/relay:p95": {
+          "n": 5,
+          "median": 135.7,
+          "p25": 121.2,
+          "p75": 141.4,
+          "min": 113.2,
+          "max": 143,
+          "against_bare_cli": null
+        },
+        "R2/relay:floor": {
+          "n": 5,
+          "median": 53.7,
+          "p25": 53.1,
+          "p75": 55,
+          "min": 52.9,
+          "max": 55.1,
+          "against_bare_cli": null
+        },
+        "R3/relay:p50": {
+          "n": 5,
+          "median": 677.7,
+          "p25": 677.3,
+          "p75": 677.8,
+          "min": 677.1,
+          "max": 692.8,
+          "against_bare_cli": null
+        },
+        "R3/relay:p95": {
+          "n": 5,
+          "median": 843.3,
+          "p25": 831.5,
+          "p75": 846.1,
+          "min": 831,
+          "max": 866.3,
+          "against_bare_cli": null
+        },
+        "R5/relay:first": {
+          "n": 5,
+          "median": 979.9,
+          "p25": 972.8,
+          "p75": 1083.3,
+          "min": 964.2,
+          "max": 1192.1,
+          "against_bare_cli": null
+        },
+        "R5/relay:p50": {
+          "n": 5,
+          "median": 110.5,
+          "p25": 109.7,
+          "p75": 112.8,
+          "min": 108.4,
+          "max": 138.1,
+          "against_bare_cli": null
+        },
+        "R5/relay:p95": {
+          "n": 5,
+          "median": 143.4,
+          "p25": 128,
+          "p75": 144.5,
+          "min": 114.7,
+          "max": 154.1,
+          "against_bare_cli": null
+        }
+      }
+    }
+  }
+}

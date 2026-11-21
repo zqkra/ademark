@@ -1,0 +1,51 @@
+{
+  "run_id": "remote-pane-mac-eu-2026-11-15",
+  "machine_id": "macbookpro18-1-apple-m1-pro-32gb",
+  "verified": false,
+  "track": "R",
+  "ade": "pane",
+  "peer": "test-host",
+  "peer_description": "isolated test Pane host (headless, Pane 2.4.225 from source at release v2.4.225) on the client Mac itself, relay region eu; client MacBook Pro M1 Pro on home Wi-Fi",
+  "probe": "GET /events?auth_check=1",
+  "paths": [
+    {
+      "id": "direct",
+      "label": "pane-direct QUIC helper, peer to peer",
+      "opened": true
+    },
+    {
+      "id": "relay",
+      "label": "Pane relay, TLS to <id>.runpane.net",
+      "opened": true
+    }
+  ],
+  "tests": [
+    "R2",
+    "R3",
+    "R5",
+    "R4",
+    "R6"
+  ],
+  "rounds": 3,
+  "warm_samples": 100,
+  "cold_samples": 20,
+  "client_load_avg": {
+    "start": [
+      22.7,
+      43.3,
+      85.2
+    ],
+    "end": [
+      27.6,
+      22.1,
+      52.3
+    ]
+  },
+  "drop": {
+    "kind": "process",
+    "seconds": 30,
+    "rounds": 3,
+    "peer_stopped": true
+  },
+  "started_at": "remote-pane-mac-eu-2026-11-15"
+}

@@ -838,3 +838,55 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+
+## 5. Remote access (Track R)
+
+Track R ([TESTS.md](TESTS.md) §6) needs a remote adapter in `bench/remote/adapters/<id>.ts`. Only Pane has one so
+far. Pane is not in the v1 field. Its adapter for Tracks A to C is proposed in #23. Its Track R rows are a community
+submission from two machines of its maker, not a reference result. Every other ADE below is **not measured** in R1 to
+R5 until someone writes its remote adapter.
+
+The R6 facts come from each vendor's docs and repositories, read on 2026-11-15. "unknown" means the vendor's own
+sources do not say. Vendors can correct a fact through the right of reply (METHODOLOGY.md §7).
+
+| ADE | Mechanism | Who can read the traffic | Per-device revoke | Previews from the remote device | Without a VPN | R1 to R5 |
+|---|---|---|---|---|---|---|
+| Bare CLI | none of its own (SSH or a VPN by hand) | the user's own transport | n/a | by hand (`ssh -L`) | no | not measured |
+| T3 Code | LAN, Tailscale, SSH, or T3 Connect (Cloudflare tunnels) | direct routes: only the two ends; T3 Connect: not stated | yes, per device and per session | yes, listed ports and a Preview URL | yes (T3 Connect) | not measured |
+| bb | bb connect tunnel, Tailscale, LAN | bb connect: not stated | yes | unknown | yes (bb connect) | not measured |
+| Paseo | own relay or direct TCP, Tailscale, SSH | relay is end to end (Curve25519 + NaCl box); the relay sees metadata | unknown | unknown | yes | not measured |
+| Synara | its web server on the LAN or a tailnet, with a token | not stated (plain HTTP in its examples) | no | unknown | LAN only | not measured |
+| Traycer | Traycer relay and cloud sync | not stated; agent copies are stored in its cloud | hosts only | yes, agent-run port forward | yes | not measured |
+| Cloudroom | phone app (transport unknown); self-hosted Core with a token | Core API is plain HTTP behind the user's proxy | unknown | cloud threads only | unknown | not measured |
+| Superset (now Paradev) | vendor relay, Pro plan | not stated | whole host only | yes, TCP forward through the relay | yes | not measured |
+| Orca | relay, LAN, Tailscale, SSH, own server | relay handshake is end to end in its source; not in its docs | not documented | phone browser pane | yes | not measured |
+| Emdash | SSH to remote machines, no phone client | the user's SSH | n/a | yes, forwarded | no (needs SSH reach) | not measured |
+| Zeron | account sync through its relay; terminals over WebRTC with relay fallback | not stated | not documented | unknown | yes | not measured |
+| Diri | SSH hosts, no phone client | the user's SSH | n/a | unknown | no (needs SSH reach) | not measured |
+| MonoCode | experimental SSH forward | the user's SSH | yes | no | no (needs SSH reach) | not measured |
+| super.engineering | phone straight to the Mac, no relay | "encrypted", method not named | yes | unknown | same network, else a VPN | not measured |
+| Capy | computer paired to the account; transport not stated | "encrypted in transit and at rest" | unknown | cloud preview URLs | yes | not measured |
+| Claude desktop (Code tab) and Claude Code Remote Control | Anthropic's servers; the local session polls over outbound HTTPS | Anthropic: TLS ends at Anthropic and the transcript is stored there | not documented | none documented | yes | not measured |
+| Codex app | vendor relay ("secure relay layer"), SSH hosts | not stated | not documented | not documented | yes | not measured |
+| Pane (proposed, #23) | vendor relay (open source, self-hostable), QUIC direct path, Tailscale optional | vendor-stated: only the two ends; the relay routes by TLS server name and does not decrypt. Observed in 2.4.225 on 2026-11-15: the client pins the peer's key, and the relay path works with that pin | yes | yes, every listening port (observed) | yes (observed) | two machines: `direct`, `relay` (R2, R3, R5); `vpn` and R4 pending. One machine (§6.2 of TESTS.md): `direct`, `relay` on regions us, eu, asia, with R4. Data in `data/remote/` |
+
+Sources, all read on 2026-11-15:
+
+- T3 Code: github.com/pingdotgg/t3code `docs/user/remote-access.md`, `docs/internals/t3-connect.md`
+- bb: github.com/get-bb/bb `docs/multiple-devices.md`
+- Paseo: https://paseo.sh/docs/security, github.com/getpaseo/paseo `public-docs/connectivity.md`
+- Synara: github.com/Emanuele-web04/synara `REMOTE.md`
+- Traycer: https://docs.traycer.ai/account/mobile-app.md, https://docs.traycer.ai/guides/work-across-machines.md
+- Cloudroom: github.com/davidondrej/cloudroom-core `docs/setup.md`, `docs/previews.md`
+- Superset: https://docs.paradev.com/remote-access (redirect from docs.superset.sh)
+- Orca: https://orca.dev/docs/mobile, github.com/stablyai/orca
+- Emdash: https://emdash.com/docs/remote-projects
+- Zeron: github.com/zeronsh/zeron `ARCHITECTURE.md`
+- Diri: github.com/cristicretu/diri
+- MonoCode: github.com/hardbeat920/monocode `docs/remote-access.md`
+- super.engineering: https://super.engineering/docs/mobile-pairing/, https://super.engineering/docs/mobile-connections/
+- Capy: https://capy.ai, https://docs.capy.ai/desktop
+- Claude: https://code.claude.com/docs/en/remote-control, https://code.claude.com/docs/en/desktop
+- Codex app: https://learn.chatgpt.com/docs/remote-connections
+- Pane: github.com/greenfield-inc/Pane `docs/QR_PAIRING.md`, `docs/SELF_HOSTED_RELAY.md`, `relay/PROTOCOL.md`
+- Tailscale, the `vpn` path: https://tailscale.com/kb/1232/derp-servers

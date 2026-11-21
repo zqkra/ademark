@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Track R, remote access (TESTS.md §6): R1 to R6 on two machines, every path an ADE offers (direct, relay, VPN), timed by one harness client with each transport's floor beside it. `bench/cli.ts remote`. Not part of a night.
+- Pane's Track R rows from two machines of its maker, as a community submission in `data/remote/`.
+
 ## 1.0.1 (2026-11-12)
 
 - v1 publishes 15 ADEs: Conductor left the field before publication. The docs and the release say so.
