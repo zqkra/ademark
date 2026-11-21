@@ -10,7 +10,7 @@ import type { WatchOptions } from "../core/native.ts";
 import { captureContext, fakeRunner } from "./adapters-fake.ts";
 import { profileFile } from "../adapters/profile.ts";
 
-const VARS: StepVars = { worktree: "/tmp/work/arena", home: "/tmp/home", model: null, effort: null, agent: "claude" };
+const VARS: StepVars = { worktree: "/tmp/work/arena", repo: "/tmp/repo", home: "/tmp/home", model: null, effort: null, agent: "claude" };
 const REGION = { x: 610, y: 450, w: 220, h: 40 };
 
 // The rule of the native TextMatcher.contains (exact): lower case, letters and digits only, a substring of one line.

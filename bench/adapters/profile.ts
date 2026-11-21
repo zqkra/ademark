@@ -47,7 +47,7 @@ import { validateProfile } from "./profile-validate.ts";
 import { clearBlockers } from "../agent/goal.ts";
 import { stageProfile } from "../agent/stage.ts";
 import { agentDir, runSteps, type StepVars } from "./profile-steps.ts";
-import { benchRoot } from "../core/paths.ts";
+import { benchRoot, repoRoot } from "../core/paths.ts";
 
 const APP_LAUNCH_TIMEOUT_MS = 30_000;
 const QUIT_TIMEOUT_MS = 10_000;
@@ -210,6 +210,7 @@ function restoreLoginFiles(
 function varsFor(ctx: AdapterContext, state: ProfileState): StepVars {
   return {
     worktree: ctx.worktree,
+    repo: repoRoot,
     home: ctx.home,
     model: state.model,
     effort: state.effort,

@@ -5,7 +5,7 @@ const DRIVES = new Set(["cli", "api", "cdp", "ax", "keys", "manual"]);
 const AGENTS = new Set(["claude", "codex", "own"]);
 const TRIGGER_KINDS = new Set(["open", "keys", "type", "click", "enter", "wait"]);
 const FORBIDDEN_ARGV0 = new Set(["sudo", "su", "sh", "bash", "zsh", "env", "osascript"]);
-const PLACEHOLDERS = new Set(["worktree", "home", "model", "effort", "agent"]);
+const PLACEHOLDERS = new Set(["worktree", "repo", "home", "model", "effort", "agent"]);
 const PLACEHOLDER = /\$\{([^}]*)\}/g;
 
 const MAX_RUN_TIMEOUT_MS = 600_000;
@@ -291,8 +291,8 @@ function checkPlaceholders(value: unknown, path: string, errors: string[]): void
       const name = match[1] ?? "";
       if (!PLACEHOLDERS.has(name)) {
         errors.push(
-          `${path}: placeholder "\${${name}}" is not allowed; use \${worktree}, \${home}, \${model}, ` +
-            "\${effort} or \${agent}",
+          `${path}: placeholder "\${${name}}" is not allowed; use \${worktree}, \${repo}, \${home}, ` +
+            "\${model}, \${effort} or \${agent}",
         );
       }
     }

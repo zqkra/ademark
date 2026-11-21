@@ -5,6 +5,7 @@ import { captureContext } from "./adapters-fake.ts";
 
 const VARS: StepVars = {
   worktree: "/tmp/work/arena",
+  repo: "/tmp/repo",
   home: "/tmp/home",
   model: "model-1",
   effort: "high",
@@ -26,7 +27,7 @@ const STEPS: ProfileStep[] = [
     text: "ready ${effort}",
     timeoutMs: 5000,
   },
-  { kind: "run", argv: ["/bin/echo", "${worktree}"], timeoutMs: 30_000 },
+  { kind: "run", argv: ["/bin/echo", "${worktree}", "${repo}"], timeoutMs: 30_000 },
 ];
 
 describe("runSteps in a dry run", () => {
@@ -44,7 +45,7 @@ describe("runSteps in a dry run", () => {
       "plan: run open /Applications/Demo.app --profile /tmp/home",
       "plan: paste pid=0 text=hi codex",
       "plan: waitForText pid=0 text=ready high",
-      "plan: run /bin/echo /tmp/work/arena timeoutMs=30000",
+      "plan: run /bin/echo /tmp/work/arena /tmp/repo timeoutMs=30000",
     ]);
   });
 
@@ -66,10 +67,10 @@ describe("runSteps in a dry run", () => {
 });
 
 describe("replacePlaceholders", () => {
-  test("replaces the five names and keeps other text", () => {
+  test("replaces the six names and keeps other text", () => {
     expect(
-      replacePlaceholders("${worktree}|${home}|${model}|${effort}|${agent}|plain", VARS),
-    ).toBe("/tmp/work/arena|/tmp/home|model-1|high|codex|plain");
+      replacePlaceholders("${worktree}|${repo}|${home}|${model}|${effort}|${agent}|plain", VARS),
+    ).toBe("/tmp/work/arena|/tmp/repo|/tmp/home|model-1|high|codex|plain");
   });
 
   test("leaves unknown names alone", () => {

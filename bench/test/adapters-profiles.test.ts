@@ -235,13 +235,13 @@ const BAD_PROFILES: BadProfile[] = [
     expected: 'timed.send[0].kind: "clickIfText" is not a trigger (open, keys, type, click, enter, wait)',
   },
   {
-    name: "placeholders are limited to the five names",
+    name: "placeholders are limited to the six names",
     break: (json) => {
       json.steps.openProject[1].text = "${cwd}";
     },
     expected:
-      'steps.openProject[1].text: placeholder "${cwd}" is not allowed; use ${worktree}, ${home}, ${model}, ' +
-      "${effort} or ${agent}",
+      'steps.openProject[1].text: placeholder "${cwd}" is not allowed; use ${worktree}, ${repo}, ${home}, ' +
+      "${model}, ${effort} or ${agent}",
   },
   {
     name: "timed entries are triggers, not steps",
@@ -495,6 +495,52 @@ describe("Cloudroom's first new thread is Local (ADEMARK-43)", () => {
     expect(firstNew).toBeGreaterThan(setting);
     expect(lines.filter((line) => line.includes("settings ui set defaults.startingMachine last"))).toHaveLength(1);
     expect(lines.filter((line) => line.includes("text=Full"))).toHaveLength(2);
+  });
+});
+
+// 2026-11-12: a second "project create --name arena" makes a second project with the same name, the picker
+// cannot tell them apart, and the C1 threads of control-2026-11-10T08-31-19Z-cloudroom-orchestration-1 ran in
+// ~/arena/cloudroom while the graded ~/arena/cloudroom-C1-1 stayed empty. openProject frees the name first and
+// proves the new project sources the worktree it was given. bb-orchestration-2 failed the same way: bb.db held
+// three arena projects and the positional picker click always took the Track A copy.
+describe("arena project openProject keeps one arena project on the current worktree", () => {
+  test("cloudroom: free runs before create and verify after, on the C1 worktree", async () => {
+    const { getAdapter } = await import("../adapters/registry.ts");
+    const { captureContext } = await import("./adapters-fake.ts");
+    const worktree = "/tmp/home/arena/cloudroom-C1-1";
+    const { ctx, lines } = captureContext({ worktree });
+    const adapter = getAdapter("cloudroom");
+    await adapter.configure(ctx, { model: null, effort: null, server: "replay", agent: "claude" });
+    await adapter.launch(ctx);
+    const freeAt = lines.findIndex((line) => line.includes("arena-project.mjs free"));
+    const createAt = lines.findIndex((line) => line.includes("project create --name arena"));
+    const verifyAt = lines.findIndex((line) => line.includes("arena-project.mjs verify"));
+    expect(freeAt).toBeGreaterThan(-1);
+    expect(createAt).toBeGreaterThan(freeAt);
+    expect(verifyAt).toBeGreaterThan(createAt);
+    expect(lines[freeAt]).toContain(" hide");
+    expect(lines[createAt]).toContain(`--root ${worktree}`);
+    expect(lines[verifyAt]).toContain(worktree);
+  });
+
+  test("bb: free, create, front and verify run in order on the C1 worktree", async () => {
+    const { getAdapter } = await import("../adapters/registry.ts");
+    const { captureContext } = await import("./adapters-fake.ts");
+    const worktree = "/tmp/home/arena/bb-C1-1";
+    const { ctx, lines } = captureContext({ worktree });
+    const adapter = getAdapter("bb");
+    await adapter.configure(ctx, { model: null, effort: null, server: "replay", agent: "claude" });
+    await adapter.launch(ctx);
+    const freeAt = lines.findIndex((line) => line.includes("arena-project.mjs free"));
+    const createAt = lines.findIndex((line) => line.includes("project create --name arena"));
+    const frontAt = lines.findIndex((line) => line.includes("arena-project.mjs front"));
+    const verifyAt = lines.findIndex((line) => line.includes("arena-project.mjs verify"));
+    expect(freeAt).toBeGreaterThan(-1);
+    expect(createAt).toBeGreaterThan(freeAt);
+    expect(frontAt).toBeGreaterThan(createAt);
+    expect(verifyAt).toBeGreaterThan(frontAt);
+    expect(lines[createAt]).toContain(`--root ${worktree}`);
+    expect(lines[verifyAt]).toContain(worktree);
   });
 });
 

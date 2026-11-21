@@ -242,12 +242,34 @@
         "kind": "run",
         "argv": [
           "/opt/homebrew/bin/node",
+          "${repo}/bench/adapters/arena-project.mjs",
+          "free",
+          "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
+          "hide"
+        ],
+        "timeoutMs": 120000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
           "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
           "project",
           "create",
           "--name",
           "arena",
           "--root",
+          "${worktree}"
+        ],
+        "timeoutMs": 120000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "${repo}/bench/adapters/arena-project.mjs",
+          "verify",
+          "/Applications/Cloudroom.app/Contents/Resources/app.asar.unpacked/node_modules/bb-app/host-daemon/dist/room-cli",
           "${worktree}"
         ],
         "timeoutMs": 120000
@@ -448,7 +470,8 @@
     "2026-11-11, C1: Cloudroom's orchestration is child threads (room-cli thread spawn --parent-self), each a client session of its own, and its system prompt forbids native subagents. C1 counts only with two sessions at work (orchestration.workers).",
     "2026-11-11: openProject picks the project with the screen agent, not with a fixed click. In control-2026-11-10T08-31-19Z-cloudroom-4 the click on the first row of the project list (630,308) picked 'ADEMark', a project that appeared in the account that day, in the Cloud environment, and the step that reads 'Full' stopped the block twice (waits/*-Full.png: project ADEMark, environment Cloud, sidebar with arena and ADEMark). The reads of 'Full', 'arena' and 'High' after it are unchanged, so another project or the cloud still stops the block.",
     "2026-11-11: the app updated itself from 129.0.0 to 150.0.0 between two runs of the same day (manifest ade_versions of control-2026-11-10T08-31-19Z-cloudroom-3 and -cloudroom-4), and that is why -cloudroom-4 failed after -cloudroom-3 measured 86 valid rows. On 150 (waits/2026-11-11T16-19-32-547Z-Full.png, 1600x1000): the composer is unchanged (text box y 65 to 190, 'Opus 5.5 | High' at y 166, project and environment selectors at y 210, 'One-click prompts' at y 265), a project 'ADEMark' exists beside 'arena' and is the selected one, the environment selector reads 'Cloud', and the access indicator 'Full' moved from (1210,196) to the sidebar footer at about (290,977). So the read of 'Full' now looks there, and since it no longer tells a local environment from the cloud, a last look of the screen agent fails the block unless the project is arena and the environment is not Cloud. app.version is 150.0.0; bundleSha256 is still the one of 129 and must be read again at the next calibration. In the owner's account the app cannot be opened beside another app that runs a local server: it takes that app's server for a running Cloudroom.",
-    "2026-11-11, third pass (control-2026-11-10T08-31-19Z-cloudroom-5): the screen agent put the new thread on arena and Local in both blocks, and the block still stopped at openProject[13]: 'Full' did not show. The note above was wrong: 'Full Access' did not move, it shows at (1253,211) only for a local environment, and the frame of 16:19 was on Cloud. The sidebar footer 'Full' at (290,977) is 11 px text that OCR never reads (0 of 36 frames, and ademark-native ocr on the saved screenshot reads nothing there). So openProject reads 'Full' in the afterLaunch region again (1210,196,120,28: OCR reads 'Full Acces5 V'), which also tells Local from Cloud. The 'High' region (716,152,100,28) cut the model name in half and read 'g' on the same frame; it is now (640,150,180,32), which reads '* Opus 5.5 | High'. Both regions were read with the real helper on the four screenshots of that run before the change, and bench/test/adapters-profiles.test.ts reads every expectText of openProject on one of them (bench/test/fixtures/cloudroom-150-new-thread.png). Rule: a new or moved OCR region is read with ademark-native ocr on a real screenshot before it ships."
+    "2026-11-11, third pass (control-2026-11-10T08-31-19Z-cloudroom-5): the screen agent put the new thread on arena and Local in both blocks, and the block still stopped at openProject[13]: 'Full' did not show. The note above was wrong: 'Full Access' did not move, it shows at (1253,211) only for a local environment, and the frame of 16:19 was on Cloud. The sidebar footer 'Full' at (290,977) is 11 px text that OCR never reads (0 of 36 frames, and ademark-native ocr on the saved screenshot reads nothing there). So openProject reads 'Full' in the afterLaunch region again (1210,196,120,28: OCR reads 'Full Acces5 V'), which also tells Local from Cloud. The 'High' region (716,152,100,28) cut the model name in half and read 'g' on the same frame; it is now (640,150,180,32), which reads '* Opus 5.5 | High'. Both regions were read with the real helper on the four screenshots of that run before the change, and bench/test/adapters-profiles.test.ts reads every expectText of openProject on one of them (bench/test/fixtures/cloudroom-150-new-thread.png). Rule: a new or moved OCR region is read with ademark-native ocr on a real screenshot before it ships.",
+    "2026-11-12, C1 empty diff (control-2026-11-10T08-31-19Z-cloudroom-orchestration-1): openProject runs again for every freshArena worktree (launch opens ~/arena/cloudroom, each C1 rep opens ~/arena/cloudroom-C1-<n>), and a second 'project create --name arena' makes a second project with the same name. The picker cannot tell them apart, the screen agent picked the first, and the C1 threads ran in ~/arena/cloudroom while the graded ~/arena/cloudroom-C1-1 stayed at the base commit. openProject now runs bench/adapters/arena-project.mjs free before create (renames every project named arena to prior-<id> and hides it, threads kept) and verify after create (fails the step unless exactly one arena project sources ${worktree}). The visible name stays 'arena', so the OCR checks are unchanged. The script needs the app running for room-cli, which openProject always has; it is never called from reset or quit. bb.json runs the same helper without hide (bb project has no hide) plus a front step, because bb's picker clicks the first row."
   ],
   "agentGuide": "Threads are listed in the sidebar. Cmd+N starts a new thread; its message box sits at the bottom of the thread. An update banner may show across the top: never press its Restart to update button (it asks for the Mac password and changes the measured version); its X at the far right closes it."
 }

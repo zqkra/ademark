@@ -20,16 +20,18 @@ import { planMessage } from "./support.ts";
 
 export interface StepVars {
   worktree: string;
+  repo: string;
   home: string;
   model: string | null;
   effort: string | null;
   agent: string;
 }
 
-const PLACEHOLDER = /\$\{(worktree|home|model|effort|agent)\}/g;
+const PLACEHOLDER = /\$\{(worktree|repo|home|model|effort|agent)\}/g;
 
 function placeholderValue(name: string, vars: StepVars): string {
   if (name === "worktree") return vars.worktree;
+  if (name === "repo") return vars.repo;
   if (name === "home") return vars.home;
   if (name === "agent") return vars.agent;
   const value = name === "model" ? vars.model : vars.effort;
