@@ -66,6 +66,22 @@
       "cache_write_5m": 2.5,
       "cache_write_1h": 4.0,
       "source": "Claude API model table (cached 2026-10-06); cache write 1.25x (5 min) and 2x (1 h) input, cache read 0.1x input"
+    },
+    "claude-sonnet-5-5": {
+      "input": 2.0,
+      "output": 10.0,
+      "cache_read": 0.1,
+      "cache_write_5m": 2.5,
+      "cache_write_1h": 4.0,
+      "source": "Anthropic API pricing docs, platform.claude.com/docs/en/about-claude/pricing, checked 2026-11-21; cache read is 0.05x input on this model"
+    },
+    "claude-fable-5": {
+      "input": 10.0,
+      "output": 50.0,
+      "cache_read": 1.0,
+      "cache_write_5m": 12.5,
+      "cache_write_1h": 20.0,
+      "source": "Anthropic API pricing docs, platform.claude.com/docs/en/about-claude/pricing, checked 2026-11-21"
     }
   }
 }

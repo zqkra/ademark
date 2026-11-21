@@ -242,6 +242,14 @@ describe("priceUsd", () => {
     expect(priceUsd(usage({ cache_read: 1000 }), "claude-opus-5-5", PRICES)).toBeCloseTo(0.0002, 10);
   });
 
+  // Synara's capture ran claude-sonnet-5-5 and another ADE ran claude-fable-5; both had no price in v1.
+  test("prices claude-sonnet-5-5 and claude-fable-5 at the official rates", () => {
+    expect(priceUsd(usage({ input: 1000, output: 500 }), "claude-sonnet-5-5", PRICES)).toBeCloseTo(0.007, 10);
+    expect(priceUsd(usage({ cache_read: 1000 }), "claude-sonnet-5-5", PRICES)).toBeCloseTo(0.0001, 10);
+    expect(priceUsd(usage({ input: 1000, output: 500 }), "claude-fable-5", PRICES)).toBeCloseTo(0.035, 10);
+    expect(priceUsd(usage({ cache_read: 1000 }), "claude-fable-5", PRICES)).toBeCloseTo(0.001, 10);
+  });
+
   test("returns null when a needed price is null", () => {
     expect(priceUsd(usage({ input: 100 }), "gpt-6.1-sol", PRICES)).toBeNull();
     expect(priceUsd(usage({ cache_write: 100 }), "gpt-6.1-sol", PRICES)).toBeNull();

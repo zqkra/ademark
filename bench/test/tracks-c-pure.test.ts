@@ -227,8 +227,8 @@ describe("track C pure helpers", () => {
     expect(two.usd).toBeCloseTo(2 * one.usd!, 9);
     expect(two.tokens).toBe(2 * (2 + 13_020 + 11_780 + 362));
     // A model with no price still gives no $, and names every such model once.
-    const mixed = runTokens([captureRow("claude-opus-5-5", usage), captureRow("claude-fable-5", usage), captureRow("claude-fable-5", usage)], prices);
+    const mixed = runTokens([captureRow("claude-opus-5-5", usage), captureRow("gpt-6.1-sol", usage), captureRow("gpt-6.1-sol", usage)], prices);
     expect(mixed.usd).toBeNull();
-    expect(mixed.unpriced).toEqual(["claude-fable-5"]);
+    expect(mixed.unpriced).toEqual(["gpt-6.1-sol"]);
   });
 });
