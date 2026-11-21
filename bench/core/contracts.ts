@@ -475,6 +475,11 @@ export interface AdeProfile {
   // must exist in the file, so a renamed setting stops the block instead of doing nothing. `workers`: see
   // Adapter.orchestrationWorkers.
   orchestration?: { settings?: OrchestrationSetting[]; workers?: "sessions" };
+  // Folders the adapter trusts for Claude Code while the app runs, rescanned on a timer: an ADE that makes a git
+  // worktree per workspace gives every new repo root its own trust prompt, and the folders appear only after the
+  // app creates them, so account setup cannot list them (2026-11-20, Superset's ~/.superset/worktrees). Each path
+  // uses ~; every directory found under it, down to three levels, gets hasTrustDialogAccepted in ~/.claude.json.
+  claudeTrustScanDirs?: string[];
   notes: string[];
   // Plain words for the agent that rehearses the app before it is measured (bench/agent/stage.ts): where a new
   // conversation with the agent starts, what is easy to confuse. Optional.

@@ -518,6 +518,15 @@ export function validateProfile(raw: unknown, id: string, agents: readonly Agent
     errors.push('orchestrationTrigger: must be a non-empty string, null or { "notCalibrated": "<what is missing>" }');
   } else checkOrchestrationTrigger(root.orchestrationTrigger, errors);
   if (root.orchestration !== undefined) checkOrchestration(root.orchestration, errors);
+  if (root.claudeTrustScanDirs !== undefined) {
+    if (!Array.isArray(root.claudeTrustScanDirs)) {
+      errors.push("claudeTrustScanDirs: must be an array of paths under ~");
+    } else {
+      root.claudeTrustScanDirs.forEach((dir, index) =>
+        checkHomePath(dir, `claudeTrustScanDirs[${index}]`, errors),
+      );
+    }
+  }
   checkStringArray(root.notes, "notes", errors);
   if (root.agentGuide !== undefined) requireString(root.agentGuide, "agentGuide", errors);
   if (root.excludeTests !== undefined) {
