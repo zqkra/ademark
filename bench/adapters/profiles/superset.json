@@ -3,8 +3,8 @@
   "ade": "superset",
   "app": {
     "path": "/Applications/Superset.app",
-    "version": "1.39.0",
-    "bundleSha256": "1913dd0ec84890baf98464261cc3803ac2d132c8f90e941ca517836226d1cfdd",
+    "version": "2.0.11",
+    "bundleSha256": "7de0e46936808c707ffd82bc14b666e18273426b9bfd5033959b16b2cfee8c38",
     "processNames": [
       "Superset",
       "Superset Helper",

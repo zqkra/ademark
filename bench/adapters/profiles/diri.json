@@ -3,8 +3,8 @@
   "ade": "diri",
   "app": {
     "path": "/Applications/diri.app",
-    "version": "0.11.2",
-    "bundleSha256": "0ab268ca09451414fd0c09ca531a9e4168c3d026f0b4c842536d6b80e713cf66",
+    "version": "0.11.6",
+    "bundleSha256": "38df443e232249869dc7580d296af3a35c0a52df28e3d75b226bc2eec69e307a",
     "processNames": [
       "diri"
     ]
@@ -159,7 +159,9 @@
       "/Users/ademark/.local/share/claude/versions/"
     ]
   },
-  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.11: the dirijor MCP lets agents spawn and merge other agents, but it is exposed only when the user configures it (cristicretu/diri, crates/dirijor-mcp). No trigger line is proven. Pilot must first configure the dirijor MCP for the bench agent, then confirm a natural-language delegation request makes the agent spawn child agents as separate sessions." },
+  "orchestrationTrigger": {
+    "notCalibrated": "ADES.md 3.11: the dirijor MCP lets agents spawn and merge other agents, but it is exposed only when the user configures it (cristicretu/diri, crates/dirijor-mcp). No trigger line is proven. Pilot must first configure the dirijor MCP for the bench agent, then confirm a natural-language delegation request makes the agent spawn child agents as separate sessions."
+  },
   "notes": [
     "PLACEHOLDER: orchestrationTrigger null means UNKNOWN here, not 'no orchestration'. ADES 3.11 says the dirijor MCP lets agents spawn and merge agents; GETTING_STARTED says the MCP is exposed only when the user explicitly configures it. No trigger line was identified, and C1 reports null as 'not supported'. Decide before any C1 run.",
     "Login: none inside Diri. Claude Code and Codex use their own CLI logins in the ademark account (not checked; ~/.claude and ~/.codex exist in the owner's account, contents not read), so login.kind is agent-cli. The profile does not touch accounts.json.",

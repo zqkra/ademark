@@ -3,8 +3,8 @@
   "ade": "paseo",
   "app": {
     "path": "/Applications/Paseo.app",
-    "version": "0.15.0",
-    "bundleSha256": "5e8685a0b860a9708cb130109492c097c88a3677ca2f207cf901a4ec2fde937e",
+    "version": "0.16.2",
+    "bundleSha256": "321a2c0514f488fbc9136524f2b295572e3c5914f381dd5c64b278e53c6f1243",
     "processNames": [
       "Paseo",
       "Paseo Helper",
@@ -369,7 +369,11 @@
     "settings": [
       {
         "file": "~/.paseo/config.json",
-        "path": ["daemon", "mcp", "injectIntoAgents"],
+        "path": [
+          "daemon",
+          "mcp",
+          "injectIntoAgents"
+        ],
         "value": true
       }
     ],

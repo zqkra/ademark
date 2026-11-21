@@ -3,8 +3,8 @@
   "ade": "bb",
   "app": {
     "path": "/Applications/bb.app",
-    "version": "0.46.1",
-    "bundleSha256": "12f7029cd02be269ef1854c4ceedcd5ba4d260b1c4c2e86c8f7933c107d4426b",
+    "version": "0.50.1",
+    "bundleSha256": "897bf4e4ec6f270e27481996fd1ddcc118c7600c793da87aaa28f4cbc6fa6a00",
     "processNames": [
       "bb",
       "bb Helper",

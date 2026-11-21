@@ -3,8 +3,8 @@
   "ade": "orca",
   "app": {
     "path": "/Applications/Orca.app",
-    "version": "1.4.249",
-    "bundleSha256": "5ac3fffc33e580c0f7ad0c8573a49bbc64aee5fe3151732af4da47d986afa249",
+    "version": "1.4.268",
+    "bundleSha256": "54b3a300247c0bc51a81f74d33296257d1df25ab501a9b27631884c67af2d929",
     "processNames": [
       "Orca",
       "Orca Helper",

@@ -3,8 +3,8 @@
   "ade": "synara",
   "app": {
     "path": "/Applications/Synara.app",
-    "version": "1.0.7",
-    "bundleSha256": "c72cbb5618d675708f64bc705e5727f7a9831e9d3ef48cf81612cabd9fc3b367",
+    "version": "1.6.4",
+    "bundleSha256": "389f1192e9e8631a25577389e9134becff09685aed72115a14c6959fda8d41f7",
     "processNames": [
       "Synara",
       "Synara Helper",

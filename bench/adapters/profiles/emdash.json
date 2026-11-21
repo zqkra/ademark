@@ -3,8 +3,8 @@
   "ade": "emdash",
   "app": {
     "path": "/Applications/Emdash.app",
-    "version": "1.2.10",
-    "bundleSha256": "e7af1ede11bce959a6f50c50bb9702864907760e26bd47a5489494246f48e895",
+    "version": "1.2.13",
+    "bundleSha256": "a299e801470f2a2a3b00478f7d6709c0482ebe829aa856cd2a0ad2d654091f1d",
     "processNames": [
       "Emdash",
       "Emdash Helper",

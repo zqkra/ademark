@@ -3,8 +3,8 @@
   "ade": "capy",
   "app": {
     "path": "/Applications/Capy.app",
-    "version": "0.5.0",
-    "bundleSha256": "89d19588b1c06fd268a778b9bfd97b64bbc5d2f82028a3dc91ae099a08755740",
+    "version": "0.9.2",
+    "bundleSha256": "14d91ee711659c9cadfced0e1e7215004c77bea04f890092da75854a2a0cc5d1",
     "processNames": [
       "Capy",
       "Capy Helper",

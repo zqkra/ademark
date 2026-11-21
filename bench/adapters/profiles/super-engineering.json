@@ -3,8 +3,8 @@
   "ade": "super-engineering",
   "app": {
     "path": "/Applications/super.engineering.app",
-    "version": "15aae8f8",
-    "bundleSha256": "efef5274024b69e8ca7993ef348e064521347f8fd300a9860e7d488f867e9df8",
+    "version": "e7a1b735",
+    "bundleSha256": "e3a6f9b144730db828031fbb82c78700cd9f7b5e2c1f0fa8b2c6fc940429074a",
     "processNames": [
       "super.engineering"
     ]

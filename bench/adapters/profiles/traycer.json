@@ -3,8 +3,8 @@
   "ade": "traycer",
   "app": {
     "path": "/Applications/Traycer.app",
-    "version": "1.5.3",
-    "bundleSha256": "6029d5ff0a91088132d1b07f543e8205b9565fec54165202781c65be9ce1bce3",
+    "version": "1.5.4",
+    "bundleSha256": "7bf363cd6cfac79c27d1dfd33f1cd576416c3988399883fec7c42e2940779ab5",
     "processNames": [
       "Traycer",
       "Traycer Helper",

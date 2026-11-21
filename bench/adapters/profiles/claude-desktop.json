@@ -3,8 +3,8 @@
   "ade": "claude-desktop",
   "app": {
     "path": "/Applications/Claude.app",
-    "version": "4.23118.0",
-    "bundleSha256": "2f65868848f15b8ff0747f5db32e2d8ced33a5692f81b263130c268c9ae7cbdd",
+    "version": "6.6395.1",
+    "bundleSha256": "36b0bbd90cce6366081ed3072758b3a75cf9328576776fa6e0805f053fa2e06b",
     "processNames": [
       "Claude"
     ]
@@ -223,7 +223,9 @@
       "/Users/ademark/.local/share/claude/versions/"
     ]
   },
-  "orchestrationTrigger": { "notCalibrated": "ADES.md 3.16: subagents and session messages. The subagents are Claude Code's own Task tool inside one session, which C1 cannot count as the app's orchestration; no app-level trigger line exists in the bundle (slash commands come from the server). Pilot must decide whether Claude Desktop has any orchestration that creates separate sessions; if not, the honest value is null." },
+  "orchestrationTrigger": {
+    "notCalibrated": "ADES.md 3.16: subagents and session messages. The subagents are Claude Code's own Task tool inside one session, which C1 cannot count as the app's orchestration; no app-level trigger line exists in the bundle (slash commands come from the server). Pilot must decide whether Claude Desktop has any orchestration that creates separate sessions; if not, the honest value is null."
+  },
   "notes": [
     "Bundle: Claude.app 2.42304.2 (build 2.42304.2), bundle id com.anthropic.claudefordesktop, Electron 44.7.2, Team ID Q6L2SF6YDW, minimum macOS 13.0, URL schemes claude and msauth.com.anthropic.claudefordesktop. Sources: calibrate probe --ade claude-desktop, codesign -dv /Applications/Claude.app, Contents/Info.plist.",
     "The Code tab is the Claude Code surface of the desktop app and its UI is served from claude.ai: the main window loads a remote URL (claude.ai / claude.com strings in app.asar .vite/build/index.chunk-BkhOOUzl.js). No layout code for the composer or the message column exists locally, so every rect here is an estimate for 1600x1000 points.",
