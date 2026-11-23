@@ -121,9 +121,15 @@ export function dfAvailableKb(text: string): number | null {
   return Number.isFinite(available) ? available : null;
 }
 
+// Older macOS prints `lowpowermode 0|1`. Newer macOS (2026-11-22, Darwin 27) prints `powermode` per power source
+// instead: 0 automatic, 1 low power, 2 high power. The night runs on AC, so the AC section's value is the one that counts.
 export function parseLowPowerMode(text: string): number | null {
   const match = text.match(/^[ \t]*lowpowermode[ \t]+(\d+)/m);
-  return match ? Number(match[1]) : null;
+  if (match) return Number(match[1]);
+  const ac = text.split(/^(?=\S.*:\s*$)/m).find((section) => /^AC Power:/.test(section));
+  const mode = ac?.match(/^[ \t]*powermode[ \t]+(\d+)/m);
+  if (!mode) return null;
+  return Number(mode[1]) === 1 ? 1 : 0;
 }
 
 function ok(detail: string): CheckOutcome {
