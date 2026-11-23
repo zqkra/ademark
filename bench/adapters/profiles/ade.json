@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "ade": "ade",
+  "app": {
+    "path": "/Applications/ADE.app",
+    "version": "1.2.133-beta.8",
+    "bundleSha256": "dd7fc86dd6441a5248599b78e469e2e0291946e46830d08b4790612fa12dc2a7",
+    "processNames": [
+      "ADE",
+      "ADE Helper",
+      "ADE Helper (Renderer)",
+      "ADE Helper (GPU)",
+      "ADE Helper (Plugin)",
+      "ADE Brain"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "ADE",
+    "bundleId": "com.ade.desktop",
+    "probe": "xkvwjq",
+    "composerRect": {
+      "x": 620,
+      "y": 296,
+      "w": 700,
+      "h": 74
+    },
+    "activeComposerRect": {
+      "x": 488,
+      "y": 905,
+      "w": 959,
+      "h": 45
+    },
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 470,
+      "y": 140,
+      "w": 990,
+      "h": 740
+    },
+    "focusClick": null,
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.ade",
+      "~/Library/Application Support/ade-desktop"
+    ],
+    "launchAgents": [
+      "com.ade.runtime",
+      "com.ade.watchdog",
+      "com.ade.desktop.ShipIt"
+    ]
+  },
+  "login": {
+    "kind": "app",
+    "files": [
+      "~/.ade/secrets",
+      "~/.ade/account-settings.json",
+      "~/.ade/account-projects.json",
+      "~/.ade/account-migration.json",
+      "~/.ade/account-vault.json.enc"
+    ],
+    "signIn": "Open ADE and sign in to the dedicated bench ADE account (Sign in or create account), then quit it."
+  },
+  "reset": {
+    "seeds": [
+      ".ade/.migrated-v2",
+      ".ade/.machine-trust-reset-v1",
+      ".ade/chat-launch-defaults.json",
+      "Library/Application Support/ade-desktop/ade-state.json",
+      ".ade/tools",
+      "Library/Application Support/ade-desktop/Local Storage"
+    ],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 5000
+      },
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 20,
+          "y": 40,
+          "w": 1000,
+          "h": 40
+        },
+        "texts": [
+          "service restarted",
+          "restarted at"
+        ],
+        "point": {
+          "x": 1568,
+          "y": 60
+        },
+        "timeoutMs": 3000
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "keys",
+        "combo": "escape"
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+k"
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "paste",
+        "text": "Open project"
+      },
+      {
+        "kind": "wait",
+        "ms": 900
+      },
+      {
+        "kind": "keys",
+        "combo": "enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+a"
+      },
+      {
+        "kind": "paste",
+        "text": "${worktree}"
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+enter"
+      },
+      {
+        "kind": "wait",
+        "ms": 5000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 1200
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 95,
+          "y": 76,
+          "w": 110,
+          "h": 28
+        },
+        "texts": [
+          "Focus",
+          "Facus"
+        ],
+        "point": {
+          "x": 140,
+          "y": 89
+        },
+        "timeoutMs": 2000
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 95,
+          "y": 122,
+          "w": 110,
+          "h": 28
+        },
+        "texts": [
+          "Focus",
+          "Facus"
+        ],
+        "point": {
+          "x": 140,
+          "y": 136
+        },
+        "timeoutMs": 2000
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      },
+      {
+        "kind": "expectText",
+        "region": {
+          "x": 640,
+          "y": 330,
+          "w": 460,
+          "h": 70
+        },
+        "texts": [
+          "Opus 5.5",
+          "Opus 5,5",
+          "Opu8 5.5",
+          "Opug 5.5",
+          "Opu$ 5.5"
+        ],
+        "timeoutMs": 20000
+      },
+      {
+        "kind": "click",
+        "point": {
+          "x": 900,
+          "y": 330
+        }
+      },
+      {
+        "kind": "wait",
+        "ms": 400
+      }
+    ],
+    "configure": {
+      "claude": [],
+      "codex": []
+    },
+    "quit": [],
+    "returnToThread": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "com.ade.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+shift+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 240,
+          "y": 198
+        }
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 240,
+          "y": 288
+        }
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.ade"
+    ],
+    "launchAgentLabels": [
+      "com.ade.runtime",
+      "com.ade.watchdog",
+      "com.ade.desktop.ShipIt"
+    ],
+    "teamId": "VQ372F39G6",
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "~/.ade/tools/@anthropic-ai/",
+      "~/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "Use subagents for this task: start one subagent per work item, all four at the same time, each in its own git worktree, then merge their work into main.",
+  "notes": [
+    "Submission profile for the released ADE (pinned 1.2.133-beta.8), calibrated on 2026-11-19 from the ADE Alpha profile and gated on every release since.",
+    "Needs a release whose brain runs as Contents/MacOS/ADE Brain (brainExecutableMode brain-copy). With the mode off, the brain runs as the app executable with ppid 1 and the harness cannot tell it from the app.",
+    "openProject turns Focus off (the pill left of the list/board switch). Focus is on by default (appStore.ts workFoldBusyLanes, version 7) and folds a lane with running chats into a collapsed 'Working (N)' shelf, done rows included (workLaneFocus.ts, SessionListPane.tsx). A11 starts while the A10 streams still run, so with Focus on the long and short threads are not in the sidebar at all. With Focus off the lane list stays, newest first. Two clickIfText steps: without and with the restart banner; the reset puts Focus back on.",
+    "Launch view is Home (no composer). openProject: Home Add project (967,130), Open a folder (452,696, build 23 dialog with a repository box; 442,677 before) opens ADE's own folder browser, Cmd+A, paste the path, Cmd+Enter opens the project in the same window; Work opens with a new chat composer focused. `open -a ADE <folder>` while a window is open makes a second window (main.ts openProjectRootFromFileRequest), so it is not used.",
+    "openProject (2026-11-18): the command palette (cmd+k, then Open project, which matches Open project on Home and Open another project inside a project) opens the same folder browser from either launch view; the Home Add project clicks missed when ADE launched into the last project.",
+    "openProject (2026-11-18): cmd+1 opens Work before the composer check, because ADE reopens a project on the page it showed last.",
+    "The seed holds ~/.ade/tools (ADE downloads the Claude Code and Codex it pins on first launch, about 1 GB). Without it, every launch after a reset downloads them during the timed launch, which a user sees only once.",
+    "openProject (2026-11-19, release 1.2.132-beta.2): the reset turns Focus on and the sidebar folds the running A10 chats into Working (N), so A11 cannot find its threads; the two Focus clicks are back, and the last step clicks the composer so the paste lands there.",
+    "2026-11-21 (v1.2.133-beta.6): ADE keeps an unsent composer draft across a quit and restores it at the next launch. An edit made in the last second before Quit could be lost, so a start sometimes opened with an earlier probe in the composer (A1: 1 of 10 starts invalid, Ready came from text that is not the probe). The harness adds a start for each invalid one. The beforeColdQuit and beforeRelaunchQuit steps ran after the app had quit, so they did nothing and are gone.",
+    "returnToThread is empty: ADE reopens the window on the chat it was quit on, and the brain keeps the turn running while the window is closed (checked on 1.2.133-beta.6, C6).",
+    "2026-11-22 (v1.2.133-beta.8): ADE saves an edit made just before Quit, so no start opens with an earlier probe in the composer (A1: 0 of 6 starts invalid)."
+  ],
+  "agentGuide": "Cmd+Shift+N starts a new chat in the open project. Cmd+N opens a new window: never use it. Home has no composer; open the project first.",
+  "excludeTests": {
+    "A2": "ADE keeps its brain (the launch agent com.ade.runtime, Contents/MacOS/ADE Brain) running after the window quits, by design, so chats and remote machines keep working. A2's quiet check after the quit then reached its 60 s cap on the calibration Mac (about 0.10 cores, most of it the Mac's own background tasks), the brain was swept, and A2 ended in every ADE run. A2 has only the relaunch part, so the whole test is excluded here."
+  }
+}

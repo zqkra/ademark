@@ -1,0 +1,10 @@
+{
+  "ade": "ade",
+  "runs": 5,
+  "passed": 5,
+  "at": "2026-11-22T00:25:57.017Z",
+  "harnessCommit": "6d53c053a6d520513adb19450674c5ab052b5561",
+  "version": "1.2.133-beta.8",
+  "bundleSha256": "dd7fc86dd6441a5248599b78e469e2e0291946e46830d08b4790612fa12dc2a7",
+  "failures": []
+}

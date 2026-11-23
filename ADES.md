@@ -816,6 +816,43 @@ Adapter `codex-app`:
 | `quit` | default |
 | `processes` | unknown, find in pilot |
 
+### 3.18 ADE
+
+| Field | Value |
+|---|---|
+| Adapter ID | `ade` (`bench/adapters/ade.ts`) |
+| Maker, URL, license | the ADE maintainers, https://ade-app.dev, github.com/arul28/ADE, AGPL-3.0-only (LICENSE file) |
+| Version | read at freeze from `CFBundleShortVersionString` and the main-binary SHA-256 of `/Applications/ADE.app` (`com.ade.desktop`). Record the release channel (stable or beta) |
+| Family | EL-SDK |
+| Data to move aside | `~/.ade` (machine home: runtime database, logs, tool cache, `projects.json`) and `~/Library/Application Support/ade-desktop` (Electron userData; the folder takes the package name, not the product name). Login: `~/.ade/secrets/` and `~/.ade/account-*.json`, `~/.ade/account-vault.json.enc` (rule 12). Also per project: `<project>/.ade/` (project state, lane worktrees in `.ade/worktrees/`). Logs in `~/Library/Logs/ADE` |
+| Processes | Electron set (`ADE`, `ADE Helper`, `ADE Helper (Renderer)`, `ADE Helper (GPU)`, `ADE Helper (Plugin)`) plus the ADE runtime: `ADE` run as Node (`ELECTRON_RUN_AS_NODE=1`) with `Contents/Resources/ade-cli/cli.cjs serve`, under launchd as `com.ade.runtime` (KeepAlive). Also a watchdog launch agent `com.ade.watchdog` and a PTY host. Several processes share the executable name `ADE` |
+| Claude runs via | Claude Agent SDK. The CLI comes from `CLAUDE_CODE_EXECUTABLE_PATH` when set, else ADE's pinned copy in `~/.ade` (downloaded on first use) |
+| Codex runs via | `codex app-server` |
+| Adds to context | ADE guidance in the appended system prompt; ADE skills as a plugin; `skills: "all"`; `promptSuggestions` on. Measure in B1 |
+| Writes global config | none at launch known. The "Install CLI" action adds a `# ADE CLI` PATH line to the shell startup file and links `~/.local/bin/ade`; Cursor chats write `~/.cursor/hooks.json`. Diff after the block (rule 7) |
+| Pin | Claude: model `claude-opus-5-5`, effort high, full access (find the control in pilot). Telemetry: `DO_NOT_TRACK=1` through `launchctl setenv` (analytics and crash reports honor it; verify in pilot) |
+| Side calls (B1) | chat title (up to 2 small-model calls, each a separate `claude -p`); prompt suggestions |
+| New thread (A3) | `cmd+shift+n` (keybinding `work.chat.new`). `cmd+n` is New window: do not use |
+| Orchestration (C1) | ADE chats start subagent chats and lanes through the `ade` CLI (`ade chat spawn`, `ade lanes create`); trigger line: find in pilot |
+| Drive (setup) | bundled `ade` CLI (`Contents/Resources/ade-cli/bin/ade`: `projects add`, `chat`, `lanes`), the `ade://` scheme, CDP |
+| Traps | the runtime is a KeepAlive launch agent that outlives the window (A9, and A2 must boot it out or count it); processes named `ADE` that are not the app; the composer placeholder `Type to vibecode...` holds the probe pair `de` (use `calibration.probe`); a fresh install downloads the pinned Claude Code unless `CLAUDE_CODE_EXECUTABLE_PATH` is set; account sign-in and sync must stay off |
+| Verify in pilot | first-run screens on fresh data; open-project flow; model/effort/permission controls; which processes stop on Quit; whether `launchctl setenv` reaches the runtime after a bootout; C1 trigger |
+| Local only | Local runtime only: a free ADE account is signed in (the app asks for one), but no cloud computers and no paired machines. Check: `ade chat list` on the bench Mac lists the thread with this machine as its host, and Settings > Machines lists only this Mac |
+
+Adapter `ade`:
+
+| Method | How |
+|---|---|
+| `installCheck` | default; bundle id `com.ade.desktop` |
+| `reset` | default, plus `launchctl bootout gui/$UID/com.ade.runtime` and `com.ade.watchdog` before moving `~/.ade` aside, and the arena's `.ade/` folder |
+| `configure` | `launchctl setenv CLAUDE_CODE_EXECUTABLE_PATH <system claude>` and `DO_NOT_TRACK 1` before launch; model, effort and access in the composer (find in pilot) |
+| `launch` | `open -b com.ade.desktop`; the app starts the runtime launch agent itself |
+| `newThread` | `cmd+shift+n` |
+| `send` | default |
+| `waitDone` | session log; `cwd` is the lane folder (the primary lane is the project folder; verify in pilot) |
+| `quit` | default; then list `ADE` processes still alive, including the runtime |
+| `processes` | Electron set, the runtime, the watchdog, the PTY host |
+
 ## 4. Summary
 
 | ADE | Adapter ID | Family | Drive for setup | C1 trigger | Top fairness traps |
@@ -838,3 +875,4 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+| ADE | `ade` | EL-SDK | `ade` CLI, `ade://` scheme, CDP | subagent chats and lanes via the `ade` CLI (to verify) | runtime launch agent outlives the window; placeholder needs a custom probe |
