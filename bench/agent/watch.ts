@@ -37,7 +37,12 @@ export function recoverGoal(appName: string, reason: string): string {
 export function repWatch(ctx: TestContext, o: RepWatchOptions = {}): RepWatch | null {
   if (!agentEnabled() || ctx.adapterCtx.dryRun) return null;
   const appName = ctx.adapter.calibration.appName;
-  const pidOf = o.pidOf ?? (async () => await mainPid(ctx.adapterCtx, { bundlePaths: ctx.adapter.processes().bundlePaths }));
+  // The app's launch agents may run a second Contents/MacOS executable under launchd (ADE's brain, Cloudroom's preview);
+  // without their labels pickMainProc can return that windowless pid, and every look fails with window_not_found.
+  const pidOf = o.pidOf ?? (async () => {
+    const hints = ctx.adapter.processes();
+    return await mainPid(ctx.adapterCtx, { bundlePaths: hints.bundlePaths, launchAgents: hints.launchAgentLabels });
+  });
   const looked = new Set<TestId>();
   let runs = 0;
   const dir = (testId: TestId, rep: number, label: string): string => {

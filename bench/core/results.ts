@@ -14,6 +14,7 @@ export const EVENT_KINDS = [
   "plan_limit_pause",
   "harness_error",
   "contamination_drift",
+  "failure_window",
 ] as const;
 
 export type EventKind = (typeof EVENT_KINDS)[number];
