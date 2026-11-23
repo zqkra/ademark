@@ -11,13 +11,13 @@ import { benchRoot } from "../core/paths.ts";
 
 const EXPECTED = [
   "bare-cli", "t3code", "bb", "paseo", "synara", "traycer", "cloudroom", "superset", "orca", "emdash",
-  "zeron", "diri", "monocode", "super-engineering", "conductor", "capy", "claude-desktop", "codex-app",
+  "zeron", "diri", "monocode", "super-engineering", "conductor", "capy", "claude-desktop", "codex-app", "recur",
 ];
 
 describe("registry", () => {
-  test("lists all 18 adapter IDs from ADES.md", () => {
+  test("lists all 19 adapter IDs from ADES.md", () => {
     expect([...ADAPTER_IDS].sort()).toEqual([...EXPECTED].sort());
-    expect(listAdapters().length).toBe(18);
+    expect(listAdapters().length).toBe(19);
   });
 
   test("every adapter's id matches its registry key", () => {
@@ -44,6 +44,7 @@ describe("registry", () => {
       capy: "OWN",
       "claude-desktop": "FIRST",
       "codex-app": "FIRST",
+      recur: "NATIVE",
     };
     for (const [id, family] of Object.entries(families)) expect(getAdapter(id).family).toBe(family);
   });

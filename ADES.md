@@ -816,6 +816,25 @@ Adapter `codex-app`:
 | `quit` | default |
 | `processes` | unknown, find in pilot |
 
+### 3.18 Recur
+
+| Field | Value |
+|---|---|
+| Adapter ID | `recur` (`bench/adapters/recur.ts`) |
+| Maker, URL | recur.build, https://recur.build |
+| Version | 0.7.2 (calibrated and gated). Publish the app binary SHA-256 |
+| Family | NATIVE (Rust, GPUI) |
+| Data to move aside | `~/Library/Application Support/Recur`, `~/.recur` (task worktrees) |
+| Processes | `recur` (app), `recur-cli` (short-lived); agents are `claude`, `codex` |
+| Claude runs via | `claude -p --output-format stream-json`, one process per turn |
+| Codex runs via | `codex app-server` |
+| Adds to context | an appended system prompt for the chat mode, and the `recur` MCP server (`--strict-mcp-config`); B2 shows sizes |
+| Pin | Agent mode model Opus 5.5, effort high; Bypass tool permissions on (full access). Default Simplify stays at its factory value (on): it adds instructions, it does not rewrite the prompt |
+| New thread (A3) | `cmd+t` (File > New Tab): a new chat tab in the same workspace |
+| Orchestration (C1) | child workspaces (`create_workspace`, `merge_child`) from an Agent chat |
+| Drive (setup) | `recur-cli open <path>` over a local socket; keys |
+| Local only | Local projects only. Check: the worktree path is on this Mac |
+
 ## 4. Summary
 
 | ADE | Adapter ID | Family | Drive for setup | C1 trigger | Top fairness traps |
@@ -838,3 +857,4 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+| Recur | `recur` | NATIVE | `recur-cli open`, keys | child workspaces | appended mode prompt and MCP server |

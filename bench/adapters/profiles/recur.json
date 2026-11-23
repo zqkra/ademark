@@ -1,0 +1,203 @@
+{
+  "schema": 1,
+  "ade": "recur",
+  "app": {
+    "path": "/Applications/Recur.app",
+    "version": "0.7.2",
+    "bundleSha256": "493c229ce20d43e7d055975eef70282a0fcf4f37f146f676f087db7ec269f69c",
+    "processNames": [
+      "recur"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Recur",
+    "bundleId": "build.recur.app",
+    "composerRect": {
+      "x": 299,
+      "y": 900,
+      "w": 547,
+      "h": 50
+    },
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 285,
+      "y": 115,
+      "w": 575,
+      "h": 760
+    },
+    "focusClick": {
+      "x": 570,
+      "y": 915
+    },
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": [
+      "~/Library/Application Support/Recur",
+      "~/.recur"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/Recur.app/Contents/MacOS/recur-cli",
+          "open",
+          "${worktree}"
+        ],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "wait",
+        "ms": 1500
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+1"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      }
+    ],
+    "configure": {
+      "claude": [
+        {
+          "kind": "run",
+          "argv": [
+            "/Applications/Recur.app/Contents/MacOS/recur-cli",
+            "config",
+            "set",
+            "modelAgent",
+            "claude-code/${model}"
+          ],
+          "timeoutMs": 30000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/Applications/Recur.app/Contents/MacOS/recur-cli",
+            "config",
+            "set",
+            "flagsAgent",
+            "{\"effort\":\"${effort}\"}"
+          ],
+          "timeoutMs": 30000
+        },
+        {
+          "kind": "run",
+          "argv": [
+            "/Applications/Recur.app/Contents/MacOS/recur-cli",
+            "config",
+            "set",
+            "bypassPermissions",
+            "true"
+          ],
+          "timeoutMs": 30000
+        }
+      ],
+      "codex": [
+        {
+          "kind": "run",
+          "argv": [
+            "/Applications/Recur.app/Contents/MacOS/recur-cli",
+            "config",
+            "set",
+            "bypassPermissions",
+            "true"
+          ],
+          "timeoutMs": 30000
+        }
+      ]
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "build.recur.app"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+t"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+9"
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+9"
+      },
+      {
+        "kind": "wait",
+        "ms": 300
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+alt+left"
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "worktree",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/Library/Application Support/Recur",
+      "~/.recur"
+    ],
+    "launchAgentLabels": [],
+    "teamId": null,
+    "agentExecutables": [
+      "claude",
+      "codex",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": "Use child workspaces: one per work item, then merge each into this branch.",
+  "notes": [
+    "Calibrated 2026-11-14 on Recur 0.7.2 (release build, notarized, universal) at 1600x1000 points.",
+    "Settings: no seed. steps.configure pins them with the bundled CLI while the app is open (Recur 0.7.0+): recur-cli config set modelAgent claude-code/${model}, flagsAgent {\"effort\":\"${effort}\"}, bypassPermissions true. Factory values are Sonnet 5.5 and bypass off. Simplify stays at its factory default (on). The values persist in recur.db after quit.",
+    "openProject: recur-cli open <worktree> finds or creates the project and opens its Working copy with one 'New chat' tab in Agent mode. cmd+1 (Focus agent) focuses the composer; probe-region read 299,900,547,50.",
+    "newThread cmd+t (File > New Tab) appends a chat tab at the end with the composer focused (probe-region found the same rect without a click).",
+    "Relaunch restores the project, its tabs and composer focus; focusClick 570,915 is inside the composer and only a safety click. steps.quit is empty (AppleScript quit); no recur process survives a quit.",
+    "threadRect 285,115,575,760 is the whole message column: Recur lays a thread out from the top, so a short answer sits near y 220.",
+    "A11: the long thread is the last chat tab and the seed thread the one before it. longThread is cmd+9 (Navigate > Last Tab, Recur 0.7.1+); shortThread is cmd+9 then cmd+alt+left (Previous Tab). Previous/Next Tab alone are relative and wrap, so a repeated switch drifts.",
+    "Masks stay empty: GPUI repaints the whole window.",
+    "Orchestration (C1): the trigger is the line documented in the Recur docs (Concepts > Chat modes > Child workspaces). Workers are child workspaces: their own worktrees under ~/.recur/worktrees and their own claude sessions. Claude Code subagents (Agent tool) are disallowed in Recur chats."
+  ],
+  "orchestration": {
+    "settings": [],
+    "workers": "sessions"
+  }
+}

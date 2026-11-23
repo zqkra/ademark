@@ -90,7 +90,7 @@ describe("collectManifest", () => {
     expect(manifest.hardware.ram_gb).toBe(16);
     expect(manifest.macos_build.length).toBeGreaterThan(0);
     expect(manifest.display.width).toBeGreaterThan(0);
-    expect(manifest.order.length).toBe(18);
+    expect(manifest.order.length).toBe(19);
     expect(manifest.order_seed).toBe("test");
     expect(manifest.harness_commit).toMatch(/^[0-9a-f]{40}$/);
     expect(manifest.cli_versions.claude).toContain("Claude Code");

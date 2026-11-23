@@ -23,8 +23,8 @@ const PROFILE_IDS = readdirSync(PROFILES)
   .sort();
 
 describe("A7 stream plan (ADEMARK-41)", () => {
-  test("there are 15 profiles", () => {
-    expect(PROFILE_IDS).toHaveLength(15);
+  test("there are 16 profiles", () => {
+    expect(PROFILE_IDS).toHaveLength(16);
   });
 
   test.each(PROFILE_IDS)("%s plans at least 150 s of five streams together", (id) => {
