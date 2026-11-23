@@ -199,7 +199,7 @@ for Capy. On a fresh clone expect these:
 
 ### 4.1 Pick the ADE
 
-`bun bench/cli.ts adapter list` prints these 18 ids. Fifteen are driven by a profile in `bench/adapters/profiles/`;
+`bun bench/cli.ts adapter list` prints these 19 ids. Sixteen are driven by a profile in `bench/adapters/profiles/`;
 `bare-cli`, `t3code` and `zeron` have code adapters.
 
 | id | App | Family | Adapter | Own sign-in | C1 |
@@ -221,6 +221,7 @@ for Capy. On a fresh clone expect these:
 | `capy` | Capy | OWN | profile, screen agent | yes | trigger |
 | `claude-desktop` | Claude desktop (Code tab) | FIRST | profile | yes | not calibrated |
 | `codex-app` | Codex app (in ChatGPT desktop) | FIRST | profile | yes | not calibrated |
+| `pane` | Pane | EL-SDK | profile | no | not calibrated |
 
 - **Own sign-in** "no" means the app runs the account's own `claude` login.
 - **C1**: "trigger" runs the orchestrated build. "Not supported" writes valid rows with no value. "Not calibrated"

@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "ade": "pane",
+  "app": {
+    "path": "/Applications/Pane.app",
+    "version": "2.4.228",
+    "bundleSha256": "3b6c8f6aa089414e537796b52154c54eaead5196818ea2caf50ff99f5ac6bbae",
+    "processNames": ["Pane", "Pane Helper", "Pane Helper (GPU)", "Pane Helper (Plugin)", "Pane Helper (Renderer)"]
+  },
+  "window": { "w": 1600, "h": 1000 },
+  "calibration": {
+    "appName": "Pane",
+    "bundleId": "com.dcouple.pane",
+    "activeComposerRect": null,
+    "launchComposerRect": null,
+    "focusClick": null,
+    "masks": [],
+    "drive": "cli",
+    "dataDirs": ["~/.pane", "~/Library/Application Support/Pane"],
+    "launchAgents": []
+  },
+  "login": { "kind": "agent-cli", "files": [], "signIn": null },
+  "reset": {
+    "seeds": [".pane/config.json", ".pane/sessions.db"],
+    "jsonKeys": []
+  },
+  "steps": {
+    "afterLaunch": [],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": ["${home}/.pane/bin/runpane", "repos", "add", "--path", "${worktree}", "--yes", "--json"],
+        "timeoutMs": 60000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "${home}/.pane/bin/runpane", "panes", "adopt", "--repo", "${worktree}", "--path", "${worktree}",
+          "--name", "arena", "--agent", "claude", "--focus", "--yes", "--json"
+        ],
+        "timeoutMs": 60000
+      },
+      { "kind": "wait", "ms": 1500 },
+      { "kind": "keys", "combo": "cmd+t" },
+      { "kind": "wait", "ms": 1000 },
+      { "kind": "enter" },
+      { "kind": "wait", "ms": 2000 }
+    ],
+    "configure": { "claude": [], "codex": [] },
+    "quit": []
+  },
+  "timed": {
+    "launch": [{ "kind": "open", "bundleId": "com.dcouple.pane" }],
+    "newThread": [{ "kind": "keys", "combo": "cmd+t" }, { "kind": "enter" }],
+    "send": [{ "kind": "enter" }]
+  },
+  "waitDone": { "cwd": "worktree", "idleFallback": false },
+  "processes": {
+    "vendorDirs": ["~/.pane", "~/Library/Application Support/Pane"],
+    "launchAgentLabels": [],
+    "teamId": "FBM5YSF467",
+    "agentExecutables": ["claude", "codex", "/Users/ademark/.local/share/claude/versions/"]
+  },
+  "orchestrationTrigger": {
+    "notCalibrated": "Pane Sessions run an orchestrator agent that opens worker Panes with runpane panes create; no trigger line is proven by a C1 run yet"
+  },
+  "notes": [
+    "Draft from the Pane source (github.com/greenfield-inc/Pane, tag v2.4.228) and the released 2.4.228 build. Download: https://github.com/greenfield-inc/Pane/releases/download/v2.4.228/Pane-2.4.228-macOS-arm64.dmg, SHA-256 90d618c5cd827796d65050b3a9d8d5946fdba44eea85c09282afc20d713a69fc (the same value as the release's SHA256SUMS.txt). app.bundleSha256 is the SHA-256 of Contents/MacOS/Pane in that DMG's Pane.app (Developer ID Dcouple Inc, FBM5YSF467, notarized, Electron 43.8.3). Only A1 and A2 were checked on the app. Nothing else is calibrated.",
+    "Not measured yet, so left out: calibration.composerRect and calibration.threadRect (profile check fails on them until calibrated), focusClick, masks, newThreadComposerRect, timed.longThread and timed.shortThread (A11), steps.returnToThread (C6). Measure them as the ademark user per CALIBRATE.md.",
+    "Default thread: a chat tab. A fresh install sets chatTabsEnabled true (main/src/services/configManager.ts, D-329). The + menu (cmd+t, open-add-tool, frontend/src/components/panels/PanelTabBar.tsx) and the empty Pane screen list the installed chat agents first, Claude first, and focus the first item when the menu opens. timed.newThread is cmd+t then Enter. Whether Enter needs a wait after cmd+t is a calibration check.",
+    "Claude chat runs the bundled @agentclientprotocol/claude-agent-acp 0.100.0 with the system claude, and refuses Claude Code older than 2.1.316 (contracts/runpane/contract.json agents.entries.claude.chat.minimumVersion; main/src/services/agentChat/adapterSetup.ts, CHAT_AGENT_OUTDATED). The v1 bench pin, 2.1.303, is older, so the default chat tab cannot start on it.",
+    "The chat composer is a textarea that is never disabled while the agent starts (frontend/src/components/chatTab/ChatTabPanel.tsx), so a probe typed right after the new-tab action reaches the composer, not a shell. Enter queues or sends the message; cmd+enter sends now.",
+    "Terminal tabs ('Claude in Terminal', cmd+alt+3) run `claude --dangerously-skip-permissions`, typed into the shell 300 ms after the first prompt (SHELL_PROMPT_SETTLE_MS, main/src/services/terminalPanelManager.ts). Input typed before that is held only on Windows (heldInput), so on macOS a probe would reach zsh first, as in Orca's A3. The profile measures the chat tab, the default, so A3 is not excluded.",
+    "openProject (setup, CLI): runpane repos add, then runpane panes adopt of the arena checkout itself (accepted: the main checkout is in git worktree list; main/src/ipc/runpane.ts validateAdoptedWorktree). DEVIATION to record: Pane's New Pane makes a worktree under <repo>/worktrees by default. The arena checkout keeps every chat in ${worktree}, so session logs match by cwd (Track B) and the build lands in the arena (Track C). The New Pane dialog's worktree checkbox off is the same state in the GUI. adopt without --launch leaves one terminal tab with the claude command typed and not run; check on the screen whether that tab should be closed.",
+    "The runpane shim (~/.pane/bin/runpane) is written by Pane at startup (docs/RUNPANE_BUNDLED_CLI.md). If openProject runs before it exists or before the app answers, add a wait to afterLaunch after checking how long it takes.",
+    "A1 and A2, checked 2026-11-15 on the released 2.4.228 in an isolated HOME and user data folder: when the last view before the quit was a chat tab, launch reopens that Pane and chat and focuses its message box, with no click (Pane PR #1370). Any other last view still opens on Home, which has no composer. openProject therefore ends with timed.newThread (cmd+t, Enter) so a chat tab is in front from the start. The Track A tests that run before A2 and A1 (A5 to A11, A3, A4, A9) only open chat tabs and switch between them, so a chat should still be in front at their quit, and steps.beforeRelaunchQuit and beforeColdQuit are left out. Not yet checked in a real block: that cmd+t right after runpane panes adopt opens the menu (the 1.5 s wait is a guess), and that a chat is in front when A2 starts. Known Pane issue greenfield-inc/Pane#1384: rarely (1 of 9 cold launches on a 2.4.223 build) the chat reopens but its message box never takes focus; such a run times out.",
+    "Telemetry: Settings > Privacy > 'Allow product analytics' off (config.json analytics.enabled false). On a data folder with neither analytics_consent_shown nor analytics_default_applied in user_preferences (sessions.db), the first launch sends analytics_default_enabled and first-open events and turns analytics on (frontend/src/App.tsx), so the seed holds both files from a session where the default was applied and then turned off. An install heartbeat ignores the toggle; only DO_NOT_TRACK=1 or RUNPANE_TELEMETRY_DISABLED in the app's environment stops it (main/src/services/analyticsManager.ts startHeartbeat). Record it in Track F.",
+    "Auto-update: Settings > General > 'Check for updates automatically' off (config.json autoCheckUpdates false). 'Start Pane when you log in' (autoStartOnBoot) is on by default and registers a login item, not a launch agent. The seed turns it off (Settings > General, config.json autoStartOnBoot false), because a reset does not remove the login item.",
+    "Model, effort and permissions: the chat composer shows model, effort and mode chips from the agent. A chat opened from the + menu has no fullAccess, so its mode is the agent's default unless chosen in the chip (main/src/services/chatTabs/launch.ts). Check that a new chat shows Opus 5.5, high effort and bypass permissions with the ~/.claude snapshot; if not, configure needs steps.",
+    "Writes global config at every launch (agentContext defaults in configManager.ts): the pane skill in ~/.claude/skills/pane and ~/.agents/skills/pane, a pane-notify block in ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md, and the pane MCP server in ~/.claude.json (through claude mcp add), ~/.codex/config.toml and ~/.cursor/mcp.json when Cursor is installed. The snapshot restores the first four; pane.ts removes the ~/.claude.json entry after each quit. The repository AGENTS.md block is off by default (managedAgentsMd false), so arena/AGENTS.md is not changed. At startup Pane also appends a pane-runpane-path block to ~/.zshenv, which no reset restores; the harness shell runs zsh -f and does not read it.",
+    "Processes: Electron set only on macOS (usePtyHost is false off Windows; node-pty runs in the main process). No launch agent in normal use: one is installed only by the opt-in remote host setup (remoteDaemonService.ts) or for the length of a runpane update (com.pane.update.<id>). The two com.dcouple.* plists in the owner's ~/Library/LaunchAgents are the owner's own, not Pane's.",
+    "waitDone cwd is worktree: the chat runs with cwd = the Pane's worktree, here the arena. Not confirmed that the ACP chat writes a Claude session log there."
+  ],
+  "agentGuide": "Pane reopens the last chat tab at launch, or Home when the last view was not a chat. A thread is a tab in the arena Pane: Cmd+T opens the new tab menu, and its first item, Claude, opens a chat tab with a message box at the bottom. A plain Terminal tab is not the agent."
+}
