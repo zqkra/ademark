@@ -16,11 +16,11 @@ async function runCli(args: string[]): Promise<{ code: number; stdout: string; s
 }
 
 describe("cli", () => {
-  test("adapter list prints the 18 adapter IDs", async () => {
+  test("adapter list prints the 19 adapter IDs", async () => {
     const { code, stdout } = await runCli(["adapter", "list"]);
     expect(code).toBe(0);
     const ids = stdout.trim().split("\n").map((line) => line.split(/\s+/)[0]!);
-    expect(ids.length).toBe(18);
+    expect(ids.length).toBe(19);
     expect(ids).toContain("t3code");
     expect(ids).toContain("bare-cli");
   }, 30000);
@@ -47,7 +47,7 @@ describe("cli", () => {
     expect(second.stdout).toBe(first.stdout);
     const parsed = JSON.parse(first.stdout) as { seed: string; order: string[] };
     expect(parsed.seed).toBe("test");
-    expect(parsed.order.length).toBe(18);
+    expect(parsed.order.length).toBe(19);
   }, 30000);
 
   test("order needs a seed", async () => {

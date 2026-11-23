@@ -1,0 +1,10 @@
+{
+  "ade": "agent-orchestrator",
+  "runs": 5,
+  "passed": 5,
+  "at": "2026-11-23T11:44:14.742Z",
+  "harnessCommit": "11a1b7926db88a67cc8def3f3e87304471d7a8cc",
+  "version": "0.15.5-nightly.202611230257",
+  "bundleSha256": "f8db9fcc51729812f6642a91cb089127d854d465d7be631d1a69859d184ccf75",
+  "failures": []
+}

@@ -816,6 +816,26 @@ Adapter `codex-app`:
 | `quit` | default |
 | `processes` | unknown, find in pilot |
 
+### 3.18 Agent Orchestrator
+
+| Field | Value |
+|---|---|
+| Adapter ID | `agent-orchestrator` (`bench/adapters/agent-orchestrator.ts`) |
+| Maker, URL, license | Orchestrator Inc., https://orchestrator.inc, github.com/OrchestratorInc/agent-orchestrator, Apache-2.0 |
+| Version | nightly from main (verify at freeze); record the version and bundle SHA-256 |
+| Family | EL-SDK, Chat mode. Terminal mode runs the agent's own TUI and is a separate measurement |
+| Bundle | `/Applications/Agent Orchestrator.app`, `dev.agent-orchestrator.desktop`, Team ID `X9LNSP8MC2` |
+| Data to move aside | `~/.ao` (daemon data, Electron userData, worktrees). Keep the arena outside `~/.ao` |
+| Processes | `agent-orchestrator` (main process, also the tray), Helper GPU, network and Renderer, the Go daemon (`Contents/Resources/daemon/ao daemon`), one `ao-chat-host` per chat with the `claude-agent-acp` Node adapter, which runs `claude` with an `ao-mcp` child, and `ao pty-host` for terminals. No launch agents |
+| Claude runs via | `claude-agent-acp` with `CLAUDE_CODE_EXECUTABLE` set to the installed `claude` |
+| Adds to context | an Orchestrator system prompt and its own MCP server (`ao-mcp`). B2 (night 2026-11-22, source build): system 6,912 tokens, tools 9,114, injected 586. It also starts short background `claude` runs for chat titles and prompt suggestions in `~/.ao/data/background-tasks/title-*` |
+| Pin | model Opus 5.5, effort high, Bypass Permissions, set per project with `ao project set-config` (`agentConfig` and `worker.agentConfig`); the composer's 'Default' effort is Claude Code's default, medium. Auto-update off: `~/.ao/update-settings.json` `enabled: false`. Telemetry off: `AO_TELEMETRY_EVENTS`, `AO_TELEMETRY_METRICS`, `AO_TELEMETRY_REMOTE`, `AO_TELEMETRY_RENDERER` set to `off` and `AO_SENTRY_DSN`, `AO_ELECTRON_SENTRY_DSN` empty, through launchd before every launch |
+| Quit | `Cmd+Q` and AppleScript quit only close the window: the tray process, daemon, every chat host and its `claude` stay alive, by design; A9 reads what remains (14.7 GB on the 2026-11-22 night). Only the tray item 'Quit Orchestrator Completely' ends the app. A1 and A2 are not supported: the app opens on Home, which has no composer |
+| New thread (A3) | `Cmd+N` from the project Board or a thread opens a new task in the project with the composer focused. From Home it opens a Sessions (scratchpad) task with no agent selected, so setup clicks the project row first |
+| Orchestration (C1) | project orchestrator that spawns worker sessions. Trigger not calibrated yet |
+| Drive (setup) | `ao` CLI and keys |
+| Pilot findings | No launch agents. A fresh `~/.ao` shows an account onboarding and a Tools page that opens a `gh auth login` terminal by itself; `~/.ao/app-state.json` `firstRunProjectPrompt: "seen"` (seeded) skips it. Every task runs in its own worktree, `~/.ao/data/worktrees/<project>/<session>`, so `waitDone` reads session logs anywhere under home; the title and suggestion runs can end that wait early (open issue). `ANTHROPIC_BASE_URL` from launchd reaches every chat; model discovery calls GET models and the replay server answers 404, which the composer shows as an error line |
+
 ## 4. Summary
 
 | ADE | Adapter ID | Family | Drive for setup | C1 trigger | Top fairness traps |
@@ -838,3 +858,4 @@ Adapter `codex-app`:
 | Capy | `capy` | OWN | HTTP API, CDP | subagents, Captains (experimental) | own harness; no Claude subscription, API billing |
 | Claude desktop | `claude-desktop` | FIRST | Accessibility | subagents, session messages | shares `~/.claude` with the CLI; stack unknown |
 | Codex app | `codex-app` | FIRST | Accessibility | multi-agent (to verify) | moved into ChatGPT desktop; most facts unknown |
+| Agent Orchestrator | `agent-orchestrator` | EL-SDK | `ao` CLI, keys | project orchestrator, trigger pending | Quit keeps the menu bar process and daemon; Home chats vs project chats |

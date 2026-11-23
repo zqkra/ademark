@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "ade": "agent-orchestrator",
+  "app": {
+    "path": "/Applications/Agent Orchestrator.app",
+    "version": "0.15.5-nightly.202611230257",
+    "bundleSha256": "f8db9fcc51729812f6642a91cb089127d854d465d7be631d1a69859d184ccf75",
+    "processNames": [
+      "agent-orchestrator",
+      "Agent Orchestrator Helper",
+      "Agent Orchestrator Helper (Renderer)",
+      "Agent Orchestrator Helper (GPU)",
+      "Agent Orchestrator Helper (Plugin)",
+      "ao",
+      "ao-chat-host",
+      "ao-mcp"
+    ]
+  },
+  "window": {
+    "w": 1600,
+    "h": 1000
+  },
+  "calibration": {
+    "appName": "Agent Orchestrator",
+    "bundleId": "dev.agent-orchestrator.desktop",
+    "composerRect": {
+      "x": 590,
+      "y": 429,
+      "w": 660,
+      "h": 37
+    },
+    "activeComposerRect": {
+      "x": 545,
+      "y": 862,
+      "w": 740,
+      "h": 34
+    },
+    "launchComposerRect": null,
+    "threadRect": {
+      "x": 520,
+      "y": 60,
+      "w": 800,
+      "h": 780
+    },
+    "focusClick": null,
+    "masks": [
+      {
+        "x": 578,
+        "y": 942,
+        "w": 24,
+        "h": 24
+      }
+    ],
+    "drive": "cli",
+    "dataDirs": [
+      "~/.ao",
+      "~/Library/Caches/dev.agent-orchestrator.desktop",
+      "~/Library/Caches/dev.agent-orchestrator.desktop.ShipIt",
+      "~/Library/Caches/agent-orchestrator-updater"
+    ],
+    "launchAgents": []
+  },
+  "login": {
+    "kind": "agent-cli",
+    "files": [],
+    "signIn": null
+  },
+  "reset": {
+    "seeds": [
+      ".ao/app-state.json",
+      ".ao/update-settings.json"
+    ],
+    "jsonKeys": [
+      {
+        "file": "~/.ao/update-settings.json",
+        "keys": {
+          "enabled": false
+        }
+      }
+    ]
+  },
+  "steps": {
+    "afterLaunch": [
+      {
+        "kind": "wait",
+        "ms": 3000
+      },
+      {
+        "kind": "open",
+        "bundleId": "dev.agent-orchestrator.desktop"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 10,
+          "y": 246,
+          "w": 170,
+          "h": 30
+        },
+        "texts": [
+          "ademark-arena"
+        ],
+        "point": {
+          "x": 100,
+          "y": 261
+        },
+        "timeoutMs": 8000
+      },
+      {
+        "kind": "wait",
+        "ms": 800
+      },
+      {
+        "kind": "open",
+        "bundleId": "dev.agent-orchestrator.desktop"
+      },
+      {
+        "kind": "wait",
+        "ms": 500
+      }
+    ],
+    "openProject": [
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/Agent Orchestrator.app/Contents/Resources/daemon/ao",
+          "project",
+          "add",
+          "--path",
+          "${worktree}",
+          "--id",
+          "ademark-arena",
+          "--name",
+          "ademark-arena",
+          "--default-branch",
+          "main"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "run",
+        "argv": [
+          "/Applications/Agent Orchestrator.app/Contents/Resources/daemon/ao",
+          "project",
+          "set-config",
+          "ademark-arena",
+          "--config-json",
+          "{\"defaultBranch\":\"main\",\"agentConfig\":{\"model\":\"claude-opus-5-5\",\"effort\":\"high\",\"permissions\":\"bypass-permissions\"},\"worker\":{\"agentConfig\":{\"model\":\"claude-opus-5-5\",\"effort\":\"high\",\"permissions\":\"bypass-permissions\"}},\"orchestrator\":{\"agentConfig\":{}},\"trackerIntake\":{},\"containerReap\":{}}"
+        ],
+        "timeoutMs": 30000
+      },
+      {
+        "kind": "open",
+        "bundleId": "dev.agent-orchestrator.desktop"
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      },
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      },
+      {
+        "kind": "wait",
+        "ms": 3000
+      },
+      {
+        "kind": "clickIfText",
+        "region": {
+          "x": 10,
+          "y": 246,
+          "w": 170,
+          "h": 30
+        },
+        "texts": [
+          "ademark-arena"
+        ],
+        "point": {
+          "x": 100,
+          "y": 261
+        },
+        "timeoutMs": 10000
+      },
+      {
+        "kind": "wait",
+        "ms": 1000
+      }
+    ],
+    "configure": {
+      "claude": []
+    },
+    "quit": []
+  },
+  "timed": {
+    "launch": [
+      {
+        "kind": "open",
+        "bundleId": "dev.agent-orchestrator.desktop"
+      }
+    ],
+    "newThread": [
+      {
+        "kind": "keys",
+        "combo": "cmd+n"
+      }
+    ],
+    "send": [
+      {
+        "kind": "enter"
+      }
+    ],
+    "longThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 100,
+          "y": 296
+        }
+      }
+    ],
+    "shortThread": [
+      {
+        "kind": "click",
+        "point": {
+          "x": 100,
+          "y": 329
+        }
+      }
+    ]
+  },
+  "waitDone": {
+    "cwd": "any",
+    "idleFallback": false
+  },
+  "processes": {
+    "vendorDirs": [
+      "~/.ao"
+    ],
+    "launchAgentLabels": [],
+    "teamId": "X9LNSP8MC2",
+    "agentExecutables": [
+      "claude",
+      "/Users/ademark/.local/share/claude/versions/"
+    ]
+  },
+  "orchestrationTrigger": {
+    "notCalibrated": "C1 not calibrated: the project orchestrator trigger line was not proven (owner: no C1 in this run)."
+  },
+  "excludeTests": {
+    "A1": "The app always opens on its Home view, which has no composer (routes/_shell.index.tsx renders HomePage only), so the launch probe has nothing to type into. A launch trigger of open plus cmd+n would start the clock at cmd+n and leave the launch out. A session deep link in the launch arguments is ignored on macOS (checked 2026-11-22).",
+    "A2": "Same as A1: no composer after launch. Also, Cmd+Q (AppleScript quit) only closes the window: the main process (tray), the daemon, every ao-chat-host and its claude stay alive, so a relaunch would come back warm. Only the tray menu item 'Quit Orchestrator Completely' ends the app."
+  },
+  "notes": [
+    "Calibrated 2026-11-22 in the ademark account on a source build of OrchestratorInc/agent-orchestrator main 994b75ad66 (contains f8601f2049, ad-hoc signed, CFBundleShortVersionString 0.15.3). Pinned 2026-11-23 to the public nightly v0.15.5-nightly.202611230257 (commit acddfae, 25 commits after 994b75ad66), Developer ID signed and notarized, team X9LNSP8MC2. The zip matched the sha512 in the release's nightly-mac.yml. The diff since the calibrated build leaves the telemetry overrides and Cmd+N unchanged and removes the sidebar row animations; row sizes are the same. The gate on this build checks the calibration.",
+    "First run on a fresh ~/.ao: a 'Create an account' onboarding (continue without an account), then a Tools and Harnesses page that opens a gh auth login terminal by itself (it started Chrome for the GitHub device flow; closed, nothing signed in), then Skip setup. ~/.ao/app-state.json firstRunProjectPrompt 'seen' suppresses it; the seed restores that file.",
+    "Auto-update is on by default (channel nightly). On this source build it downloaded 0.15.4-nightly.202611212010 and failed verification. ~/.ao/update-settings.json enabled false (seed and reset.jsonKeys). Updater caches in ~/Library/Caches are in dataDirs so a downloaded update cannot install on a quit.",
+    "Telemetry is on by default for packaged builds (PostHog from renderer and daemon, Sentry). The adapter sets AO_TELEMETRY_EVENTS=off, AO_TELEMETRY_METRICS=off, AO_TELEMETRY_REMOTE=off, AO_TELEMETRY_RENDERER=off, AO_SENTRY_DSN and AO_ELECTRON_SENTRY_DSN empty through launchctl setenv before every launch (frontend/src/main.ts telemetryOverrides: explicit env wins).",
+    "No launch agents (launchctl list before and after first launch). Processes: agent-orchestrator (main, also the tray), Helper GPU, Helper network, Helper (Renderer), Contents/Resources/daemon/ao daemon, one ao-chat-host per chat with the acp-runtime node (claude-agent-acp), which runs the system claude (/Users/ademark/.local/bin/claude 2.1.330, stream-json) with an ao-mcp child, and ao pty-host for terminals.",
+    "Pins: the composer effort 'Default' is Claude Code's default, which is medium for claude-opus-5-5 (captured output_config.effort 'medium' from claude -p against a local capture server). openProject sets the project config with the ao CLI: worker and shared agentConfig model claude-opus-5-5, effort high, permissions bypass-permissions. Checked: a new task shows 'Opus 5.5 High' and 'Bypass Permissions', and the session log model is claude-opus-5-5.",
+    "Replay (checked): with launchd's ANTHROPIC_BASE_URL the chat claude reached the replay server and answered replay:seed ('Seeded. This thread is open and the repository is unchanged.'). Model discovery calls GET models on the base URL and the replay server answers 404, so the new-task composer shows no model picker and an error line 'claude-code model discovery: the configured gateway returned HTTP 404' under it. The project config still sets the model.",
+    "Every task runs in its own worktree, ~/.ao/data/worktrees/<project id>/<session id>, so waitDone cwd is 'any'. Risk: a chat's first message starts a title task, a short claude run in ~/.ao/data/background-tasks/title-*, whose session log ends first and can end waitDone early. Not changed: that is harness code.",
+    "Navigation: the app opens on Home ('Jump back right in'), never on the last session. Cmd+N from Home opens a new task in the only project but leaves the composer unfocused; Cmd+N from the project Board or a thread focuses it. afterLaunch and openProject click the project row (sidebar, 100,261 on 0.15.5-nightly.202611230257) so the app is on the Board before any Cmd+N. Project id and name are 'ademark-arena' (ao project add --id), so the row text is fixed.",
+    "Composer: the new-task composer's text line is at y about 472 with placeholder text that changes per task ('Find and fix a bug in this project', 'Fix a failing test in this project'); on the first typed character the suggestion row above it goes away and the line moves up 24 points, to y 439 to 456 on 0.15.5-nightly.202611230257 (probe-region, 2026-11-23). composerRect covers the moved line with about 10 points above and below. A thread composer ('Message the agent', or 'Next message you send will be queued' while a turn runs) has its line at y 869 to 886 (activeComposerRect).",
+    "Gate 2026-11-22: after the two ao CLI steps the app was not frontmost, so the project row click failed (not_frontmost) or the row was not read, Cmd+N then opened a Sessions (scratchpad) task with no agent selected ('No agent is ready'), and seeding timed out. openProject now brings the app to the front with open -b before the click. Gate run 2 of the next try: the row added by ao project add was not drawn within 10 s; both failure screenshots, taken after a Cmd+N, show it. openProject now presses Cmd+N (a new Sessions task page, nothing is sent) and waits 3 s before the click.",
+    "Gate 2026-11-22 run 3 of 5: A4 timed out. A4 relaunches; with the main process still alive the window comes back warm, and in every run the next Cmd+N logged 'not in front; bringing it back'. In run 3 the Cmd+N was lost and the screen stayed on a seed thread at 'Setting up session'. afterLaunch now brings the app to the front (open -b) before the project click and again after it.",
+    "waitDone risk seen in the gate: 'waitDone: end of turn in ~/.claude/projects/-Users-ademark--ao-data-background-tasks-title-*'. AO runs title and prompt-suggestion tasks as separate short claude sessions in ~/.ao/data/background-tasks/title-*; with cwd 'any' the first ended log ends the wait. Track B's window (tracks/b/shared.ts) ends at waitDone, so AO Track B rows can be cut short. Harness code, not changed.",
+    "Sidebar: 0.15.5-nightly.202611230257 adds a Sessions section above Projects, so the project row is at y 261 (was 227) and tasks are listed under it, newest first, from y 296 in steps of 33 points (measured 2026-11-23 with two tasks). The first gate on this build failed 0/5 because the row click at 227 missed. longThread clicks row 1 and shortThread row 2: A11 builds the long thread last.",
+    "Quit: Cmd+Q (and AppleScript quit) only closes the window and hides the Dock icon; main process, daemon, chat hosts and claude keep running (desktop-quit.ts handleBeforeQuit while a tray exists, always on macOS). A9 reads what remains. Reset kills the rest. The tray item 'Quit Orchestrator Completely' ends everything (checked with System Events)."
+  ],
+  "agentGuide": "The app opens on Home. Click the project row 'ademark-arena' in the sidebar, then Cmd+N starts a new task in it. A red line about model discovery under the composer is expected with the replay server."
+}
