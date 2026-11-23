@@ -13,7 +13,6 @@ import {
   pause,
   runTool,
   trustClaudeFolder,
-  typeText,
   waitForText,
   waitForPid,
   waitGone,
@@ -319,7 +318,7 @@ export const bareCli: Adapter = {
       if (state.cliCommand === null || state.env === null) throw new Error("launch() must run before returnToThread()");
       await press(ctx, pidOrZero(), newTabCombo(ctx));
       await pause(ctx, NEW_TAB_SETTLE_MS);
-      await typeText(ctx, pidOrZero(), cliStartCommand(ctx.worktree, state.env, `${state.cliCommand} --continue`));
+      await paste(ctx, pidOrZero(), cliStartCommand(ctx.worktree, state.env, `${state.cliCommand} --continue`));
       await press(ctx, pidOrZero(), "enter");
       await waitForText(ctx, pidOrZero(), READY_FOOTER, READY_TEXT.claude!, CLI_READY_TIMEOUT_S);
       state.since = Date.now();
@@ -372,7 +371,11 @@ export const bareCli: Adapter = {
     const combo = newTabCombo(ctx);
     await press(ctx, pidOrZero(), combo);
     await pause(ctx, NEW_TAB_SETTLE_MS);
-    await typeText(ctx, pidOrZero(), commandOf());
+    // Untimed setup, so the command is pasted, not typed. Night 2026-11-22: the first Track B block starts mitmdump,
+    // which launches Mitmproxy Redirector; Ghostty lost focus partway through the typed command, Enter ran
+    // `cd ... && CLAUDE_CODE_ENABLE_TELEMETRY=1 CODEX_CA_CERTIFICATE=/Use`, and B1 waited 30 s for a CLI that never
+    // started. One Cmd+V is posted only while Ghostty is in front. A3 still types the command: that is what it times.
+    await paste(ctx, pidOrZero(), commandOf());
     await press(ctx, pidOrZero(), "enter");
     // Untimed here (A3 times its own triggers): the next keys must reach the CLI, not the shell, so wait for its
     // footer. Pilot: A4 typed its prompt while Claude Code was still starting, and no request reached the replay server.

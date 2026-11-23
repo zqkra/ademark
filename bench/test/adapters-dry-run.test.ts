@@ -147,7 +147,7 @@ describe("bare-cli dry run", () => {
     expect(lines).toEqual([
       "plan: press pid=0 combo=cmd+t",
       "plan: pause ms=400",
-      `plan: typeText pid=0 text=${BARE_COMMAND}`,
+      `plan: paste pid=0 text=${BARE_COMMAND}`,
       "plan: press pid=0 combo=enter",
       "plan: waitForText pid=0 text=bypass",
     ]);
@@ -233,7 +233,7 @@ describe("bare-cli dry run", () => {
     expect(back).toBeDefined();
     lines.length = 0;
     await back!(ctx);
-    expect(lines.some((line) => line.includes(`typeText pid=0 text=${BARE_COMMAND} --continue`))).toBe(true);
+    expect(lines.some((line) => line.includes(`paste pid=0 text=${BARE_COMMAND} --continue`))).toBe(true);
     expect(lines.some((line) => line.includes("waitForText"))).toBe(true);
 
     await bareCli.configure(ctx, { ...OPTIONS, agent: "codex" });
